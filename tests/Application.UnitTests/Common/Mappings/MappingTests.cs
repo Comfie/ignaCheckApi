@@ -2,10 +2,6 @@
 using System.Runtime.CompilerServices;
 using AutoMapper;
 using IgnaCheck.Application.Common.Interfaces;
-using IgnaCheck.Application.Common.Models;
-using IgnaCheck.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-using IgnaCheck.Application.TodoLists.Queries.GetTodos;
-using IgnaCheck.Domain.Entities;
 using NUnit.Framework;
 
 namespace IgnaCheck.Application.UnitTests.Common.Mappings;
@@ -29,18 +25,14 @@ public class MappingTests
         _configuration.AssertConfigurationIsValid();
     }
 
-    [Test]
-    [TestCase(typeof(TodoList), typeof(TodoListDto))]
-    [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
-    [TestCase(typeof(TodoList), typeof(LookupDto))]
-    [TestCase(typeof(TodoItem), typeof(LookupDto))]
-    [TestCase(typeof(TodoItem), typeof(TodoItemBriefDto))]
-    public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
-    {
-        var instance = GetInstanceOf(source);
-
-        _mapper.Map(instance, source, destination);
-    }
+    // Add mapping test cases here as needed
+    // [Test]
+    // [TestCase(typeof(SourceEntity), typeof(DestinationDto))]
+    // public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
+    // {
+    //     var instance = GetInstanceOf(source);
+    //     _mapper.Map(instance, source, destination);
+    // }
 
     private object GetInstanceOf(Type type)
     {

@@ -49,6 +49,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<TaskComment> TaskComments => Set<TaskComment>();
 
+    public DbSet<TaskAttachment> TaskAttachments => Set<TaskAttachment>();
+
     public DbSet<FindingComment> FindingComments => Set<FindingComment>();
 
     public DbSet<Notification> Notifications => Set<Notification>();
@@ -74,9 +76,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     private static readonly System.Reflection.MethodInfo SetGlobalQueryMethod =
         typeof(ApplicationDbContext).GetMethod(nameof(SetGlobalQuery),
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
 
-    private static void SetGlobalQuery<T>(ModelBuilder builder) where T : class, ITenantEntity
+    private void SetGlobalQuery<T>(ModelBuilder builder) where T : class, ITenantEntity
     {
         builder.Entity<T>().HasQueryFilter(e => _tenantService == null || _tenantService.GetCurrentTenantId() == null ||  e.OrganizationId == _tenantService.GetCurrentTenantId());
     }
