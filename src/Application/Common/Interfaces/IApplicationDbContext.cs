@@ -8,5 +8,7 @@ public interface IApplicationDbContext
 
     DbSet<Project> Projects { get; }
 
+    DbSet<ActivityLog> ActivityLogs { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

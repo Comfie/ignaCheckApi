@@ -29,6 +29,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<Invitation> Invitations => Set<Invitation>();
 
+    public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
+
+    public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
