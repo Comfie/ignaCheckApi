@@ -39,4 +39,9 @@ public class Project : BaseAuditableEntity, ITenantEntity
     /// Remediation tasks for this project.
     /// </summary>
     public ICollection<RemediationTask> RemediationTasks { get; set; } = new List<RemediationTask>();
+
+    /// <summary>
+    /// Project members with their roles.
+    /// </summary>
+    public ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
 }

@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Constants;
+using IgnaCheck.Infrastructure.AI;
 using IgnaCheck.Infrastructure.Data;
 using IgnaCheck.Infrastructure.Data.Interceptors;
 using IgnaCheck.Infrastructure.Identity;
@@ -120,12 +121,18 @@ public static class DependencyInjection
 
         builder.Services.AddAuthorizationBuilder();
 
+        // AI Configuration
+        builder.Services.Configure<AIConfiguration>(builder.Configuration.GetSection(AIConfiguration.SectionName));
+
         // Application services
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
         builder.Services.AddScoped<ITenantService, TenantService>();
         builder.Services.AddTransient<IEmailService, IgnaCheck.Infrastructure.Services.EmailService>();
         builder.Services.AddScoped<IJwtTokenGenerator, IgnaCheck.Infrastructure.Services.JwtTokenGenerator>();
+        builder.Services.AddScoped<IFileStorageService, IgnaCheck.Infrastructure.Services.LocalFileStorageService>();
+        builder.Services.AddScoped<IDocumentParsingService, IgnaCheck.Infrastructure.Services.DocumentParsingService>();
+        builder.Services.AddScoped<IAIAnalysisService, IgnaCheck.Infrastructure.Services.AIAnalysisService>();
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
