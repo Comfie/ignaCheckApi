@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
 
 namespace IgnaCheck.Application.Findings.Queries.GetFindingDetails;
