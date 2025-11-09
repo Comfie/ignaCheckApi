@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IgnaCheck.Web.Controllers;
@@ -7,7 +8,8 @@ namespace IgnaCheck.Web.Controllers;
 /// Provides common functionality and configuration.
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
 public abstract class ApiControllerBase : ControllerBase
 {
     protected ISender Sender => HttpContext.RequestServices.GetRequiredService<ISender>();

@@ -16,8 +16,6 @@ namespace IgnaCheck.Web.Controllers;
 /// <summary>
 /// Controller for user management operations.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 [Authorize]
 public class UsersController : ApiControllerBase
 {

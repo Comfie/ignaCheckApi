@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using IgnaCheck.Application.Authentication.Commands.Login;
 using IgnaCheck.Application.Authentication.Commands.Register;
 using IgnaCheck.Application.Authentication.Commands.RequestPasswordReset;
@@ -12,7 +13,8 @@ namespace IgnaCheck.Web.Controllers;
 /// Authentication controller for user registration, login, email verification, and password reset.
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
+[ApiVersion("1.0")]
 [AllowAnonymous]
 public class AuthenticationController : ControllerBase
 {

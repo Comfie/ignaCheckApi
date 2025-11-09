@@ -12,8 +12,6 @@ namespace IgnaCheck.Web.Controllers;
 /// <summary>
 /// Controller for workspace management operations.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 [Authorize]
 public class WorkspaceController : ApiControllerBase
 {

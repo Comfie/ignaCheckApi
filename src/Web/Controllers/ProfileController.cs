@@ -12,8 +12,6 @@ namespace IgnaCheck.Web.Controllers;
 /// <summary>
 /// Controller for user profile management operations.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 [Authorize]
 public class ProfileController : ApiControllerBase
 {
