@@ -144,14 +144,13 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
         var documentContents = new List<DocumentContent>();
         foreach (var doc in documents)
         {
-            // Read document content from storage
-            // TODO: Implement actual document content loading from file storage
+            // Use extracted text from document parsing (populated during upload)
             documentContents.Add(new DocumentContent
             {
                 DocumentId = doc.Id,
                 FileName = doc.FileName,
-                Content = doc.ParsedText ?? string.Empty,
-                MimeType = doc.MimeType,
+                Content = doc.ExtractedText ?? string.Empty,
+                MimeType = doc.ContentType,
                 PageCount = doc.PageCount ?? 0
             });
         }

@@ -1,6 +1,10 @@
 using System.Text;
 using IgnaCheck.Application.Common.Interfaces;
 using Microsoft.Extensions.Logging;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace IgnaCheck.Infrastructure.Services;
 
@@ -21,42 +25,60 @@ public class DocumentParsingService : IDocumentParsingService
     {
         try
         {
-            // TODO: Implement PDF parsing using PdfPig or iText7
-            // For now, return a placeholder implementation
-            _logger.LogWarning("PDF parsing not yet implemented. Returning placeholder result.");
+            _logger.LogInformation("Starting PDF parsing using PdfPig");
 
-            return await Task.FromResult(new DocumentParsingResult
-            {
-                ExtractedText = "[PDF parsing not yet implemented]",
-                IsSuccessful = false,
-                ErrorMessage = "PDF parsing support will be added in a future update.",
-                ExtractionMethod = "Placeholder",
-                PageCount = 0
-            });
-
-            /* Implementation example with PdfPig:
-            using UglyToad.PdfPig;
-            using UglyToad.PdfPig.Content;
+            // PdfPig is synchronous but we'll wrap in Task for consistency
+            await Task.CompletedTask;
 
             using var document = PdfDocument.Open(stream);
             var textBuilder = new StringBuilder();
 
+            // Extract text from each page
             foreach (var page in document.GetPages())
             {
-                textBuilder.AppendLine(page.Text);
+                var pageText = page.Text;
+                if (!string.IsNullOrWhiteSpace(pageText))
+                {
+                    textBuilder.AppendLine(pageText);
+                    textBuilder.AppendLine(); // Add spacing between pages
+                }
             }
+
+            var extractedText = textBuilder.ToString().Trim();
+
+            // Extract metadata
+            var info = document.Information;
+            var title = info?.Title;
+            var author = info?.Author;
+            DateTime? creationDate = null;
+
+            // Parse creation date if available
+            if (info?.CreationDate != null)
+            {
+                try
+                {
+                    creationDate = DateTime.Parse(info.CreationDate);
+                }
+                catch
+                {
+                    // If parsing fails, leave as null
+                    _logger.LogWarning("Failed to parse PDF creation date: {CreationDate}", info.CreationDate);
+                }
+            }
+
+            _logger.LogInformation("Successfully parsed PDF: {PageCount} pages, {TextLength} characters extracted",
+                document.NumberOfPages, extractedText.Length);
 
             return new DocumentParsingResult
             {
-                ExtractedText = textBuilder.ToString(),
+                ExtractedText = extractedText,
                 IsSuccessful = true,
                 ExtractionMethod = "PdfPig",
                 PageCount = document.NumberOfPages,
-                Title = document.Information?.Title,
-                Author = document.Information?.Author,
-                CreationDate = document.Information?.CreationDate
+                Title = title,
+                Author = author,
+                CreationDate = creationDate
             };
-            */
         }
         catch (Exception ex)
         {
@@ -75,27 +97,22 @@ public class DocumentParsingService : IDocumentParsingService
     {
         try
         {
-            // TODO: Implement DOCX parsing using DocumentFormat.OpenXml
-            // For now, return a placeholder implementation
-            _logger.LogWarning("DOCX parsing not yet implemented. Returning placeholder result.");
+            _logger.LogInformation("Starting DOCX parsing using DocumentFormat.OpenXml");
 
-            return await Task.FromResult(new DocumentParsingResult
-            {
-                ExtractedText = "[DOCX parsing not yet implemented]",
-                IsSuccessful = false,
-                ErrorMessage = "DOCX parsing support will be added in a future update.",
-                ExtractionMethod = "Placeholder"
-            });
+            // OpenXml is synchronous but we'll wrap in Task for consistency
+            await Task.CompletedTask;
 
-            /* Implementation example with DocumentFormat.OpenXml:
-            using DocumentFormat.OpenXml.Packaging;
-            using DocumentFormat.OpenXml.Wordprocessing;
+            // Create a copy of the stream to avoid disposal issues
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream, cancellationToken);
+            memoryStream.Position = 0;
 
-            using var document = WordprocessingDocument.Open(stream, false);
+            using var document = WordprocessingDocument.Open(memoryStream, false);
             var body = document.MainDocumentPart?.Document.Body;
 
             if (body == null)
             {
+                _logger.LogWarning("DOCX document body not found");
                 return new DocumentParsingResult
                 {
                     ExtractedText = string.Empty,
@@ -106,23 +123,59 @@ public class DocumentParsingService : IDocumentParsingService
             }
 
             var textBuilder = new StringBuilder();
+
+            // Extract text from paragraphs
             foreach (var paragraph in body.Elements<Paragraph>())
             {
-                textBuilder.AppendLine(paragraph.InnerText);
+                var paragraphText = paragraph.InnerText;
+                if (!string.IsNullOrWhiteSpace(paragraphText))
+                {
+                    textBuilder.AppendLine(paragraphText);
+                }
             }
 
+            // Extract text from tables
+            foreach (var table in body.Elements<Table>())
+            {
+                foreach (var row in table.Elements<TableRow>())
+                {
+                    var rowTexts = new List<string>();
+                    foreach (var cell in row.Elements<TableCell>())
+                    {
+                        var cellText = cell.InnerText?.Trim();
+                        if (!string.IsNullOrWhiteSpace(cellText))
+                        {
+                            rowTexts.Add(cellText);
+                        }
+                    }
+                    if (rowTexts.Any())
+                    {
+                        textBuilder.AppendLine(string.Join(" | ", rowTexts));
+                    }
+                }
+                textBuilder.AppendLine(); // Add spacing after table
+            }
+
+            var extractedText = textBuilder.ToString().Trim();
+
+            // Extract metadata
             var coreProperties = document.PackageProperties;
+            var title = coreProperties.Title;
+            var author = coreProperties.Creator;
+            var creationDate = coreProperties.Created;
+
+            _logger.LogInformation("Successfully parsed DOCX: {TextLength} characters extracted",
+                extractedText.Length);
 
             return new DocumentParsingResult
             {
-                ExtractedText = textBuilder.ToString(),
+                ExtractedText = extractedText,
                 IsSuccessful = true,
                 ExtractionMethod = "DocumentFormat.OpenXml",
-                Title = coreProperties.Title,
-                Author = coreProperties.Creator,
-                CreationDate = coreProperties.Created
+                Title = title,
+                Author = author,
+                CreationDate = creationDate
             };
-            */
         }
         catch (Exception ex)
         {
