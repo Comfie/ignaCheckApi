@@ -1,10 +1,10 @@
-﻿using CleanArchitecture.Application.Common.Exceptions;
-using CleanArchitecture.Application.Common.Security;
-using CleanArchitecture.Application.TodoLists.Commands.CreateTodoList;
-using CleanArchitecture.Application.TodoLists.Commands.PurgeTodoLists;
-using CleanArchitecture.Domain.Entities;
+﻿using IgnaCheck.Application.Common.Exceptions;
+using IgnaCheck.Application.Common.Security;
+using IgnaCheck.Application.TodoLists.Commands.CreateTodoList;
+using IgnaCheck.Application.TodoLists.Commands.PurgeTodoLists;
+using IgnaCheck.Domain.Entities;
 
-namespace CleanArchitecture.Application.FunctionalTests.TodoLists.Commands;
+namespace IgnaCheck.Application.FunctionalTests.TodoLists.Commands;
 
 using static Testing;
 

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <RootNamespace>CleanArchitecture.Application.FunctionalTests</RootNamespace>
-        <AssemblyName>CleanArchitecture.Application.FunctionalTests</AssemblyName>
+        <RootNamespace>IgnaCheck.Application.FunctionalTests</RootNamespace>
+        <AssemblyName>IgnaCheck.Application.FunctionalTests</AssemblyName>
     </PropertyGroup>
 
     <!--#if (UsePostgreSQL || UseSqlServer)-->

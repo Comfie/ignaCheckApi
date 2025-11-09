@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace CleanArchitecture.Web.AcceptanceTests;
+namespace IgnaCheck.Web.AcceptanceTests;
 
 public static class ConfigurationHelper
 {

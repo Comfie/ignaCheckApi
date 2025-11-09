@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Application.Common.Interfaces;
+﻿using IgnaCheck.Application.Common.Interfaces;
 
-namespace CleanArchitecture.Application.TodoLists.Commands.DeleteTodoList;
+namespace IgnaCheck.Application.TodoLists.Commands.DeleteTodoList;
 
 public record DeleteTodoListCommand(int Id) : IRequest;
 

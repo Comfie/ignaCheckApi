@@ -1,11 +1,11 @@
 ﻿using System.Data.Common;
-using CleanArchitecture.Infrastructure.Data;
+using IgnaCheck.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Respawn;
 
-namespace CleanArchitecture.Application.FunctionalTests;
+namespace IgnaCheck.Application.FunctionalTests;
 
 public class SqlTestDatabase : ITestDatabase
 {
@@ -20,7 +20,7 @@ public class SqlTestDatabase : ITestDatabase
             .AddEnvironmentVariables()
             .Build();
 
-        var connectionString = configuration.GetConnectionString("CleanArchitectureDb");
+        var connectionString = configuration.GetConnectionString("IgnaCheckDb");
 
         Guard.Against.Null(connectionString);
 

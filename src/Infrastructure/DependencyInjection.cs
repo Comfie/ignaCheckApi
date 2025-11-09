@@ -1,8 +1,8 @@
-﻿using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Domain.Constants;
-using CleanArchitecture.Infrastructure.Data;
-using CleanArchitecture.Infrastructure.Data.Interceptors;
-using CleanArchitecture.Infrastructure.Identity;
+﻿using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Constants;
+using IgnaCheck.Infrastructure.Data;
+using IgnaCheck.Infrastructure.Data.Interceptors;
+using IgnaCheck.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -15,11 +15,12 @@ public static class DependencyInjection
 {
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("CleanArchitectureDb");
-        Guard.Against.Null(connectionString, message: "Connection string 'CleanArchitectureDb' not found.");
+        var connectionString = builder.Configuration.GetConnectionString("IgnaCheckDb");
+        Guard.Against.Null(connectionString, message: "Connection string 'IgnaCheckDb' not found.");
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        builder.Services.AddScoped<ISaveChangesInterceptor, TenantSecurityInterceptor>();
 
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
@@ -66,6 +67,7 @@ public static class DependencyInjection
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
+        builder.Services.AddScoped<ITenantService, TenantService>();
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));

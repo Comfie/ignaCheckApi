@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Application.Common.Models;
+﻿using IgnaCheck.Application.Common.Models;
 
-namespace CleanArchitecture.Application.Common.Mappings;
+namespace IgnaCheck.Application.Common.Mappings;
 
 public static class MappingExtensions
 {

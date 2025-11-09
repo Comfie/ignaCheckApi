@@ -1,8 +1,8 @@
-﻿using CleanArchitecture.Application.TodoLists.Queries.GetTodos;
-using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.ValueObjects;
+﻿using IgnaCheck.Application.TodoLists.Queries.GetTodos;
+using IgnaCheck.Domain.Entities;
+using IgnaCheck.Domain.ValueObjects;
 
-namespace CleanArchitecture.Application.FunctionalTests.TodoLists.Queries;
+namespace IgnaCheck.Application.FunctionalTests.TodoLists.Queries;
 
 using static Testing;
 

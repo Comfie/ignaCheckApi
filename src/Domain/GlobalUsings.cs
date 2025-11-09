@@ -1,6 +1,6 @@
-﻿global using CleanArchitecture.Domain.Common;
-global using CleanArchitecture.Domain.Entities;
-global using CleanArchitecture.Domain.Enums;
-global using CleanArchitecture.Domain.Events;
-global using CleanArchitecture.Domain.Exceptions;
-global using CleanArchitecture.Domain.ValueObjects;
+﻿global using IgnaCheck.Domain.Common;
+global using IgnaCheck.Domain.Entities;
+global using IgnaCheck.Domain.Enums;
+global using IgnaCheck.Domain.Events;
+global using IgnaCheck.Domain.Exceptions;
+global using IgnaCheck.Domain.ValueObjects;

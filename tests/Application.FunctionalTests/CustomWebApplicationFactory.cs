@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
-using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Infrastructure.Data;
+using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace CleanArchitecture.Application.FunctionalTests;
+namespace IgnaCheck.Application.FunctionalTests;
 
 using static Testing;
 
@@ -28,7 +28,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder
             .UseEnvironment("Testing")
-            .UseSetting("ConnectionStrings:CleanArchitectureDb", _connectionString);
+            .UseSetting("ConnectionStrings:IgnaCheckDb", _connectionString);
 
         builder.ConfigureTestServices(services =>
         {

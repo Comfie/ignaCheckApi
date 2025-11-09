@@ -8,8 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
-    <RootNamespace>CleanArchitecture.AppHost</RootNamespace>
-    <AssemblyName>CleanArchitecture.AppHost</AssemblyName>
+    <RootNamespace>IgnaCheck.AppHost</RootNamespace>
+    <AssemblyName>IgnaCheck.AppHost</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

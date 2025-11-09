@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Domain.Constants;
+﻿namespace IgnaCheck.Domain.Constants;
 
 public abstract class Policies
 {

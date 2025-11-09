@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using CleanArchitecture.Application.Common.Behaviours;
+using IgnaCheck.Application.Common.Behaviours;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;

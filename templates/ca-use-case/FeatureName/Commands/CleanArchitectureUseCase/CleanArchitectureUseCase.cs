@@ -1,28 +1,28 @@
-﻿using CleanArchitecture.Application.Common.Interfaces;
+﻿using IgnaCheck.Application.Common.Interfaces;
 
-namespace CleanArchitecture.Application.FeatureName.Commands.CleanArchitectureUseCase;
+namespace IgnaCheck.Application.FeatureName.Commands.IgnaCheckUseCase;
 
-public record CleanArchitectureUseCaseCommand : IRequest<object>
+public record IgnaCheckUseCaseCommand : IRequest<object>
 {
 }
 
-public class CleanArchitectureUseCaseCommandValidator : AbstractValidator<CleanArchitectureUseCaseCommand>
+public class IgnaCheckUseCaseCommandValidator : AbstractValidator<IgnaCheckUseCaseCommand>
 {
-    public CleanArchitectureUseCaseCommandValidator()
+    public IgnaCheckUseCaseCommandValidator()
     {
     }
 }
 
-public class CleanArchitectureUseCaseCommandHandler : IRequestHandler<CleanArchitectureUseCaseCommand, object>
+public class IgnaCheckUseCaseCommandHandler : IRequestHandler<IgnaCheckUseCaseCommand, object>
 {
     private readonly IApplicationDbContext _context;
 
-    public CleanArchitectureUseCaseCommandHandler(IApplicationDbContext context)
+    public IgnaCheckUseCaseCommandHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<object> Handle(CleanArchitectureUseCaseCommand request, CancellationToken cancellationToken)
+    public async Task<object> Handle(IgnaCheckUseCaseCommand request, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

@@ -1,7 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 #if (UsePostgreSQL)
-var databaseName = "CleanArchitectureDb";
+var databaseName = "IgnaCheckDb";
 
 var postgres = builder
     .AddPostgres("postgres")
@@ -18,7 +18,7 @@ builder.AddProject<Projects.Web>("web");
 #else
 var sql = builder.AddSqlServer("sql");
 
-var database = sql.AddDatabase("CleanArchitectureDb");
+var database = sql.AddDatabase("IgnaCheckDb");
 
 builder.AddProject<Projects.Web>("web")
     .WithReference(database)

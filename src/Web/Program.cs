@@ -1,4 +1,4 @@
-using CleanArchitecture.Infrastructure.Data;
+using IgnaCheck.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

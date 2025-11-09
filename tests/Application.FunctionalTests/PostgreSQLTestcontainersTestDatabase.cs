@@ -1,5 +1,5 @@
 ﻿using System.Data.Common;
-using CleanArchitecture.Infrastructure.Data;
+using IgnaCheck.Infrastructure.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -8,11 +8,11 @@ using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
 
-namespace CleanArchitecture.Application.FunctionalTests;
+namespace IgnaCheck.Application.FunctionalTests;
 
 public class PostgreSQLTestcontainersTestDatabase : ITestDatabase
 {
-    private const string DefaultDatabase = "CleanArchitectureTestDb";
+    private const string DefaultDatabase = "IgnaCheckTestDb";
     private readonly PostgreSqlContainer _container;
     private DbConnection _connection = null!;
     private string _connectionString = null!;

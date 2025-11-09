@@ -1,12 +1,12 @@
-﻿using CleanArchitecture.Application.Common.Models;
-using CleanArchitecture.Application.TodoItems.Commands.CreateTodoItem;
-using CleanArchitecture.Application.TodoItems.Commands.DeleteTodoItem;
-using CleanArchitecture.Application.TodoItems.Commands.UpdateTodoItem;
-using CleanArchitecture.Application.TodoItems.Commands.UpdateTodoItemDetail;
-using CleanArchitecture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+﻿using IgnaCheck.Application.Common.Models;
+using IgnaCheck.Application.TodoItems.Commands.CreateTodoItem;
+using IgnaCheck.Application.TodoItems.Commands.DeleteTodoItem;
+using IgnaCheck.Application.TodoItems.Commands.UpdateTodoItem;
+using IgnaCheck.Application.TodoItems.Commands.UpdateTodoItemDetail;
+using IgnaCheck.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace CleanArchitecture.Web.Endpoints;
+namespace IgnaCheck.Web.Endpoints;
 
 public class TodoItems : EndpointGroupBase
 {

@@ -1,7 +1,7 @@
 ﻿using Azure.Identity;
-using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Infrastructure.Data;
-using CleanArchitecture.Web.Services;
+using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Infrastructure.Data;
+using IgnaCheck.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
 #if (UseApiOnly)
@@ -39,7 +39,7 @@ public static class DependencyInjection
 
         builder.Services.AddOpenApiDocument((configure, sp) =>
         {
-            configure.Title = "CleanArchitecture API";
+            configure.Title = "IgnaCheck API";
 
 #if (UseApiOnly)
             // Add JWT

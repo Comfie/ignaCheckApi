@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Domain.Common;
+﻿namespace IgnaCheck.Domain.Common;
 
 public abstract class BaseAuditableEntity : BaseEntity
 {

@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Domain.Entities;
+﻿using IgnaCheck.Domain.Entities;
 
-namespace CleanArchitecture.Application.Common.Models;
+namespace IgnaCheck.Application.Common.Models;
 
 public class LookupDto
 {

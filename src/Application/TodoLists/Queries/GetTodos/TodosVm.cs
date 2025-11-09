@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Application.Common.Models;
+﻿using IgnaCheck.Application.Common.Models;
 
-namespace CleanArchitecture.Application.TodoLists.Queries.GetTodos;
+namespace IgnaCheck.Application.TodoLists.Queries.GetTodos;
 
 public class TodosVm
 {

@@ -16,7 +16,7 @@
     "language": "C#",
     "type": "project"
   },
-  "sourceName": "CleanArchitecture",
+  "sourceName": "IgnaCheck",
   "preferNameDirectory": true,
   "symbols": {
     "caPackageVersion": {
@@ -32,7 +32,7 @@
       "generator": "constant",
       "replaces": "caRepositoryUrl",
       "parameters": {
-        "value": "https://github.com/jasontaylordev/CleanArchitecture"
+        "value": "https://github.com/jasontaylordev/IgnaCheck"
       }
     },
     "ClientFramework": {

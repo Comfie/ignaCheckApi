@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Web.Infrastructure;
+﻿namespace IgnaCheck.Web.Infrastructure;
 
 public abstract class EndpointGroupBase
 {

@@ -1,131 +1,188 @@
-# Clean Architecture Solution Template
+# IgnaCheck.ai - AI-Powered Compliance Audit Platform
 
-[![Build](https://github.com/jasontaylordev/CleanArchitecture/actions/workflows/build.yml/badge.svg)](https://github.com/jasontaylordev/CleanArchitecture/actions/workflows/build.yml)
-[![CodeQL](https://github.com/jasontaylordev/CleanArchitecture/actions/workflows/codeql.yml/badge.svg)](https://github.com/jasontaylordev/CleanArchitecture/actions/workflows/codeql.yml)
-[![Nuget](https://img.shields.io/nuget/v/Clean.Architecture.Solution.Template?label=NuGet)](https://www.nuget.org/packages/Clean.Architecture.Solution.Template)
-[![Nuget](https://img.shields.io/nuget/dt/Clean.Architecture.Solution.Template?label=Downloads)](https://www.nuget.org/packages/Clean.Architecture.Solution.Template)
-![Twitter Follow](https://img.shields.io/twitter/follow/jasontaylordev?label=Follow&style=social)
+[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/download/dotnet/9.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The goal of this template is to provide a straightforward and efficient approach to enterprise application development, leveraging the power of Clean Architecture and ASP.NET Core. Using this template, you can effortlessly create a Single Page App (SPA) with ASP.NET Core and Angular or React, while adhering to the principles of Clean Architecture. Getting started is easy - simply install the **.NET template** (see below for full details).
+IgnaCheck.ai is an AI-powered audit and compliance assistant that automatically performs gap analyses against recognized regulatory frameworks (like ISO 27001, SOC 2, PCI DSS, GDPR, etc.). It ingests internal documentation and tells you exactly what's missing, why it matters, and how to fix it — in plain English, with links to the source evidence.
 
-If you find this project useful, please give it a star. Thanks! ⭐
+**Think of it as a Copilot for Compliance** — helping audit professionals and compliance teams focus on what matters, faster.
+
+## Why IgnaCheck?
+
+The name combines "igna" (from "ignite") with "check," reflecting the platform's dual nature:
+- **Rigorous verification** - Systematic, thorough analysis across regulatory frameworks
+- **Catalytic action** - Actively ignites insights, sparks remediation paths, and catalyzes continuous regulatory readiness
+
+### The Problem We Solve
+
+- **Manual audit prep** takes 40-120+ hours per audit cycle
+- **Fintechs and mid-size institutions** dedicate 10-15% of operational time to compliance documentation
+- **Errors and oversight** result in repeat audits, financial penalties, and reputational risk
+- **Compliance readiness** is static and episodic, not continuous and evolving
+
+### Our Solution
+
+We're building an AI-powered platform that:
+- 📄 **Ingests documents** - Policies, logs, reports, technical evidence (PDF, DOCX, CSV, etc.)
+- 🤖 **AI-powered gap detection** - LLM reads documents and compares against compliance frameworks
+- 🎯 **Prioritizes findings** - Flags what's compliant, partially compliant, or missing by risk/severity
+- 💡 **Remediation guidance** - Human-readable explanations with recommended next steps
+- 👥 **Collaboration layer** - Assign gaps, add evidence, track resolution
+- 📊 **Audit-ready output** - Export clean, consolidated reports (PDF, Excel)
+
+## Architecture
+
+This project follows **Clean Architecture** principles with clear separation of concerns:
+
+```
+IgnaCheck/
+├── src/
+│   ├── Domain/              # Enterprise business rules (entities, value objects, domain events)
+│   ├── Application/         # Application business rules (use cases, CQRS, behaviors)
+│   ├── Infrastructure/      # External concerns (database, file storage, AI services)
+│   ├── Web/                # API endpoints (minimal APIs, authentication)
+│   ├── AppHost/            # .NET Aspire orchestration
+│   └── ServiceDefaults/    # Shared service configuration
+└── tests/
+    ├── Domain.UnitTests/
+    ├── Application.UnitTests/
+    ├── Application.FunctionalTests/
+    └── Infrastructure.IntegrationTests/
+```
 
 ## Getting Started
 
-The following prerequisites are required to build and run the solution:
+### Prerequisites
 
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) (latest version)
-- [Node.js](https://nodejs.org/) (latest LTS, only required if you are using Angular or React)
+- [PostgreSQL](https://www.postgresql.org/download/) (recommended) or SQLite for development
+- [Docker](https://www.docker.com/) (optional, for containerized dependencies)
 
-The easiest way to get started is to install the [.NET template](https://www.nuget.org/packages/Clean.Architecture.Solution.Template):
-```
-dotnet new install Clean.Architecture.Solution.Template
-```
+### Running the Application
 
-Once installed, create a new solution using the template. You can choose to use Angular, React, or create a Web API-only solution. Specify the client framework using the `-cf` or `--client-framework` option, and provide the output directory where your project will be created. Here are some examples:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ignacheck/ignaCheckApi.git
+   cd ignaCheckApi
+   ```
 
-To create a Single-Page Application (SPA) with Angular and ASP.NET Core:
+2. **Restore dependencies:**
+   ```bash
+   dotnet restore
+   ```
+
+3. **Run the application:**
+   ```bash
+   cd src/Web
+   dotnet run
+   ```
+
+4. **Access the API:**
+   - Swagger UI: `https://localhost:5001/swagger`
+   - API: `https://localhost:5001/api/`
+
+### Database
+
+The application currently supports:
+- **PostgreSQL** (recommended for production)
+- **SQLite** (for local development)
+- **SQL Server**
+
+During development, the database is automatically deleted, recreated, and seeded on startup using `ApplicationDbContextInitialiser`. This keeps the schema and sample data in sync with the domain model.
+
+For production deployments, use EF Core migrations:
 ```bash
-dotnet new ca-sln --client-framework Angular --output YourProjectName
+dotnet ef migrations add InitialCreate --project src/Infrastructure --startup-project src/Web
+dotnet ef database update --project src/Infrastructure --startup-project src/Web
 ```
 
-To create a SPA with React and ASP.NET Core:
-```bash
-dotnet new ca-sln -cf React -o YourProjectName
-```
+## Development Roadmap
 
-To create a ASP.NET Core Web API-only solution:
-```bash
-dotnet new ca-sln -cf None -o YourProjectName
-```
+### ✅ Phase 0: Foundation Setup (Current)
+- Rename solution and projects to IgnaCheck
+- Set up core domain entities (Organization, Project, ComplianceFramework)
+- Implement multi-tenancy foundation
+- Configure security and audit logging
 
-Launch the app:
-```bash
-cd src/Web
-dotnet run
-```
+### 🚧 Phase 1: Core Framework & Document Management (Weeks 3-6)
+- Compliance framework management (ISO 27001, SOC 2, GDPR)
+- Document upload and parsing (PDF, DOCX, OCR)
+- Project and framework assignment
+- Basic file storage integration
 
-To learn more, run the following command:
-```bash
-dotnet new ca-sln --help
-```
+### 📅 Phase 2: AI Integration & Gap Analysis (Weeks 7-12)
+- LLM integration (OpenAI/Claude)
+- AI-powered gap detection
+- Compliance findings with risk scoring
+- Background job processing
+- Remediation recommendations
 
-You can create use cases (commands or queries) by navigating to `./src/Application` and running `dotnet new ca-usecase`. Here are some examples:
+### 📅 Phase 3: Remediation & Task Management (Weeks 13-16)
+- Task creation and assignment
+- Evidence attachment workflow
+- Email/Slack notifications
+- Task timeline and tracking
 
-To create a new command:
-```bash
-dotnet new ca-usecase --name CreateTodoList --feature-name TodoLists --usecase-type command --return-type int
-```
+### 📅 Phase 4: Reporting & Analytics (Weeks 17-20)
+- Professional audit reports (PDF/Excel)
+- Interactive dashboards
+- Compliance scorecards
+- Trend analysis
 
-To create a query:
-```bash
-dotnet new ca-usecase -n GetTodos -fn TodoLists -ut query -rt TodosVm
-```
+### 📅 Phase 5: Advanced Features (Weeks 21-26)
+- Cross-framework mapping
+- Continuous monitoring
+- External integrations (Google Drive, SharePoint, S3)
+- Multi-language support
+- SSO and advanced RBAC
 
-To learn more, run the following command:
-```bash
-dotnet new ca-usecase --help
-```
+### 📅 Phase 6: Production Readiness (Weeks 27-30)
+- Performance optimization
+- Security audit and penetration testing
+- Monitoring and observability
+- CI/CD pipelines
+- Documentation
 
-## Database
+## Technology Stack
 
-The template supports [PostgreSQL](https://www.postgresql.org), [SQLite](https://www.sqlite.org/), and [SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/what-is-sql-server) (default option). Specify the database to use with the `--database` option:
+### Backend
+- **ASP.NET Core 9** - Web framework
+- **Entity Framework Core 9** - ORM
+- **MediatR** - CQRS implementation
+- **AutoMapper** - Object mapping
+- **FluentValidation** - Input validation
+- **PostgreSQL** - Primary database
 
-```bash
-dotnet new ca-sln --database [postgresql|sqlite|sqlserver]
-```
+### AI/ML (Planned)
+- **Azure OpenAI** or **Anthropic Claude** - LLM for gap analysis
+- **Semantic Kernel** - LLM orchestration
+- **pgvector** - Vector search for embeddings
 
-On application startup, the database is automatically **deleted**, **recreated**, and **seeded** using `ApplicationDbContextInitialiser`. This is a practical strategy for early development, avoiding the overhead of maintaining migrations while keeping the schema and sample data in sync with the domain model.
+### Infrastructure (Planned)
+- **Azure Blob Storage** / **AWS S3** - Document storage
+- **Redis** - Caching layer
+- **Hangfire** - Background job processing
+- **SignalR** - Real-time updates
 
-This process includes:
+### Testing
+- **NUnit** - Test framework
+- **Shouldly** - Assertions
+- **Moq** - Mocking
+- **Respawn** - Database cleanup
+- **Testcontainers** - Integration testing
 
-- Deleting the existing database  
-- Recreating the schema from the current model  
-- Seeding default roles, users, and data  
+## Contributing
 
-For production environments, consider using EF Core migrations or migration bundles during deployment.  
-For more information, see [Database Initialisation Strategies for EF Core](https://jasontaylor.dev/ef-core-database-initialisation-strategies).
-
-## Deploy
-
-This template is structured to follow the Azure Developer CLI (azd). You can learn more about `azd` in the [official documentation](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli). To get started:
-
-```bash
-# Log in to Azure
-azd auth login
-
-# Provision and deploy to Azure
-azd up
-```
-
-## Technologies
-
-* [ASP.NET Core 9](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core)
-* [Entity Framework Core 9](https://docs.microsoft.com/en-us/ef/core/)
-* [Angular 18](https://angular.dev/) or [React 18](https://react.dev/)
-* [MediatR](https://github.com/jbogard/MediatR)
-* [AutoMapper](https://automapper.org/)
-* [FluentValidation](https://fluentvalidation.net/)
-* [NUnit](https://nunit.org/), [Shoudly](https://docs.shouldly.org/), [Moq](https://github.com/devlooped/moq) & [Respawn](https://github.com/jbogard/Respawn)
-
-## Versions
-The main branch is now on .NET 9.0. The following previous versions are available:
-
-* [8.0](https://github.com/jasontaylordev/CleanArchitecture/tree/net8.0)
-* [7.0](https://github.com/jasontaylordev/CleanArchitecture/tree/net7.0)
-* [6.0](https://github.com/jasontaylordev/CleanArchitecture/tree/net6.0)
-* [5.0](https://github.com/jasontaylordev/CleanArchitecture/tree/net5.0)
-* [3.1](https://github.com/jasontaylordev/CleanArchitecture/tree/netcore3.1)
-
-## Learn More
-
-* [Clean Architecture with ASP.NET Core 3.0 (GOTO 2019)](https://youtu.be/dK4Yb6-LxAk)
-* [Clean Architecture with .NET Core: Getting Started](https://jasontaylor.dev/clean-architecture-getting-started/)
-
-## Support
-
-If you are having problems, please let me know by [raising a new issue](https://github.com/jasontaylordev/CleanArchitecture/issues/new/choose).
+This project is currently in Phase 0 (Foundation Setup). We welcome contributions once the foundation is stable.
 
 ## License
 
-This project is licensed with the [MIT license](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+This project is built on [Jason Taylor's Clean Architecture template](https://github.com/jasontaylordev/CleanArchitecture). We're grateful for the solid foundation it provides.
+
+---
+
+**Remember:** We have to work twice as hard to get half of what they have. Let's build something exceptional.

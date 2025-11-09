@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.FunctionalTests;
+﻿namespace IgnaCheck.Application.FunctionalTests;
 
 public static class TestDatabaseFactory
 {

@@ -1,9 +1,9 @@
-﻿using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Application.Common.Models;
-using CleanArchitecture.Application.Common.Security;
-using CleanArchitecture.Domain.Enums;
+﻿using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Application.Common.Models;
+using IgnaCheck.Application.Common.Security;
+using IgnaCheck.Domain.Enums;
 
-namespace CleanArchitecture.Application.TodoLists.Queries.GetTodos;
+namespace IgnaCheck.Application.TodoLists.Queries.GetTodos;
 
 [Authorize]
 public record GetTodosQuery : IRequest<TodosVm>;

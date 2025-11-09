@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Web.AcceptanceTests.Pages;
+﻿namespace IgnaCheck.Web.AcceptanceTests.Pages;
 
 public abstract class BasePage
 {

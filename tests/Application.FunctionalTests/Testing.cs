@@ -1,12 +1,12 @@
-﻿using CleanArchitecture.Domain.Constants;
-using CleanArchitecture.Infrastructure.Data;
-using CleanArchitecture.Infrastructure.Identity;
+﻿using IgnaCheck.Domain.Constants;
+using IgnaCheck.Infrastructure.Data;
+using IgnaCheck.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CleanArchitecture.Application.FunctionalTests;
+namespace IgnaCheck.Application.FunctionalTests;
 
 [SetUpFixture]
 public partial class Testing

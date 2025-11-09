@@ -1,9 +1,9 @@
-﻿using CleanArchitecture.Domain.Common;
+﻿using IgnaCheck.Domain.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace CleanArchitecture.Infrastructure.Data.Interceptors;
+namespace IgnaCheck.Infrastructure.Data.Interceptors;
 
 public class DispatchDomainEventsInterceptor : SaveChangesInterceptor
 {

@@ -1,4 +1,4 @@
-﻿global using CleanArchitecture.Web.AcceptanceTests.Pages;
+﻿global using IgnaCheck.Web.AcceptanceTests.Pages;
 global using BoDi;
 global using Shouldly;
 global using Microsoft.Playwright;

@@ -6,8 +6,8 @@
     <SpaProxyServerUrl>https://localhost:44447</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <!--#endif-->
-    <RootNamespace>CleanArchitecture.Web</RootNamespace>
-    <AssemblyName>CleanArchitecture.Web</AssemblyName>
+    <RootNamespace>IgnaCheck.Web</RootNamespace>
+    <AssemblyName>IgnaCheck.Web</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

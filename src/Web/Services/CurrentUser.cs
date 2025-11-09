@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 
-using CleanArchitecture.Application.Common.Interfaces;
+using IgnaCheck.Application.Common.Interfaces;
 
-namespace CleanArchitecture.Web.Services;
+namespace IgnaCheck.Web.Services;
 
 public class CurrentUser : IUser
 {

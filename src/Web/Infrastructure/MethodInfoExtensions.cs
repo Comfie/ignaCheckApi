@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace CleanArchitecture.Web.Infrastructure;
+namespace IgnaCheck.Web.Infrastructure;
 
 public static class MethodInfoExtensions
 {

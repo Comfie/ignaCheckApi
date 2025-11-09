@@ -1,7 +1,7 @@
 ﻿#if (UseApiOnly)
-using CleanArchitecture.Infrastructure.Identity;
+using IgnaCheck.Infrastructure.Identity;
 
-namespace CleanArchitecture.Web.Endpoints;
+namespace IgnaCheck.Web.Endpoints;
 
 public class Users : EndpointGroupBase
 {

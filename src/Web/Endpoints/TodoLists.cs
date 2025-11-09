@@ -1,10 +1,10 @@
-﻿using CleanArchitecture.Application.TodoLists.Commands.CreateTodoList;
-using CleanArchitecture.Application.TodoLists.Commands.DeleteTodoList;
-using CleanArchitecture.Application.TodoLists.Commands.UpdateTodoList;
-using CleanArchitecture.Application.TodoLists.Queries.GetTodos;
+﻿using IgnaCheck.Application.TodoLists.Commands.CreateTodoList;
+using IgnaCheck.Application.TodoLists.Commands.DeleteTodoList;
+using IgnaCheck.Application.TodoLists.Commands.UpdateTodoList;
+using IgnaCheck.Application.TodoLists.Queries.GetTodos;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace CleanArchitecture.Web.Endpoints;
+namespace IgnaCheck.Web.Endpoints;
 
 public class TodoLists : EndpointGroupBase
 {

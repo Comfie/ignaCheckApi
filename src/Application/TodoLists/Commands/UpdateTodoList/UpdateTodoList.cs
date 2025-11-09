@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Application.Common.Interfaces;
+﻿using IgnaCheck.Application.Common.Interfaces;
 
-namespace CleanArchitecture.Application.TodoLists.Commands.UpdateTodoList;
+namespace IgnaCheck.Application.TodoLists.Commands.UpdateTodoList;
 
 public record UpdateTodoListCommand : IRequest
 {

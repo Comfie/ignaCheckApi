@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+﻿namespace IgnaCheck.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
 public class GetTodoItemsWithPaginationQueryValidator : AbstractValidator<GetTodoItemsWithPaginationQuery>
 {

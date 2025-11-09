@@ -1,9 +1,9 @@
-﻿using CleanArchitecture.Domain.Exceptions;
-using CleanArchitecture.Domain.ValueObjects;
+﻿using IgnaCheck.Domain.Exceptions;
+using IgnaCheck.Domain.ValueObjects;
 using NUnit.Framework;
 using Shouldly;
 
-namespace CleanArchitecture.Domain.UnitTests.ValueObjects;
+namespace IgnaCheck.Domain.UnitTests.ValueObjects;
 
 public class ColourTests
 {

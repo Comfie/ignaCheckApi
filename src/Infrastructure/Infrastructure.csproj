@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>CleanArchitecture.Infrastructure</RootNamespace>
-    <AssemblyName>CleanArchitecture.Infrastructure</AssemblyName>
+    <RootNamespace>IgnaCheck.Infrastructure</RootNamespace>
+    <AssemblyName>IgnaCheck.Infrastructure</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

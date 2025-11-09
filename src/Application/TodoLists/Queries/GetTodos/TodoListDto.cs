@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Domain.Entities;
+﻿using IgnaCheck.Domain.Entities;
 
-namespace CleanArchitecture.Application.TodoLists.Queries.GetTodos;
+namespace IgnaCheck.Application.TodoLists.Queries.GetTodos;
 
 public class TodoListDto
 {

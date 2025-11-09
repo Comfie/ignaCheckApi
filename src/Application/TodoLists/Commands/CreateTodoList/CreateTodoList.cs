@@ -1,7 +1,7 @@
-﻿using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Domain.Entities;
+﻿using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
 
-namespace CleanArchitecture.Application.TodoLists.Commands.CreateTodoList;
+namespace IgnaCheck.Application.TodoLists.Commands.CreateTodoList;
 
 public record CreateTodoListCommand : IRequest<int>
 {

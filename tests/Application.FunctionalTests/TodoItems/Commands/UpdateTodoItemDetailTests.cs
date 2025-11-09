@@ -1,11 +1,11 @@
-﻿using CleanArchitecture.Application.TodoItems.Commands.CreateTodoItem;
-using CleanArchitecture.Application.TodoItems.Commands.UpdateTodoItem;
-using CleanArchitecture.Application.TodoItems.Commands.UpdateTodoItemDetail;
-using CleanArchitecture.Application.TodoLists.Commands.CreateTodoList;
-using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.Enums;
+﻿using IgnaCheck.Application.TodoItems.Commands.CreateTodoItem;
+using IgnaCheck.Application.TodoItems.Commands.UpdateTodoItem;
+using IgnaCheck.Application.TodoItems.Commands.UpdateTodoItemDetail;
+using IgnaCheck.Application.TodoLists.Commands.CreateTodoList;
+using IgnaCheck.Domain.Entities;
+using IgnaCheck.Domain.Enums;
 
-namespace CleanArchitecture.Application.FunctionalTests.TodoItems.Commands;
+namespace IgnaCheck.Application.FunctionalTests.TodoItems.Commands;
 
 using static Testing;
 

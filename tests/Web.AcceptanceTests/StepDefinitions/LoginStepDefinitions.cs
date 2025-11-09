@@ -1,4 +1,4 @@
-namespace CleanArchitecture.Web.AcceptanceTests.StepDefinitions;
+namespace IgnaCheck.Web.AcceptanceTests.StepDefinitions;
 
 [Binding]
 public sealed class LoginStepDefinitions

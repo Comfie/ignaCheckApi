@@ -1,9 +1,9 @@
-﻿using CleanArchitecture.Application.Common.Exceptions;
+﻿using IgnaCheck.Application.Common.Exceptions;
 using FluentValidation.Results;
 using NUnit.Framework;
 using Shouldly;
 
-namespace CleanArchitecture.Application.UnitTests.Common.Exceptions;
+namespace IgnaCheck.Application.UnitTests.Common.Exceptions;
 
 public class ValidationExceptionTests
 {

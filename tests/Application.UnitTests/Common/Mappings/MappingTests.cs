@@ -1,14 +1,14 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using AutoMapper;
-using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Application.Common.Models;
-using CleanArchitecture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
-using CleanArchitecture.Application.TodoLists.Queries.GetTodos;
-using CleanArchitecture.Domain.Entities;
+using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Application.Common.Models;
+using IgnaCheck.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+using IgnaCheck.Application.TodoLists.Queries.GetTodos;
+using IgnaCheck.Domain.Entities;
 using NUnit.Framework;
 
-namespace CleanArchitecture.Application.UnitTests.Common.Mappings;
+namespace IgnaCheck.Application.UnitTests.Common.Mappings;
 
 public class MappingTests
 {

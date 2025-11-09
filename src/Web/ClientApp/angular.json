@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "CleanArchitecture.Web": {
+    "IgnaCheck.Web": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -71,11 +71,11 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "CleanArchitecture.Web:build:production"
+              "buildTarget": "IgnaCheck.Web:build:production"
             },
             "development": {
               "proxyConfig": "proxy.conf.js",
-              "buildTarget": "CleanArchitecture.Web:build:development"
+              "buildTarget": "IgnaCheck.Web:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "CleanArchitecture.Web:build"
+            "buildTarget": "IgnaCheck.Web:build"
           }
         },
         "test": {

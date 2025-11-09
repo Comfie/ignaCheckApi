@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Application.FunctionalTests;
+﻿namespace IgnaCheck.Application.FunctionalTests;
 
 using static Testing;
 

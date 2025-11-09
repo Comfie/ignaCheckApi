@@ -1,9 +1,9 @@
-﻿using CleanArchitecture.Application.Common.Exceptions;
-using CleanArchitecture.Application.TodoLists.Commands.CreateTodoList;
-using CleanArchitecture.Application.TodoLists.Commands.UpdateTodoList;
-using CleanArchitecture.Domain.Entities;
+﻿using IgnaCheck.Application.Common.Exceptions;
+using IgnaCheck.Application.TodoLists.Commands.CreateTodoList;
+using IgnaCheck.Application.TodoLists.Commands.UpdateTodoList;
+using IgnaCheck.Domain.Entities;
 
-namespace CleanArchitecture.Application.FunctionalTests.TodoLists.Commands;
+namespace IgnaCheck.Application.FunctionalTests.TodoLists.Commands;
 
 using static Testing;
 

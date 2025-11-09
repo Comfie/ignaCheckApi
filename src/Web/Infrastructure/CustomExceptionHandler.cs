@@ -1,8 +1,8 @@
-﻿using CleanArchitecture.Application.Common.Exceptions;
+﻿using IgnaCheck.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CleanArchitecture.Web.Infrastructure;
+namespace IgnaCheck.Web.Infrastructure;
 
 public class CustomExceptionHandler : IExceptionHandler
 {
