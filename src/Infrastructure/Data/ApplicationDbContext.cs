@@ -33,6 +33,22 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<ProjectMember> ProjectMembers => Set<ProjectMember>();
 
+    public DbSet<Document> Documents => Set<Document>();
+
+    public DbSet<ComplianceFramework> ComplianceFrameworks => Set<ComplianceFramework>();
+
+    public DbSet<ComplianceControl> ComplianceControls => Set<ComplianceControl>();
+
+    public DbSet<ProjectFramework> ProjectFrameworks => Set<ProjectFramework>();
+
+    public DbSet<ComplianceFinding> ComplianceFindings => Set<ComplianceFinding>();
+
+    public DbSet<FindingEvidence> FindingEvidence => Set<FindingEvidence>();
+
+    public DbSet<RemediationTask> RemediationTasks => Set<RemediationTask>();
+
+    public DbSet<TaskComment> TaskComments => Set<TaskComment>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

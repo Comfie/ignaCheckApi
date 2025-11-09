@@ -27,13 +27,20 @@ public class ApplicationDbContextInitialiser
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly ILogger<FrameworkSeeder> _frameworkSeederLogger;
 
-    public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+    public ApplicationDbContextInitialiser(
+        ILogger<ApplicationDbContextInitialiser> logger,
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        ILogger<FrameworkSeeder> frameworkSeederLogger)
     {
         _logger = logger;
         _context = context;
         _userManager = userManager;
         _roleManager = roleManager;
+        _frameworkSeederLogger = frameworkSeederLogger;
     }
 
     public async Task InitialiseAsync()
@@ -104,5 +111,9 @@ public class ApplicationDbContextInitialiser
 
             await _context.SaveChangesAsync();
         }
+
+        // Seed compliance frameworks
+        var frameworkSeeder = new FrameworkSeeder(_context, _frameworkSeederLogger);
+        await frameworkSeeder.SeedFrameworksAsync();
     }
 }

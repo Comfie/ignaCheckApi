@@ -137,3 +137,14 @@ public enum TaskStatus
     Completed = 4,
     Cancelled = 5
 }
+
+/// <summary>
+/// Priority level of a remediation task.
+/// </summary>
+public enum PriorityLevel
+{
+    Low = 0,
+    Medium = 1,
+    High = 2,
+    Critical = 3
+}
