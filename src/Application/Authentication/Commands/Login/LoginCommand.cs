@@ -70,10 +70,14 @@ public record LoginResponse
 public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginResponse>>
 {
     private readonly IIdentityService _identityService;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-    public LoginCommandHandler(IIdentityService identityService)
+    public LoginCommandHandler(
+        IIdentityService identityService,
+        IJwtTokenGenerator jwtTokenGenerator)
     {
         _identityService = identityService;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
     public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -102,15 +106,28 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginRes
             return Result<LoginResponse>.Failure(new[] { "Please verify your email address before logging in." });
         }
 
-        // TODO: Generate JWT token (will implement in next step)
-        // For now, return a placeholder response
-        var expiresIn = request.RememberMe ? 2592000 : 3600; // 30 days or 1 hour
+        // Get user roles
+        // TODO: Load actual roles from database
+        var roles = new List<string>();
+
+        // Generate JWT access token
+        var expiresInMinutes = request.RememberMe ? 43200 : 60; // 30 days or 1 hour
+        var accessToken = _jwtTokenGenerator.GenerateAccessToken(
+            userId: appUser.Id,
+            email: appUser.Email!,
+            firstName: appUser.FirstName,
+            lastName: appUser.LastName,
+            roles: roles,
+            organizationId: null, // Will be set when user selects workspace
+            organizationRole: null,
+            expiresInMinutes: expiresInMinutes
+        );
 
         var response = new LoginResponse
         {
-            AccessToken = "TODO_GENERATE_JWT_TOKEN",
+            AccessToken = accessToken,
             TokenType = "Bearer",
-            ExpiresIn = expiresIn,
+            ExpiresIn = expiresInMinutes * 60, // Convert to seconds
             UserId = appUser.Id,
             Email = appUser.Email!,
             FirstName = appUser.FirstName,

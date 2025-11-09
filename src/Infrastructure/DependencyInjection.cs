@@ -1,13 +1,16 @@
-﻿using IgnaCheck.Application.Common.Interfaces;
+﻿using System.Text;
+using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Constants;
 using IgnaCheck.Infrastructure.Data;
 using IgnaCheck.Infrastructure.Data.Interceptors;
 using IgnaCheck.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -48,11 +51,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
 
 #if (UseApiOnly)
-        builder.Services.AddAuthentication()
-            .AddBearerToken(IdentityConstants.BearerScheme);
-
-        builder.Services.AddAuthorizationBuilder();
-
         builder.Services
             .AddIdentityCore<ApplicationUser>()
             .AddRoles<IdentityRole>()
@@ -65,10 +63,69 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<ApplicationDbContext>();
 #endif
 
+        // Configure JWT Authentication
+        var jwtSecret = builder.Configuration["Jwt:Secret"];
+        if (!string.IsNullOrEmpty(jwtSecret))
+        {
+            var key = Encoding.UTF8.GetBytes(jwtSecret);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = true; // Set to false for development if needed
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"] ?? "IgnaCheck.ai",
+                    ValidAudience = builder.Configuration["Jwt:Audience"] ?? "IgnaCheck.ai",
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                // Configure events for better error handling
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+                        var result = System.Text.Json.JsonSerializer.Serialize(new
+                        {
+                            error = "Unauthorized",
+                            message = "You are not authorized to access this resource."
+                        });
+                        return context.Response.WriteAsync(result);
+                    }
+                };
+            });
+        }
+
+        builder.Services.AddAuthorizationBuilder();
+
+        // Application services
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
         builder.Services.AddScoped<ITenantService, TenantService>();
         builder.Services.AddTransient<IEmailService, IgnaCheck.Infrastructure.Services.EmailService>();
+        builder.Services.AddScoped<IJwtTokenGenerator, IgnaCheck.Infrastructure.Services.JwtTokenGenerator>();
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
