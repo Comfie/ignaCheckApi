@@ -1,4 +1,11 @@
+using IgnaCheck.Application.Projects.Commands.AddProjectMember;
+using IgnaCheck.Application.Projects.Commands.ArchiveProject;
 using IgnaCheck.Application.Projects.Commands.CreateProject;
+using IgnaCheck.Application.Projects.Commands.DeleteProject;
+using IgnaCheck.Application.Projects.Commands.RemoveProjectMember;
+using IgnaCheck.Application.Projects.Commands.UpdateProject;
+using IgnaCheck.Application.Projects.Commands.UpdateProjectMemberRole;
+using IgnaCheck.Application.Projects.Queries.GetProjectDetails;
 using IgnaCheck.Application.Projects.Queries.GetProjectsList;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -67,6 +74,193 @@ public class ProjectsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Result<CreateProjectResponse>>> CreateProject([FromBody] CreateProjectCommand command)
     {
+        var result = await _sender.Send(command);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get detailed information about a specific project.
+    /// </summary>
+    /// <param name="id">Project ID</param>
+    /// <returns>Project details</returns>
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(Result<ProjectDetailsDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<Result<ProjectDetailsDto>>> GetProjectDetails(Guid id)
+    {
+        var query = new GetProjectDetailsQuery { ProjectId = id };
+        var result = await _sender.Send(query);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Update an existing project.
+    /// </summary>
+    /// <param name="id">Project ID</param>
+    /// <param name="command">Updated project details</param>
+    /// <returns>Updated project details</returns>
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(Result<UpdateProjectResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<Result<UpdateProjectResponse>>> UpdateProject(Guid id, [FromBody] UpdateProjectCommand command)
+    {
+        if (id != command.ProjectId)
+        {
+            return BadRequest(Result.Failure(new[] { "Project ID mismatch." }));
+        }
+
+        var result = await _sender.Send(command);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Delete a project permanently.
+    /// </summary>
+    /// <param name="id">Project ID</param>
+    /// <param name="command">Deletion confirmation</param>
+    /// <returns>Success result</returns>
+    [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<Result>> DeleteProject(Guid id, [FromBody] DeleteProjectCommand command)
+    {
+        if (id != command.ProjectId)
+        {
+            return BadRequest(Result.Failure(new[] { "Project ID mismatch." }));
+        }
+
+        var result = await _sender.Send(command);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Archive or restore a project.
+    /// </summary>
+    /// <param name="id">Project ID</param>
+    /// <param name="command">Archive/restore command</param>
+    /// <returns>Success result</returns>
+    [HttpPost("{id}/archive")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<Result>> ArchiveProject(Guid id, [FromBody] ArchiveProjectCommand command)
+    {
+        if (id != command.ProjectId)
+        {
+            return BadRequest(Result.Failure(new[] { "Project ID mismatch." }));
+        }
+
+        var result = await _sender.Send(command);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Add a member to a project.
+    /// </summary>
+    /// <param name="id">Project ID</param>
+    /// <param name="command">Member addition details</param>
+    /// <returns>Success result</returns>
+    [HttpPost("{id}/members")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<Result>> AddProjectMember(Guid id, [FromBody] AddProjectMemberCommand command)
+    {
+        if (id != command.ProjectId)
+        {
+            return BadRequest(Result.Failure(new[] { "Project ID mismatch." }));
+        }
+
+        var result = await _sender.Send(command);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Remove a member from a project.
+    /// </summary>
+    /// <param name="id">Project ID</param>
+    /// <param name="userId">User ID to remove</param>
+    /// <returns>Success result</returns>
+    [HttpDelete("{id}/members/{userId}")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<Result>> RemoveProjectMember(Guid id, string userId)
+    {
+        var command = new RemoveProjectMemberCommand { ProjectId = id, UserId = userId };
+        var result = await _sender.Send(command);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Update a project member's role.
+    /// </summary>
+    /// <param name="id">Project ID</param>
+    /// <param name="userId">User ID</param>
+    /// <param name="command">Role update details</param>
+    /// <returns>Success result</returns>
+    [HttpPut("{id}/members/{userId}/role")]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<Result>> UpdateProjectMemberRole(Guid id, string userId, [FromBody] UpdateProjectMemberRoleCommand command)
+    {
+        if (id != command.ProjectId || userId != command.UserId)
+        {
+            return BadRequest(Result.Failure(new[] { "Project ID or User ID mismatch." }));
+        }
+
         var result = await _sender.Send(command);
 
         if (!result.Succeeded)
