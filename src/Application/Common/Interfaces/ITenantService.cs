@@ -8,7 +8,7 @@ public interface ITenantService
     /// <summary>
     /// Gets the current tenant/organization ID from the current user context.
     /// </summary>
-    int? GetCurrentTenantId();
+    Guid? GetCurrentTenantId();
 
     /// <summary>
     /// Gets the current tenant/organization.
@@ -19,5 +19,5 @@ public interface ITenantService
     /// Sets the tenant ID for the current request context.
     /// Used primarily in testing scenarios.
     /// </summary>
-    void SetCurrentTenantId(int tenantId);
+    void SetCurrentTenantId(Guid tenantId);
 }

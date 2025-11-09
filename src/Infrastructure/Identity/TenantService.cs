@@ -6,13 +6,13 @@ namespace IgnaCheck.Infrastructure.Identity;
 
 /// <summary>
 /// Service for managing multi-tenant context.
-/// In production, this would extract the organization ID from the authenticated user's claims.
+/// Extracts the organization ID from the authenticated user's JWT claims.
 /// </summary>
 public class TenantService : ITenantService
 {
     private readonly IUser _currentUser;
     private readonly IApplicationDbContext _context;
-    private int? _overrideTenantId; // For testing scenarios
+    private Guid? _overrideTenantId; // For testing scenarios
 
     public TenantService(IUser currentUser, IApplicationDbContext context)
     {
@@ -20,7 +20,7 @@ public class TenantService : ITenantService
         _context = context;
     }
 
-    public int? GetCurrentTenantId()
+    public Guid? GetCurrentTenantId()
     {
         // If there's an override (testing), use it
         if (_overrideTenantId.HasValue)
@@ -28,12 +28,8 @@ public class TenantService : ITenantService
             return _overrideTenantId;
         }
 
-        // In production, extract from user claims
-        // For now, return null as a placeholder
-        // TODO: Implement claim-based tenant resolution
-        // e.g., return _currentUser.OrganizationId;
-
-        return null;
+        // Extract organization ID from user claims (set during workspace switching)
+        return _currentUser.OrganizationId;
     }
 
     public async Task<Organization?> GetCurrentTenantAsync(CancellationToken cancellationToken = default)
@@ -49,7 +45,7 @@ public class TenantService : ITenantService
             .FirstOrDefaultAsync(o => o.Id == tenantId.Value && o.IsActive, cancellationToken);
     }
 
-    public void SetCurrentTenantId(int tenantId)
+    public void SetCurrentTenantId(Guid tenantId)
     {
         _overrideTenantId = tenantId;
     }
