@@ -128,6 +128,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<IJwtTokenGenerator, IgnaCheck.Infrastructure.Services.JwtTokenGenerator>();
         builder.Services.AddScoped<IFileStorageService, IgnaCheck.Infrastructure.Services.LocalFileStorageService>();
         builder.Services.AddScoped<IDocumentParsingService, IgnaCheck.Infrastructure.Services.DocumentParsingService>();
+        builder.Services.AddScoped<IAIAnalysisService, IgnaCheck.Infrastructure.Services.AIAnalysisService>();
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
