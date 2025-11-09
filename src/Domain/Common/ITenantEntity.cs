@@ -6,5 +6,5 @@ namespace IgnaCheck.Domain.Common;
 /// </summary>
 public interface ITenantEntity
 {
-    int OrganizationId { get; set; }
+    Guid OrganizationId { get; set; }
 }
