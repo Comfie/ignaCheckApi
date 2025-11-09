@@ -51,19 +51,25 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
     private readonly ITenantService _tenantService;
     private readonly IAIAnalysisService _aiAnalysisService;
     private readonly IIdentityService _identityService;
+    private readonly IFileStorageService _fileStorageService;
+    private readonly IDocumentParsingService _documentParsingService;
 
     public RunAuditCheckCommandHandler(
         IApplicationDbContext context,
         IUser currentUser,
         ITenantService tenantService,
         IAIAnalysisService aiAnalysisService,
-        IIdentityService identityService)
+        IIdentityService identityService,
+        IFileStorageService fileStorageService,
+        IDocumentParsingService documentParsingService)
     {
         _context = context;
         _currentUser = currentUser;
         _tenantService = tenantService;
         _aiAnalysisService = aiAnalysisService;
         _identityService = identityService;
+        _fileStorageService = fileStorageService;
+        _documentParsingService = documentParsingService;
     }
 
     public async Task<Result<AuditCheckResponse>> Handle(RunAuditCheckCommand request, CancellationToken cancellationToken)
@@ -141,15 +147,43 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
         var userName = $"{appUser.FirstName} {appUser.LastName}".Trim();
 
         // Prepare document contents for analysis
+        // Extract text on-demand if not cached in database
         var documentContents = new List<DocumentContent>();
         foreach (var doc in documents)
         {
-            // Use extracted text from document parsing (populated during upload)
+            string textContent = doc.ExtractedText ?? string.Empty;
+
+            // If text is not cached, extract it on-demand from file storage
+            if (string.IsNullOrWhiteSpace(textContent) && _documentParsingService.IsSupportedContentType(doc.ContentType))
+            {
+                try
+                {
+                    // Retrieve file from storage
+                    using var fileStream = await _fileStorageService.GetFileAsync(doc.StoragePath, cancellationToken);
+
+                    // Extract text on-the-fly
+                    var parseResult = await _documentParsingService.ParseDocumentAsync(
+                        fileStream,
+                        doc.ContentType,
+                        cancellationToken);
+
+                    if (parseResult.IsSuccessful)
+                    {
+                        textContent = parseResult.ExtractedText ?? string.Empty;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log but continue - document will be processed with empty content
+                    Console.WriteLine($"Failed to extract text on-demand for {doc.FileName}: {ex.Message}");
+                }
+            }
+
             documentContents.Add(new DocumentContent
             {
                 DocumentId = doc.Id,
                 FileName = doc.FileName,
-                Content = doc.ExtractedText ?? string.Empty,
+                Content = textContent,
                 MimeType = doc.ContentType,
                 PageCount = doc.PageCount ?? 0
             });

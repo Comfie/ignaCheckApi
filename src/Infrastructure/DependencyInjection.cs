@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Constants;
+using IgnaCheck.Infrastructure.AI;
 using IgnaCheck.Infrastructure.Data;
 using IgnaCheck.Infrastructure.Data.Interceptors;
 using IgnaCheck.Infrastructure.Identity;
@@ -119,6 +120,9 @@ public static class DependencyInjection
         }
 
         builder.Services.AddAuthorizationBuilder();
+
+        // AI Configuration
+        builder.Services.Configure<AIConfiguration>(builder.Configuration.GetSection(AIConfiguration.SectionName));
 
         // Application services
         builder.Services.AddSingleton(TimeProvider.System);
