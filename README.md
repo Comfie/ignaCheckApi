@@ -377,24 +377,49 @@ dotnet ef database update --project src/Infrastructure --startup-project src/Web
 
 ---
 
-### 📅 Focus 5: Billing & Administration
+### ✅ Focus 5: Workspace Administration (COMPLETED)
+
+**Status:** Core administrative features implemented. Billing and SSO deferred to future phase.
 
 #### Administration
-- [ ] **Workspace Deletion** - Permanently delete workspace
-  - Confirmation workflow with data deletion
+- ✅ **Workspace Deletion** - Permanently delete workspace
+  - Double confirmation workflow (name match + boolean flag)
+  - Owner-only access control
+  - Comprehensive cascade deletion:
+    - All projects, documents, findings, and tasks
+    - Activity logs and notifications
+    - Finding comments and evidence
+    - Task comments and attachments
+    - Project frameworks and members
+    - Organization members and invitations
+  - Automatic file storage cleanup
+  - API: DELETE /api/administration/workspace
 
-- [ ] **Data Export** - Export all workspace data
-  - ZIP file with documents, projects, findings, comments
-  - 7-day download link expiration
+- ✅ **Audit Logs** - Complete admin activity log
+  - Owner and admin access only
+  - Advanced filtering:
+    - By activity type, user, entity type, entity ID
+    - Date range filtering (start/end dates)
+    - Full-text search on descriptions
+  - Pagination support (up to 1000 records per query)
+  - Detailed audit information:
+    - Timestamp, activity type, description
+    - User information (ID and name)
+    - Entity details (type, ID, name)
+    - Metadata for additional context
+  - API: GET /api/administration/audit-logs
 
-- [ ] **Audit Logs** - Complete admin activity log
-  - 90-day retention
-  - CSV export capability
+- ✅ **CSV Export** - Export audit logs to CSV
+  - Same filtering capabilities as audit logs query
+  - Up to 10,000 records per export
+  - Timestamped filename for organization
+  - Proper CSV escaping for data integrity
+  - API: GET /api/administration/audit-logs/export
 
-- [ ] **SSO Configuration** - Single Sign-On setup
-  - SAML 2.0 support
-  - IdP metadata configuration
-  - SSO enforcement options
+#### Deferred Features (Future Phase)
+- ⏭️ **Data Export** - Full workspace data export (deferred to future release)
+- ⏭️ **SSO Configuration** - SAML 2.0 integration (deferred to enterprise tier)
+- ⏭️ **Billing & Subscriptions** - Payment processing (deferred to commercialization phase)
 
 ---
 
