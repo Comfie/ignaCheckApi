@@ -44,6 +44,10 @@ app.MapFallbackToFile("index.html");
 
 app.UseExceptionHandler(options => { });
 
+// Add authentication and authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
 #if (UseApiOnly)
 app.Map("/", () => Results.Redirect("/api"));
 #endif
@@ -51,6 +55,7 @@ app.Map("/", () => Results.Redirect("/api"));
 #if (UseAspire)
 app.MapDefaultEndpoints();
 #endif
+app.MapControllers();
 app.MapEndpoints();
 
 app.Run();
