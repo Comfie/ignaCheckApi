@@ -336,41 +336,44 @@ dotnet ef database update --project src/Infrastructure --startup-project src/Web
 
 ---
 
-### 📅 Focus 4: Collaboration & Notifications
+### ✅ Focus 4: Email Notifications & Search (COMPLETED)
+
+**Status:** Email-based notifications and global search implemented. Real-time collaboration features deferred to future phase.
 
 #### Notifications
-- [ ] **Email Notifications** - Automated email alerts
-  - Assignment notifications
-  - Compliance check completion alerts
-  - Invitation and mention notifications
+- ✅ **Email Notification Infrastructure** - Complete email notification system
+  - Extended IEmailService with notification-specific methods
+  - NotificationService for creating and sending notifications
+  - User preference-based notification delivery
+  - HTML email templates with branding
+  - Notification types: FindingAssigned, TaskAssigned, MentionNotification, AuditCheckCompleted, WorkspaceInvitation
 
-- [ ] **In-App Notifications** - Real-time platform notifications
-  - Notification bell with unread count
-  - Mark as read/unread functionality
+- ✅ **In-App Notifications** - Notification tracking and management
+  - Notification entity for audit trail and history
+  - Get notifications with filtering (type, read status, pagination)
+  - Mark notifications as read (individual or bulk)
+  - API: GET /api/notifications, POST /api/notifications/mark-as-read
 
-- [ ] **Notification Preferences** - Control notification types and frequency
-  - Per-notification type toggles
-  - Frequency settings (Real-time, Daily, Weekly)
-
-#### Collaboration
-- [ ] **Real-time Comments** - Live comment updates via WebSocket
-- [ ] **@Mentions** - Tag users with autocomplete
-- [ ] **Comment Threads** - Nested comment discussions
-- [ ] **Activity Feed** - Team activity visibility across projects
+- ✅ **Notification Preferences** - Granular user control
+  - Per-notification type configuration
+  - Delivery method selection (InApp, Email, Both)
+  - Email frequency settings (Realtime, Daily, Weekly, Never)
+  - Enable/disable toggles for each notification type
+  - API: GET /api/notifications/preferences, PUT /api/notifications/preferences
 
 #### Search
-- [ ] **Global Search** - Search across workspace
-  - Projects, documents, findings, comments
-  - Result grouping by type with preview snippets
+- ✅ **Global Search** - Comprehensive workspace search
+  - Search across projects, documents, findings, and tasks
+  - Result grouping by type with highlights
+  - Filter by result types and project scope
+  - Configurable max results per type
+  - Respects project membership and multi-tenancy
+  - API: GET /api/search?searchTerm={term}&resultTypes={types}&projectId={id}
 
-- [ ] **Advanced Filters** - Refine search results
-  - Date range, type, project, status filters
-  - Saved filter presets
-
-#### Integrations
-- [ ] **Slack/Teams Integration** - Notifications to collaboration platforms
-  - Channel selection
-  - Configurable notification types
+#### Deferred Features (Future Phase)
+- ⏭️ **Real-time Comments** - WebSocket updates (deferred - email-based workflow sufficient for Phase 1)
+- ⏭️ **Slack/Teams Integration** - Third-party integrations (deferred to future release)
+- ⏭️ **Advanced Filters** - Saved filter presets (basic filtering implemented, presets deferred)
 
 ---
 
