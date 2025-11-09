@@ -49,6 +49,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<TaskComment> TaskComments => Set<TaskComment>();
 
+    public DbSet<FindingComment> FindingComments => Set<FindingComment>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

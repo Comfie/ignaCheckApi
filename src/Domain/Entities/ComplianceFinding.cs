@@ -40,7 +40,12 @@ public class ComplianceFinding : BaseAuditableEntity, ITenantEntity
     /// <summary>
     /// Current compliance status of this control.
     /// </summary>
-    public ComplianceStatus Status { get; set; } = ComplianceStatus.NotStarted;
+    public ComplianceStatus Status { get; set; } = ComplianceStatus.NotAssessed;
+
+    /// <summary>
+    /// Workflow status for tracking remediation progress.
+    /// </summary>
+    public FindingWorkflowStatus WorkflowStatus { get; set; } = FindingWorkflowStatus.Open;
 
     /// <summary>
     /// Risk level/severity of this finding.
@@ -174,4 +179,9 @@ public class ComplianceFinding : BaseAuditableEntity, ITenantEntity
     /// Supporting evidence documents.
     /// </summary>
     public ICollection<FindingEvidence> Evidence { get; set; } = new List<FindingEvidence>();
+
+    /// <summary>
+    /// Comments and discussions on this finding.
+    /// </summary>
+    public ICollection<FindingComment> Comments { get; set; } = new List<FindingComment>();
 }
