@@ -15,8 +15,28 @@ public class Project : BaseAuditableEntity, ITenantEntity
     public DateTime? TargetDate { get; set; }
 
     // Foreign keys
-    public int OrganizationId { get; set; }
+    public Guid OrganizationId { get; set; }
 
     // Navigation properties
     public Organization Organization { get; set; } = null!;
+
+    /// <summary>
+    /// Compliance frameworks assigned to this project.
+    /// </summary>
+    public ICollection<ProjectFramework> ProjectFrameworks { get; set; } = new List<ProjectFramework>();
+
+    /// <summary>
+    /// Documents uploaded to this project.
+    /// </summary>
+    public ICollection<Document> Documents { get; set; } = new List<Document>();
+
+    /// <summary>
+    /// Compliance findings for this project.
+    /// </summary>
+    public ICollection<ComplianceFinding> Findings { get; set; } = new List<ComplianceFinding>();
+
+    /// <summary>
+    /// Remediation tasks for this project.
+    /// </summary>
+    public ICollection<RemediationTask> RemediationTasks { get; set; } = new List<RemediationTask>();
 }
