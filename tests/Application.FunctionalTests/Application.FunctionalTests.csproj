@@ -5,7 +5,6 @@
         <AssemblyName>IgnaCheck.Application.FunctionalTests</AssemblyName>
     </PropertyGroup>
 
-    <!--#if (UsePostgreSQL || UseSqlServer)-->
     <ItemGroup>
       <None Remove="appsettings.json" />
     </ItemGroup>
@@ -17,10 +16,8 @@
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </Content>
     </ItemGroup>
-    <!--#endif-->
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-      <PackageReference Include="Microsoft.Data.SqlClient" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" />
       <PackageReference Include="nunit" />
       <PackageReference Include="NUnit.Analyzers">
@@ -36,12 +33,7 @@
       <PackageReference Include="Respawn" />
       <PackageReference Include="Shouldly" />
       <PackageReference Include="System.Configuration.ConfigurationManager" />
-      <!--#if (UsePostgreSQL)-->
       <PackageReference Include="Testcontainers.PostgreSql" />
-      <!--#endif-->
-      <!--#if (UseSqlServer)-->
-      <PackageReference Include="Testcontainers.MsSql" />
-      <!--#endif-->
     </ItemGroup>
     
     <ItemGroup>

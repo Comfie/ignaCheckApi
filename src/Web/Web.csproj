@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <!--#if (!UseApiOnly)-->
     <SpaRoot>ClientApp\</SpaRoot>
     <SpaProxyServerUrl>https://localhost:44447</SpaProxyServerUrl>
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
-    <!--#endif-->
     <RootNamespace>IgnaCheck.Web</RootNamespace>
     <AssemblyName>IgnaCheck.Web</AssemblyName>
   </PropertyGroup>
@@ -13,9 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    <!--#if(UseAspire)-->
-    <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
-    <!--#endif-->
   </ItemGroup>
 
   <ItemGroup>
@@ -24,13 +19,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-    <!--#if (!UseApiOnly)-->
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <!-- The SPA Proxy is only used at development time -->
       <Publish>false</Publish>
     </PackageReference>
-    <!--#endif-->
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
@@ -44,7 +37,6 @@
     <PackageReference Include="FluentValidation.AspNetCore" />
   </ItemGroup>
 
-  <!--#if (!UseApiOnly)-->
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
@@ -61,7 +53,6 @@
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
   </Target>
-  <!--#endif-->
 
   <!-- Auto-generated Open API specification and Angular TypeScript clients -->
   <PropertyGroup>
@@ -78,21 +69,14 @@
     <Error Text="$(NSwagOutput)" Condition="'$(NSwagExitCode)' != '0'" />
   </Target>
 
-  <!--#if (!UseApiOnly)-->
   <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
     <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-    <!--#if (UseAngular)-->
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --configuration production" />
-    <!--#endif-->
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" Condition="'$(UseReact)' == 'True'" />
 
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <!--#if (UseAngular)-->
       <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
-      <!--#endif-->
-      <DistFiles Include="$(SpaRoot)build\**" Condition="'$(UseReact)' == 'True'" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -100,5 +84,4 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
-  <!--#endif-->
 </Project>
