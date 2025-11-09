@@ -8,7 +8,7 @@ public class LookupDto
 
     public string? Title { get; init; }
 
-    private class Mapping : Profile
+    private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
