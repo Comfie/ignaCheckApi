@@ -96,52 +96,231 @@ dotnet ef migrations add InitialCreate --project src/Infrastructure --startup-pr
 dotnet ef database update --project src/Infrastructure --startup-project src/Web
 ```
 
-## Development Roadmap
+## MVP Development Roadmap
 
-### ✅ Phase 0: Foundation Setup (Current)
-- Rename solution and projects to IgnaCheck
-- Set up core domain entities (Organization, Project, ComplianceFramework)
-- Implement multi-tenancy foundation
-- Configure security and audit logging
+### Executive Summary
+- **Product:** ignacheck - Multi-tenant AI-powered GRC (Governance, Risk, and Compliance) auditing platform
+- **Target Users:** Enterprises requiring compliance management across DORA, ISO/IEC 27001:2022, SOC 2, GDPR, PCI-DSS
+- **Core Value Proposition:** Automated compliance auditing with AI-powered document analysis, real-time gap identification, and collaborative remediation tracking
 
-### 🚧 Phase 1: Core Framework & Document Management (Weeks 3-6)
-- Compliance framework management (ISO 27001, SOC 2, GDPR)
-- Document upload and parsing (PDF, DOCX, OCR)
-- Project and framework assignment
-- Basic file storage integration
+---
 
-### 📅 Phase 2: AI Integration & Gap Analysis (Weeks 7-12)
-- LLM integration (OpenAI/Claude)
-- AI-powered gap detection
-- Compliance findings with risk scoring
-- Background job processing
-- Remediation recommendations
+### ✅ Focus 1: Foundation & Authentication (COMPLETED)
 
-### 📅 Phase 3: Remediation & Task Management (Weeks 13-16)
-- Task creation and assignment
-- Evidence attachment workflow
-- Email/Slack notifications
-- Task timeline and tracking
+**Status:** All features implemented and committed
 
-### 📅 Phase 4: Reporting & Analytics (Weeks 17-20)
-- Professional audit reports (PDF/Excel)
-- Interactive dashboards
-- Compliance scorecards
-- Trend analysis
+#### Authentication
+- ✅ **User Registration** - Email-based registration with email verification
+  - Email/password registration with validation (min 12 chars)
+  - Email verification via token (24-hour expiration)
+  - Account activation workflow
 
-### 📅 Phase 5: Advanced Features (Weeks 21-26)
-- Cross-framework mapping
-- Continuous monitoring
-- External integrations (Google Drive, SharePoint, S3)
-- Multi-language support
-- SSO and advanced RBAC
+- ✅ **Email Verification** - Confirm email ownership via token
+  - Unique verification tokens
+  - Automatic account activation upon verification
 
-### 📅 Phase 6: Production Readiness (Weeks 27-30)
-- Performance optimization
-- Security audit and penetration testing
-- Monitoring and observability
-- CI/CD pipelines
-- Documentation
+- ✅ **Login/Logout** - Secure authentication with JWT session management
+  - JWT-based authentication
+  - Session management with configurable expiration
+  - Failed login attempt tracking and account lockout protection
+
+- ✅ **Password Reset** - Self-service password recovery
+  - Password reset via email token (1-hour expiration)
+  - Password strength validation
+  - Session invalidation after reset
+
+#### Workspace Management
+- ✅ **Workspace Creation** - First-time setup for organizations
+  - Workspace name, company details, industry selection
+  - Automatic workspace owner assignment
+  - Default workspace settings
+
+- ✅ **Workspace Settings** - Configure workspace details
+  - Edit workspace metadata
+  - Logo upload support
+  - Timezone configuration
+
+#### User Management
+- ✅ **User Roles** - Role-based access control (RBAC)
+  - Owner: Full access, billing, workspace deletion
+  - Admin: User management, all projects
+  - Contributor: Assigned projects only
+  - Viewer: Read-only access
+
+- ✅ **Invite Users** - Email-based team invitations
+  - Role assignment during invitation
+  - 3-day invitation expiration
+  - Pending invitations tracking
+
+- ✅ **User List** - View and manage workspace members
+  - Searchable, filterable, sortable member list
+  - Display: Name, Email, Role, Status, Last Login
+
+- ✅ **Edit User Role** - Change user permissions
+  - Role promotion/demotion with notifications
+  - Protection against removing last owner
+
+- ✅ **Remove User** - Revoke workspace access
+  - Immediate access revocation
+  - Automatic removal from all projects
+  - Self-removal protection before ownership transfer
+
+#### Profile Management
+- ✅ **User Profile** - Personal account settings
+  - Display name editing
+  - Profile picture upload
+  - Password change functionality
+  - Email notification preferences
+
+---
+
+### 🚧 Focus 2: Project & Document Management (IN PROGRESS)
+
+#### Projects
+- [ ] **Create Project** - Initialize compliance projects
+- [ ] **Project List** - View all accessible projects with grid/list views
+- [ ] **Project Details** - View project overview and metadata
+- [ ] **Edit Project** - Update project details and settings
+- [ ] **Delete Project** - Permanently remove projects
+- [ ] **Archive Project** - Deactivate projects without deletion
+- [ ] **Project Members** - Assign users to projects with role management
+
+#### Documents
+- [ ] **Upload Documents** - Drag-and-drop file upload (PDF, DOCX, TXT, MD)
+  - Max 25MB per file, 50 files per upload
+  - Progress indicators
+
+- [ ] **Document Parsing** - Extract text and structure
+  - PDF and DOCX text extraction
+  - Structure detection (headings, sections, numbering)
+  - Markdown header support
+
+- [ ] **Document List** - View all project documents
+- [ ] **Document Preview** - View documents without downloading
+- [ ] **Download Document** - Retrieve original files
+- [ ] **Delete Document** - Remove documents from projects
+- [ ] **Document Versions** - Track document updates and history
+
+#### Activity Log
+- [ ] **Project Activity** - Complete audit trail of all actions
+  - Chronological activity feed
+  - Filtering by action type, user, date range
+  - CSV export capability
+
+---
+
+### 📅 Focus 3: Compliance Framework & AI Analysis
+
+#### Frameworks
+- [ ] **Framework Selection** - Choose compliance standards (DORA, ISO 27001, SOC 2, GDPR, PCI-DSS)
+- [ ] **Framework Library** - View framework details and controls
+  - Control reference, title, description
+  - Searchable control database
+
+#### AI Analysis
+- [ ] **Run Audit Check** - Initiate AI-powered document analysis
+  - Progress indicators and estimated completion time
+  - Email notifications upon completion
+
+- [ ] **Document Analysis** - AI interprets and evaluates documents
+  - Extract compliance information
+  - Map document sections to framework controls
+  - Generate compliance scores per framework
+
+- [ ] **Gap Identification** - Detect compliance deficiencies
+  - Severity classification (High, Medium, Low)
+  - Automated remediation recommendations
+
+- [ ] **Document Mapping** - Link findings to source documents
+  - Section-level referencing
+  - Multi-document support per finding
+
+#### Findings
+- [ ] **Findings List** - View all compliance gaps
+  - Grouping, filtering, sorting by framework, severity, status
+
+- [ ] **Finding Details** - Complete finding information
+  - Control reference, severity, gap analysis, recommendations
+
+- [ ] **Update Finding Status** - Track remediation (Open, In Progress, Resolved)
+- [ ] **Assign Finding** - Delegate responsibility to team members
+- [ ] **Finding Comments** - Collaborate on remediation
+  - @mentions, threaded discussions
+  - Comment editing and resolution marking
+
+#### Reports
+- [ ] **Compliance Dashboard** - High-level compliance overview
+  - Overall compliance score with framework breakdown
+  - Findings distribution by severity and status
+  - Trend analysis over time
+
+- [ ] **Framework Report** - Detailed per-framework compliance
+- [ ] **Executive Summary** - Management-friendly overview
+- [ ] **Audit Trail Report** - Complete activity history
+- [ ] **Export Reports** - Download audit reports (PDF, Excel)
+  - Company branding support
+  - Timestamped exports
+
+---
+
+### 📅 Focus 4: Collaboration & Notifications
+
+#### Notifications
+- [ ] **Email Notifications** - Automated email alerts
+  - Assignment notifications
+  - Compliance check completion alerts
+  - Invitation and mention notifications
+
+- [ ] **In-App Notifications** - Real-time platform notifications
+  - Notification bell with unread count
+  - Mark as read/unread functionality
+
+- [ ] **Notification Preferences** - Control notification types and frequency
+  - Per-notification type toggles
+  - Frequency settings (Real-time, Daily, Weekly)
+
+#### Collaboration
+- [ ] **Real-time Comments** - Live comment updates via WebSocket
+- [ ] **@Mentions** - Tag users with autocomplete
+- [ ] **Comment Threads** - Nested comment discussions
+- [ ] **Activity Feed** - Team activity visibility across projects
+
+#### Search
+- [ ] **Global Search** - Search across workspace
+  - Projects, documents, findings, comments
+  - Result grouping by type with preview snippets
+
+- [ ] **Advanced Filters** - Refine search results
+  - Date range, type, project, status filters
+  - Saved filter presets
+
+#### Integrations
+- [ ] **Slack/Teams Integration** - Notifications to collaboration platforms
+  - Channel selection
+  - Configurable notification types
+
+---
+
+### 📅 Focus 5: Billing & Administration
+
+#### Administration
+- [ ] **Workspace Deletion** - Permanently delete workspace
+  - Confirmation workflow with data deletion
+
+- [ ] **Data Export** - Export all workspace data
+  - ZIP file with documents, projects, findings, comments
+  - 7-day download link expiration
+
+- [ ] **Audit Logs** - Complete admin activity log
+  - 90-day retention
+  - CSV export capability
+
+- [ ] **SSO Configuration** - Single Sign-On setup
+  - SAML 2.0 support
+  - IdP metadata configuration
+  - SSO enforcement options
+
+---
 
 ## Technology Stack
 
@@ -153,7 +332,7 @@ dotnet ef database update --project src/Infrastructure --startup-project src/Web
 - **FluentValidation** - Input validation
 - **PostgreSQL** - Primary database
 
-### AI/ML (Planned)
+### AI/ML (Planned for Focus 3)
 - **Azure OpenAI** or **Anthropic Claude** - LLM for gap analysis
 - **Semantic Kernel** - LLM orchestration
 - **pgvector** - Vector search for embeddings
@@ -173,7 +352,7 @@ dotnet ef database update --project src/Infrastructure --startup-project src/Web
 
 ## Contributing
 
-This project is currently in Phase 0 (Foundation Setup). We welcome contributions once the foundation is stable.
+This project is currently in Focus 1 completion. We welcome contributions once the foundation is stable.
 
 ## License
 
