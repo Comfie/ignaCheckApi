@@ -1,3 +1,4 @@
+using IgnaCheck.Application.Activities.Queries.GetProjectActivity;
 using IgnaCheck.Application.Projects.Commands.AddProjectMember;
 using IgnaCheck.Application.Projects.Commands.ArchiveProject;
 using IgnaCheck.Application.Projects.Commands.CreateProject;
@@ -262,6 +263,48 @@ public class ProjectsController : ApiControllerBase
         }
 
         var result = await _sender.Send(command);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get activity log for a project.
+    /// </summary>
+    /// <param name="id">Project ID</param>
+    /// <param name="activityType">Filter by activity type (optional)</param>
+    /// <param name="userId">Filter by user ID (optional)</param>
+    /// <param name="startDate">Start date for date range (optional)</param>
+    /// <param name="endDate">End date for date range (optional)</param>
+    /// <param name="limit">Number of records to return (default: 100, max: 500)</param>
+    /// <returns>Activity log entries</returns>
+    [HttpGet("{id}/activity")]
+    [ProducesResponseType(typeof(Result<List<ActivityLogDto>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<Result<List<ActivityLogDto>>>> GetProjectActivity(
+        Guid id,
+        [FromQuery] Domain.Entities.ActivityType? activityType = null,
+        [FromQuery] string? userId = null,
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null,
+        [FromQuery] int limit = 100)
+    {
+        var query = new GetProjectActivityQuery
+        {
+            ProjectId = id,
+            ActivityType = activityType,
+            UserId = userId,
+            StartDate = startDate,
+            EndDate = endDate,
+            Limit = limit
+        };
+
+        var result = await _sender.Send(query);
 
         if (!result.Succeeded)
         {
