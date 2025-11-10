@@ -23,6 +23,7 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
 
         var client = CreateClient();
 
@@ -66,6 +67,7 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
 
         var client = CreateClient();
 
@@ -94,6 +96,7 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
 
         var client = CreateClient();
 
@@ -122,6 +125,7 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
 
         var client = CreateClient();
 
@@ -142,8 +146,6 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task GetProjects_Should_ReturnProjects_When_ProjectsExist()
     {
         // Arrange
-        var client = CreateClient();
-
         // Create test data
         var organizationId = Guid.NewGuid();
         var organization = new Organization
@@ -153,6 +155,9 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
+
+        var client = CreateClient();
 
         var project1 = new Project
         {
@@ -190,8 +195,6 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task GetProjectDetails_Should_ReturnProject_When_ProjectExists()
     {
         // Arrange
-        var client = CreateClient();
-
         var organizationId = Guid.NewGuid();
         var organization = new Organization
         {
@@ -200,6 +203,9 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
+
+        var client = CreateClient();
 
         var projectId = Guid.NewGuid();
         var project = new Project
@@ -238,6 +244,7 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
 
         var client = CreateClient();
         var nonExistentId = Guid.NewGuid();
@@ -253,8 +260,6 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task GetProjects_Should_FilterByStatus_When_StatusProvided()
     {
         // Arrange
-        var client = CreateClient();
-
         var organizationId = Guid.NewGuid();
         var organization = new Organization
         {
@@ -263,6 +268,9 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
+
+        var client = CreateClient();
 
         var activeProject = new Project
         {
@@ -298,8 +306,6 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task GetProjects_Should_SearchByTerm_When_SearchTermProvided()
     {
         // Arrange
-        var client = CreateClient();
-
         var organizationId = Guid.NewGuid();
         var organization = new Organization
         {
@@ -308,6 +314,9 @@ public class ProjectsControllerTests : BaseIntegrationTest
             IsActive = true
         };
         await AddAsync(organization);
+        SetCurrentOrganization(organizationId);
+
+        var client = CreateClient();
 
         var project1 = new Project
         {
