@@ -17,6 +17,7 @@ IgnaCheck.ai is an AI-powered audit and compliance assistant that automatically 
 - [Technology Stack](#technology-stack)
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
+- [Testing](#testing)
 - [API Documentation](#api-documentation)
 - [Development Roadmap](#development-roadmap)
 - [Project Structure](#project-structure)
@@ -596,6 +597,55 @@ The system supports two AI providers with automatic fallback.
 
 **Future support:** Azure Blob Storage, AWS S3
 
+## 🧪 Testing
+
+IgnaCheck includes a comprehensive test suite with **200+ tests** covering all layers of the application.
+
+### Test Structure
+
+- **Domain.UnitTests**: Entity and business logic tests (90%+ coverage target)
+- **Application.UnitTests**: CQRS command/query handler tests (85%+ coverage target)
+- **Infrastructure.UnitTests**: Service implementation tests (80%+ coverage target)
+- **Web.IntegrationTests**: End-to-end API tests with real database
+
+### Quick Start
+
+```bash
+# Run all tests
+dotnet test
+
+# Run with coverage
+dotnet test --collect:"XPlat Code Coverage"
+
+# Run specific test project
+dotnet test tests/Domain.UnitTests/Domain.UnitTests.csproj
+```
+
+### Testing Technologies
+
+- **NUnit** - Testing framework
+- **Shouldly** - Readable assertions
+- **Moq** - Mocking framework
+- **Testcontainers** - Docker-based integration testing with PostgreSQL
+- **Respawn** - Database cleanup between tests
+
+### CI/CD Integration
+
+Automated testing runs on every push and PR via **GitHub Actions**:
+
+✅ All test projects run in parallel
+✅ Code coverage reports generated
+✅ Cross-platform testing (Ubuntu, Windows, macOS)
+✅ PostgreSQL integration tests with Testcontainers
+✅ Test results published as artifacts
+
+**Workflow**: `.github/workflows/dotnet-tests.yml`
+
+### Documentation
+
+- **Quick Guide**: [TESTING.md](TESTING.md)
+- **Detailed Documentation**: [tests/README.md](tests/README.md)
+
 ## 📚 API Documentation
 
 ### API Overview
@@ -1003,7 +1053,19 @@ ignaCheckApi/
 │       ├── appsettings.Development.json   # Dev configuration
 │       └── appsettings.PostgreSQL.json    # PostgreSQL configuration
 │
-└── tests/ (Removed in recent refactor - to be re-added)
+└── tests/                                  # Comprehensive test suite
+    ├── README.md                           # Testing documentation
+    ├── Domain.UnitTests/                   # Domain entity tests
+    │   └── Entities/                       # Entity test files
+    ├── Application.UnitTests/              # CQRS handler tests
+    │   ├── Common/                         # Test utilities
+    │   └── Projects/                       # Project feature tests
+    ├── Infrastructure.UnitTests/           # Service tests
+    │   └── Services/                       # Service test files
+    └── Web.IntegrationTests/               # API integration tests
+        ├── Testing.cs                      # Test infrastructure
+        ├── BaseIntegrationTest.cs          # Base test class
+        └── Controllers/                    # Controller tests
 ```
 
 ## 🚀 Deployment
