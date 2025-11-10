@@ -1,20 +1,26 @@
 # Developer Guide: Frontend + Backend Development
 
-This project uses a **hybrid approach**: independent development, bundled deployment.
+This project uses **separated deployment**: independent development AND independent production deployment.
 
 ## Architecture Overview
 
 ```
-Development (Separated)           Production (Bundled)
-┌─────────────────────┐          ┌─────────────────────────┐
-│  Frontend Dev       │          │   Single Deployment     │
-│  npm start          │          │                         │
-│  Port 44447         │          │  /api/*  → ASP.NET API  │
-│     ↓ proxy         │          │  /*      → Angular SPA  │
-│  Backend Dev        │          │                         │
-│  dotnet run         │          │  Single artifact        │
-│  Port 5001          │          │  wwwroot/ + API DLLs    │
-└─────────────────────┘          └─────────────────────────┘
+Development (Separated)           Production (Separated)
+┌─────────────────────┐          ┌──────────────────────────────┐
+│  Frontend Dev       │          │  Angular SPA                 │
+│  npm start          │          │  Azure Static Web Apps/CDN   │
+│  Port 44447         │          │  https://app.ignacheck.ai    │
+│     ↓ CORS/Proxy    │          │         ↓ HTTPS/CORS         │
+│  Backend Dev        │          │  ASP.NET Core API            │
+│  dotnet run         │          │  Azure App Service           │
+│  Port 5001          │          │  https://api.ignacheck.app   │
+└─────────────────────┘          └──────────────────────────────┘
+
+Benefits:
+✅ Global CDN performance (target market: Germany/Europe)
+✅ Independent scaling and deployment
+✅ Offline frontend development with mock API
+✅ Cost optimization
 ```
 
 ---
@@ -315,7 +321,7 @@ npm run start:mock
 | **Team coordination** | 🟢 Low | 🟢 Low | 🟡 Medium |
 | **Best for** | Small teams | Large teams | UI work |
 
-**Recommendation for 2-person team:** Start with **Option A** (Full Stack) for first 2-4 weeks, then decide if you need shared API or mocking.
+**Recommendation for international product (target: Germany):** Use **Option C** (Mock API) for pure frontend work, **Option A** (Full Stack) when you need to test integration. This enables fully offline development while production benefits from CDN performance.
 
 ---
 
@@ -624,32 +630,45 @@ The project is configured for Azure DevOps:
 
 ## Production Architecture
 
-Despite working separately in development, **production is a single deployment**:
+Frontend and backend are **deployed separately** for optimal global performance:
 
 ```
-Azure App Service
-├── API Process (Kestrel)
-│   ├── Handles /api/* requests → API controllers
-│   └── Handles /* requests → Serves wwwroot/index.html
-└── wwwroot/
-    ├── index.html
-    ├── main.js (Angular app)
-    └── assets/
+┌──────────────────────────────────────────────────────────┐
+│  Production Deployment (Separated)                        │
+├──────────────────────────────────────────────────────────┤
+│                                                           │
+│  Angular SPA                                              │
+│  ├── Azure Static Web Apps                               │
+│  ├── Global CDN (edge locations in Europe/Germany)       │
+│  ├── https://app.ignacheck.ai                            │
+│  └── Static files cached at edge                         │
+│                                                           │
+│         ↓ HTTPS API calls with CORS                      │
+│                                                           │
+│  ASP.NET Core API                                         │
+│  ├── Azure App Service (West Europe region)              │
+│  ├── https://api.ignacheck.app                           │
+│  ├── PostgreSQL Flexible Server                          │
+│  └── Azure Blob Storage for documents                    │
+└──────────────────────────────────────────────────────────┘
 ```
 
 **Benefits:**
-- ✅ Single deployment artifact
-- ✅ No CORS configuration needed
-- ✅ Shared authentication/cookies
-- ✅ Single SSL certificate
-- ✅ Lower hosting costs
-- ✅ Simpler operations
+- ✅ **Global CDN** - Static files served from edge near users
+- ✅ **Independent deployment** - Update UI without touching API
+- ✅ **Independent scaling** - Scale each service based on demand
+- ✅ **Cost optimization** - Static hosting cheaper than app servers
+- ✅ **Better performance** - European users get <50ms latency
+- ✅ **Offline development** - Frontend dev works with mock API
+
+**Deployment:**
+- Frontend: Deploy to Azure Static Web Apps / Vercel
+- Backend: Deploy to Azure App Service
+- See DEPLOYMENT.md for complete instructions
 
 **Scaling:**
-- Scale vertically: Increase App Service plan size
-- Scale horizontally: Increase instance count
-- Static files served from same process (fast in-memory)
-- Can add Azure CDN later if needed
+- Frontend: Automatic CDN scaling (handles millions of users)
+- Backend: Scale App Service vertically/horizontally as needed
 
 ---
 

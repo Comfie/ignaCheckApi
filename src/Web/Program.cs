@@ -42,7 +42,9 @@ else
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseSpaStaticFiles();
+
+// Enable CORS for separated frontend deployment
+app.UseCors("AllowFrontend");
 
 app.UseSwaggerUi(settings =>
 {
@@ -59,21 +61,8 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapEndpoints();
 
-// Configure SPA
-app.UseSpa(spa =>
-{
-    spa.Options.SourcePath = "ClientApp";
-
-    if (app.Environment.IsDevelopment())
-    {
-        // In development, run Angular dev server separately
-        // Frontend dev: cd ClientApp && npm start
-        // Backend dev: dotnet run (this will proxy to Angular on port 44447)
-        spa.UseProxyToSpaDevelopmentServer("https://localhost:44447");
-    }
-});
-
 logger.LogInformation("Application configured. Starting web server...");
+logger.LogInformation("API running in standalone mode (frontend deployed separately)");
 app.Run();
 
 public partial class Program { }

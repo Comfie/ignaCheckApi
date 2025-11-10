@@ -39,10 +39,25 @@ public static class DependencyInjection
             configure.Title = "IgnaCheck API";
         });
 
-        // Add SPA services
-        builder.Services.AddSpaStaticFiles(configuration =>
+        // Configure CORS for separated frontend deployment
+        builder.Services.AddCors(options =>
         {
-            configuration.RootPath = "ClientApp/dist";
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                var allowedOrigins = builder.Configuration
+                    .GetSection("Cors:AllowedOrigins")
+                    .Get<string[]>() ?? new[]
+                    {
+                        "https://localhost:44447",      // Local Angular dev
+                        "http://localhost:4200",        // Alternative Angular dev port
+                        "https://localhost:4200"
+                    };
+
+                policy.WithOrigins(allowedOrigins)
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowCredentials();
+            });
         });
     }
 
