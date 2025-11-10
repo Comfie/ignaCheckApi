@@ -2,6 +2,7 @@ using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IgnaCheck.Infrastructure.Data.Interceptors;
 
@@ -11,11 +12,23 @@ namespace IgnaCheck.Infrastructure.Data.Interceptors;
 /// </summary>
 public class TenantSecurityInterceptor : SaveChangesInterceptor
 {
-    private readonly ITenantService _tenantService;
+    private readonly IServiceProvider _serviceProvider;
+    private ITenantService? _tenantService;
 
-    public TenantSecurityInterceptor(ITenantService tenantService)
+    public TenantSecurityInterceptor(IServiceProvider serviceProvider)
     {
-        _tenantService = tenantService;
+        _serviceProvider = serviceProvider;
+    }
+
+    private ITenantService? TenantService
+    {
+        get
+        {
+            // Lazy resolution to avoid circular dependency
+            // ApplicationDbContext -> TenantSecurityInterceptor -> ITenantService -> IApplicationDbContext
+            _tenantService ??= _serviceProvider.GetService<ITenantService>();
+            return _tenantService;
+        }
     }
 
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
@@ -34,7 +47,7 @@ public class TenantSecurityInterceptor : SaveChangesInterceptor
     {
         if (context == null) return;
 
-        var currentTenantId = _tenantService.GetCurrentTenantId();
+        var currentTenantId = TenantService?.GetCurrentTenantId();
 
         foreach (var entry in context.ChangeTracker.Entries<ITenantEntity>())
         {
