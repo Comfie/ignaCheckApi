@@ -1,5 +1,6 @@
 using IgnaCheck.Infrastructure;
 using IgnaCheck.Infrastructure.Data;
+using IgnaCheck.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 

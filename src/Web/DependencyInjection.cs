@@ -4,7 +4,7 @@ using IgnaCheck.Infrastructure.Data;
 using IgnaCheck.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace IgnaCheck.Web;
 
 public static class DependencyInjection
 {
