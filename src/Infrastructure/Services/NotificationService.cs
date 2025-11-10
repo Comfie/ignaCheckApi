@@ -103,23 +103,23 @@ public class NotificationService : INotificationService
                 {
                     // Get user email using identity service
                     var userObj = await _identityService.GetUserByIdAsync(userId);
-                    if (userObj is Infrastructure.Identity.ApplicationUser user && !string.IsNullOrWhiteSpace(user.Email))
+                    if (userObj != null && !string.IsNullOrWhiteSpace(userObj.Email))
                     {
                         try
                         {
                             // Send email using the generic email service
                             await _emailService.SendEmailAsync(
-                                user.Email,
+                                userObj.Email,
                                 title,
                                 GenerateHtmlEmailBody(title, message, link),
                                 message, // Plain text fallback
                                 cancellationToken);
 
-                            _logger.LogInformation("Email sent successfully to {Email} for notification type {Type}", user.Email, type);
+                            _logger.LogInformation("Email sent successfully to {Email} for notification type {Type}", userObj.Email, type);
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, "Failed to send email to {Email} for notification type {Type}", user.Email, type);
+                            _logger.LogError(ex, "Failed to send email to {Email} for notification type {Type}", userObj.Email, type);
                             // Don't throw - we want to continue processing other notifications
                         }
                     }

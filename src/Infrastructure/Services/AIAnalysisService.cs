@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Anthropic.SDK;
+using Anthropic.SDK.Messaging;
 using Azure.AI.OpenAI;
 using OpenAI.Chat;
 
@@ -577,7 +578,7 @@ public class AIAnalysisService : IAIAnalysisService
                 EvidenceReferences = aiResponse.EvidenceReferences?.Select(er => new EvidenceReference
                 {
                     DocumentId = Guid.TryParse(er.DocumentId, out var docId) ? docId : Guid.Empty,
-                    FileName = er.FileName ?? string.Empty,
+                    DocumentName = er.FileName ?? string.Empty,
                     Excerpt = er.Excerpt ?? string.Empty,
                     PageReference = er.PageReference,
                     RelevanceScore = (decimal?)er.RelevanceScore ?? 0.5m

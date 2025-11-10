@@ -6,6 +6,7 @@ using IgnaCheck.Infrastructure.Data;
 using IgnaCheck.Infrastructure.Data.Interceptors;
 using IgnaCheck.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

@@ -1,6 +1,7 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
+using TaskStatus = IgnaCheck.Domain.Entities.TaskStatus;
 
 namespace IgnaCheck.Application.Search.Queries.GlobalSearch;
 

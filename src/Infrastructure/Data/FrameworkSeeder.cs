@@ -269,7 +269,7 @@ public class FrameworkSeeder
         };
 
         dora.Controls = doraControls;
-        _context.ComplianceFrameworks.Add(dora);
+        await _context.ComplianceFrameworks.AddAsync(dora);
     }
 
     private async Task SeedISO27001FrameworkAsync()
@@ -582,7 +582,7 @@ public class FrameworkSeeder
         };
 
         iso27001.Controls = iso27001Controls;
-        _context.ComplianceFrameworks.Add(iso27001);
+        await _context.ComplianceFrameworks.AddAsync(iso27001);
     }
 
     private async Task SeedSOC2FrameworkAsync()
@@ -881,7 +881,7 @@ public class FrameworkSeeder
         };
 
         soc2.Controls = soc2Controls;
-        _context.ComplianceFrameworks.Add(soc2);
+        await _context.ComplianceFrameworks.AddAsync(soc2);
     }
 
     private async Task SeedGDPRFrameworkAsync()
@@ -1173,7 +1173,7 @@ public class FrameworkSeeder
         };
 
         gdpr.Controls = gdprControls;
-        _context.ComplianceFrameworks.Add(gdpr);
+        await _context.ComplianceFrameworks.AddAsync(gdpr);
     }
 
     private async Task SeedPCIDSSFrameworkAsync()
@@ -1378,6 +1378,6 @@ public class FrameworkSeeder
         };
 
         pcidss.Controls = pcidssControls;
-        _context.ComplianceFrameworks.Add(pcidss);
+        await _context.ComplianceFrameworks.AddAsync(pcidss);
     }
 }

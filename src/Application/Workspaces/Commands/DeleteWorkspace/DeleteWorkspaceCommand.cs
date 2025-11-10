@@ -171,11 +171,11 @@ public class DeleteWorkspaceCommandHandler : IRequestHandler<DeleteWorkspaceComm
         _context.ComplianceFindings.RemoveRange(findings);
 
         // Delete task attachments
-        var taskAttachments = await _context.Set<TaskAttachment>()
+        var taskAttachments = await _context.TaskAttachments
             .Include(ta => ta.Task)
             .Where(ta => ta.Task.OrganizationId == request.OrganizationId)
             .ToListAsync(cancellationToken);
-        _context.Set<TaskAttachment>().RemoveRange(taskAttachments);
+        _context.TaskAttachments.RemoveRange(taskAttachments);
 
         // Delete tasks
         var tasks = await _context.RemediationTasks
