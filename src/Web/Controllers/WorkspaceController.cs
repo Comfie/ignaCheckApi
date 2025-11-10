@@ -1,3 +1,4 @@
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Workspaces.Commands.CreateWorkspace;
 using IgnaCheck.Application.Workspaces.Commands.SwitchWorkspace;
 using IgnaCheck.Application.Workspaces.Commands.UpdateWorkspaceSettings;

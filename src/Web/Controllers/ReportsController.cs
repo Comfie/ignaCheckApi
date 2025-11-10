@@ -1,7 +1,9 @@
 using IgnaCheck.Application.Activities.Queries.GetProjectActivity;
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Reports.Queries.GetComplianceDashboard;
 using IgnaCheck.Application.Reports.Queries.GetExecutiveSummary;
 using IgnaCheck.Application.Reports.Queries.GetFrameworkReport;
+using IgnaCheck.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -113,7 +115,7 @@ public class ReportsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Result<List<ActivityLogDto>>>> GetAuditTrail(
         Guid projectId,
-        [FromQuery] Domain.Entities.ActivityType? activityType = null,
+        [FromQuery] ActivityType? activityType = null,
         [FromQuery] string? userId = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,
@@ -149,12 +151,12 @@ public class ReportsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status501NotImplemented)]
-    public async Task<ActionResult> ExportDashboardPdf(Guid projectId)
+    public Task<ActionResult> ExportDashboardPdf(Guid projectId)
     {
         // TODO: Implement PDF export using a library like QuestPDF or iTextSharp
         // For now, return not implemented
-        return StatusCode(StatusCodes.Status501NotImplemented,
-            Result.Failure(new[] { "PDF export functionality will be implemented in a future release." }));
+        return Task.FromResult<ActionResult>(StatusCode(StatusCodes.Status501NotImplemented,
+            Result.Failure(new[] { "PDF export functionality will be implemented in a future release." })));
     }
 
     /// <summary>
@@ -168,12 +170,12 @@ public class ReportsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status501NotImplemented)]
-    public async Task<ActionResult> ExportFrameworkReportExcel(Guid projectId, Guid frameworkId)
+    public Task<ActionResult> ExportFrameworkReportExcel(Guid projectId, Guid frameworkId)
     {
         // TODO: Implement Excel export using EPPlus or ClosedXML
         // For now, return not implemented
-        return StatusCode(StatusCodes.Status501NotImplemented,
-            Result.Failure(new[] { "Excel export functionality will be implemented in a future release." }));
+        return Task.FromResult<ActionResult>(StatusCode(StatusCodes.Status501NotImplemented,
+            Result.Failure(new[] { "Excel export functionality will be implemented in a future release." })));
     }
 
     /// <summary>
@@ -186,11 +188,11 @@ public class ReportsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status501NotImplemented)]
-    public async Task<ActionResult> ExportExecutiveSummaryPdf(Guid projectId)
+    public Task<ActionResult> ExportExecutiveSummaryPdf(Guid projectId)
     {
         // TODO: Implement PDF export
         // For now, return not implemented
-        return StatusCode(StatusCodes.Status501NotImplemented,
-            Result.Failure(new[] { "PDF export functionality will be implemented in a future release." }));
+        return Task.FromResult<ActionResult>(StatusCode(StatusCodes.Status501NotImplemented,
+            Result.Failure(new[] { "PDF export functionality will be implemented in a future release." })));
     }
 }

@@ -65,7 +65,7 @@ public class OrganizationConfiguration : IEntityTypeConfiguration<Organization>
         // Indexes for performance
         builder.HasIndex(e => e.Slug)
             .IsUnique()
-            .HasFilter("[Slug] IS NOT NULL") // Partial index for non-null slugs
+            .HasFilter("\"Slug\" IS NOT NULL") // Partial index for non-null slugs
             .HasDatabaseName("IX_Organizations_Slug");
 
         builder.HasIndex(e => e.Domain)

@@ -4,6 +4,8 @@ using IgnaCheck.Application.Authentication.Commands.Register;
 using IgnaCheck.Application.Authentication.Commands.RequestPasswordReset;
 using IgnaCheck.Application.Authentication.Commands.ResetPassword;
 using IgnaCheck.Application.Authentication.Commands.VerifyEmail;
+using IgnaCheck.Application.Common.Models;
+using IgnaCheck.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -59,17 +59,6 @@ public record EvidenceReference
 }
 
 /// <summary>
-/// Type of evidence found.
-/// </summary>
-public enum EvidenceType
-{
-    Supporting = 0,
-    Contradicting = 1,
-    Contextual = 2,
-    Remediation = 3
-}
-
-/// <summary>
 /// Request to analyze documents against an entire framework.
 /// </summary>
 public record FrameworkAnalysisRequest

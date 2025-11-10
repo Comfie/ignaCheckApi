@@ -130,11 +130,15 @@ public class InviteUserCommandHandler : IRequestHandler<InviteUserCommand, Resul
             return Result<InviteUserResponse>.Failure(new[] { "You cannot invite users with a role equal to or higher than your own." });
         }
 
-        // Check if user is already a member
-        var existingMembership = await _context.OrganizationMembers
-            .FirstOrDefaultAsync(m => m.OrganizationId == workspaceId.Value &&
-                                     _context.Users.Any(u => u.Id == m.UserId && u.Email == request.Email.ToLower()),
-                                     cancellationToken);
+        // Check if user with this email already exists and is already a member
+        var existingUser = await _identityService.GetUserByEmailAsync(request.Email);
+        OrganizationMember? existingMembership = null;
+
+        if (existingUser != null)
+        {
+            existingMembership = await _context.OrganizationMembers
+                .FirstOrDefaultAsync(m => m.OrganizationId == workspaceId.Value && m.UserId == existingUser.Id, cancellationToken);
+        }
 
         if (existingMembership != null)
         {
@@ -182,9 +186,7 @@ public class InviteUserCommandHandler : IRequestHandler<InviteUserCommand, Resul
 
         // Get inviter details
         var inviter = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        var inviterName = inviter is Infrastructure.Identity.ApplicationUser appUser
-            ? appUser.FullName
-            : "A team member";
+        var inviterName = inviter?.FullName ?? "A team member";
 
         // Create invitation
         var invitation = new Invitation
@@ -196,7 +198,7 @@ public class InviteUserCommandHandler : IRequestHandler<InviteUserCommand, Resul
             Token = GenerateInvitationToken(),
             ExpiresDate = DateTime.UtcNow.AddDays(7),
             Status = InvitationStatus.Pending,
-            InvitedByUserId = _currentUser.Id,
+            InvitedBy = _currentUser.Id,
             Message = request.Message
         };
 

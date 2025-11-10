@@ -1,3 +1,5 @@
+using IgnaCheck.Domain.Entities;
+
 namespace IgnaCheck.Application.Common.Interfaces;
 
 /// <summary>

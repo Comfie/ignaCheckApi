@@ -77,7 +77,7 @@ public record FindingDto
 
     // Control information
     public Guid ControlId { get; init; }
-    public string ControlReference { get; init; } = string.Empty;
+    public string ControlCode { get; init; } = string.Empty;
     public string ControlTitle { get; init; } = string.Empty;
 
     // Framework information
@@ -223,7 +223,7 @@ public class GetFindingsListQueryHandler : IRequestHandler<GetFindingsListQuery,
                 CommentCount = f.Comments.Count,
                 CreatedAt = f.Created,
                 ControlId = f.ControlId,
-                ControlReference = f.Control.ControlReference,
+                ControlCode = f.Control.ControlCode,
                 ControlTitle = f.Control.Title,
                 FrameworkId = f.Control.FrameworkId,
                 FrameworkName = f.Control.Framework.Name,

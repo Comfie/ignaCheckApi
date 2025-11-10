@@ -37,35 +37,13 @@ public record UpdateWorkspaceSettingsCommand : IRequest<Result<WorkspaceSettings
     /// </summary>
     public string? BillingEmail { get; init; }
 
-    /// <summary>
-    /// Company name for billing.
-    /// </summary>
-    public string? CompanyName { get; init; }
-
-    /// <summary>
-    /// Tax ID for billing.
-    /// </summary>
-    public string? TaxId { get; init; }
-
-    /// <summary>
-    /// Billing address.
-    /// </summary>
-    public string? BillingAddress { get; init; }
-
-    /// <summary>
-    /// Default currency for billing.
-    /// </summary>
-    public string? DefaultCurrency { get; init; }
-
-    /// <summary>
-    /// Default timezone.
-    /// </summary>
-    public string? DefaultTimezone { get; init; }
-
-    /// <summary>
-    /// Default language.
-    /// </summary>
-    public string? DefaultLanguage { get; init; }
+    // TODO: The following properties need to be added to Organization.Settings JSON field:
+    // - CompanyName
+    // - TaxId
+    // - BillingAddress
+    // - DefaultCurrency
+    // - DefaultTimezone
+    // - DefaultLanguage
 }
 
 /// <summary>
@@ -82,15 +60,16 @@ public record WorkspaceSettingsDto
     public DateTime? TrialEndsAt { get; init; }
     public bool IsActive { get; init; }
     public string? BillingEmail { get; init; }
-    public string? CompanyName { get; init; }
-    public string? TaxId { get; init; }
-    public string? BillingAddress { get; init; }
-    public string? DefaultCurrency { get; init; }
-    public string? DefaultTimezone { get; init; }
-    public string? DefaultLanguage { get; init; }
+    // TODO: Add these to Organization.Settings JSON field:
+    // public string? CompanyName { get; init; }
+    // public string? TaxId { get; init; }
+    // public string? BillingAddress { get; init; }
+    // public string? DefaultCurrency { get; init; }
+    // public string? DefaultTimezone { get; init; }
+    // public string? DefaultLanguage { get; init; }
     public int? MaxMembers { get; init; }
     public int? MaxProjects { get; init; }
-    public int? MaxStorageGB { get; init; }
+    public int? MaxStorageGb { get; init; }
     public DateTime CreatedDate { get; init; }
     public DateTime? LastModifiedDate { get; init; }
 }
@@ -186,35 +165,13 @@ public class UpdateWorkspaceSettingsCommandHandler : IRequestHandler<UpdateWorks
             organization.BillingEmail = request.BillingEmail;
         }
 
-        if (request.CompanyName != null)
-        {
-            organization.CompanyName = request.CompanyName;
-        }
-
-        if (request.TaxId != null)
-        {
-            organization.TaxId = request.TaxId;
-        }
-
-        if (request.BillingAddress != null)
-        {
-            organization.BillingAddress = request.BillingAddress;
-        }
-
-        if (request.DefaultCurrency != null)
-        {
-            organization.DefaultCurrency = request.DefaultCurrency;
-        }
-
-        if (request.DefaultTimezone != null)
-        {
-            organization.DefaultTimezone = request.DefaultTimezone;
-        }
-
-        if (request.DefaultLanguage != null)
-        {
-            organization.DefaultLanguage = request.DefaultLanguage;
-        }
+        // TODO: These properties need to be stored in Organization.Settings JSON field:
+        // - CompanyName
+        // - TaxId
+        // - BillingAddress
+        // - DefaultCurrency
+        // - DefaultTimezone
+        // - DefaultLanguage
 
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -229,15 +186,16 @@ public class UpdateWorkspaceSettingsCommandHandler : IRequestHandler<UpdateWorks
             TrialEndsAt = organization.TrialEndsAt,
             IsActive = organization.IsActive,
             BillingEmail = organization.BillingEmail,
-            CompanyName = organization.CompanyName,
-            TaxId = organization.TaxId,
-            BillingAddress = organization.BillingAddress,
-            DefaultCurrency = organization.DefaultCurrency,
-            DefaultTimezone = organization.DefaultTimezone,
-            DefaultLanguage = organization.DefaultLanguage,
+            // TODO: Read these from Organization.Settings JSON field
+            // CompanyName = null,
+            // TaxId = null,
+            // BillingAddress = null,
+            // DefaultCurrency = null,
+            // DefaultTimezone = null,
+            // DefaultLanguage = null,
             MaxMembers = organization.MaxMembers,
             MaxProjects = organization.MaxProjects,
-            MaxStorageGB = organization.MaxStorageGB,
+            MaxStorageGb = organization.MaxStorageGb,
             CreatedDate = organization.Created,
             LastModifiedDate = organization.LastModified
         };

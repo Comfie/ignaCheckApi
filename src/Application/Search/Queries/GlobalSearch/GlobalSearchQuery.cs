@@ -1,5 +1,7 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
+using TaskStatus = IgnaCheck.Domain.Entities.TaskStatus;
 
 namespace IgnaCheck.Application.Search.Queries.GlobalSearch;
 
@@ -42,11 +44,11 @@ public enum SearchResultType
 /// </summary>
 public record GlobalSearchResultDto
 {
-    public List<ProjectSearchResult> Projects { get; init; } = new();
-    public List<DocumentSearchResult> Documents { get; init; } = new();
-    public List<FindingSearchResult> Findings { get; init; } = new();
-    public List<TaskSearchResult> Tasks { get; init; } = new();
-    public int TotalResults { get; init; }
+    public List<ProjectSearchResult> Projects { get; set; } = new();
+    public List<DocumentSearchResult> Documents { get; set; } = new();
+    public List<FindingSearchResult> Findings { get; set; } = new();
+    public List<TaskSearchResult> Tasks { get; set; } = new();
+    public int TotalResults { get; set; }
 }
 
 public record ProjectSearchResult
@@ -86,8 +88,8 @@ public record TaskSearchResult
     public Guid ProjectId { get; init; }
     public string ProjectName { get; init; } = string.Empty;
     public string Title { get; init; } = string.Empty;
-    public Domain.Entities.TaskStatus Status { get; init; }
-    public Domain.Entities.PriorityLevel Priority { get; init; }
+    public TaskStatus Status { get; init; }
+    public PriorityLevel Priority { get; init; }
     public string Highlight { get; init; } = string.Empty;
 }
 

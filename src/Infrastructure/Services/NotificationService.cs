@@ -13,15 +13,18 @@ public class NotificationService : INotificationService
 {
     private readonly IApplicationDbContext _context;
     private readonly IEmailService _emailService;
+    private readonly IIdentityService _identityService;
     private readonly ILogger<NotificationService> _logger;
 
     public NotificationService(
         IApplicationDbContext context,
         IEmailService emailService,
+        IIdentityService identityService,
         ILogger<NotificationService> logger)
     {
         _context = context;
         _emailService = emailService;
+        _identityService = identityService;
         _logger = logger;
     }
 
@@ -98,25 +101,25 @@ public class NotificationService : INotificationService
                 if ((deliveryMethod == NotificationDeliveryMethod.Email || deliveryMethod == NotificationDeliveryMethod.Both) &&
                     emailFrequency == EmailFrequency.Realtime)
                 {
-                    // Get user email
-                    var user = await _context.Users.FindAsync(new object[] { userId }, cancellationToken);
-                    if (user != null && !string.IsNullOrWhiteSpace(user.Email))
+                    // Get user email using identity service
+                    var userObj = await _identityService.GetUserByIdAsync(userId);
+                    if (userObj != null && !string.IsNullOrWhiteSpace(userObj.Email))
                     {
                         try
                         {
                             // Send email using the generic email service
                             await _emailService.SendEmailAsync(
-                                user.Email,
+                                userObj.Email,
                                 title,
                                 GenerateHtmlEmailBody(title, message, link),
                                 message, // Plain text fallback
                                 cancellationToken);
 
-                            _logger.LogInformation("Email sent successfully to {Email} for notification type {Type}", user.Email, type);
+                            _logger.LogInformation("Email sent successfully to {Email} for notification type {Type}", userObj.Email, type);
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, "Failed to send email to {Email} for notification type {Type}", user.Email, type);
+                            _logger.LogError(ex, "Failed to send email to {Email} for notification type {Type}", userObj.Email, type);
                             // Don't throw - we want to continue processing other notifications
                         }
                     }

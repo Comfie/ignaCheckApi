@@ -92,7 +92,7 @@ public class UpdateFindingStatusCommandHandler : IRequestHandler<UpdateFindingSt
         }
 
         // Only owners and contributors can update status
-        if (member.Role == Domain.Enums.ProjectRole.Viewer)
+        if (member.Role == ProjectRole.Viewer)
         {
             return Result.Failure(new[] { "Access denied. Viewers cannot update finding status." });
         }

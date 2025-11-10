@@ -28,12 +28,12 @@ public interface IIdentityService
     /// <summary>
     /// Gets a user by email address.
     /// </summary>
-    Task<object?> GetUserByEmailAsync(string email);
+    Task<ApplicationUserDto?> GetUserByEmailAsync(string email);
 
     /// <summary>
     /// Gets a user by ID.
     /// </summary>
-    Task<object?> GetUserByIdAsync(string userId);
+    Task<ApplicationUserDto?> GetUserByIdAsync(string userId);
 
     // Email verification methods
 
@@ -71,5 +71,35 @@ public interface IIdentityService
     /// Updates the user's last login date.
     /// </summary>
     Task UpdateLastLoginDateAsync(string userId);
+
+    // Profile management methods
+
+    /// <summary>
+    /// Updates the user's avatar URL.
+    /// </summary>
+    Task<bool> UpdateUserAvatarAsync(string userId, string avatarUrl);
+
+    /// <summary>
+    /// Updates the user's profile information.
+    /// </summary>
+    Task<bool> UpdateUserProfileAsync(
+        string userId,
+        string? firstName,
+        string? lastName,
+        string? jobTitle,
+        string? department,
+        string? phoneNumber,
+        string? timeZone,
+        string? preferredLanguage);
+
+    /// <summary>
+    /// Updates the user's notification preferences.
+    /// </summary>
+    Task<bool> UpdateNotificationPreferencesAsync(string userId, string notificationPreferences);
+
+    /// <summary>
+    /// Gets the user's notification preferences.
+    /// </summary>
+    Task<string?> GetNotificationPreferencesAsync(string userId);
 }
 

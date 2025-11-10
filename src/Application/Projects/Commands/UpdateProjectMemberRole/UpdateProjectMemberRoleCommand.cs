@@ -1,5 +1,6 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Entities;
+using IgnaCheck.Domain.Enums;
 
 namespace IgnaCheck.Application.Projects.Commands.UpdateProjectMemberRole;
 
@@ -105,8 +106,8 @@ public class UpdateProjectMemberRoleCommandHandler : IRequestHandler<UpdateProje
         memberToUpdate.Role = request.NewRole;
 
         // Get current user details for activity log
-        var currentAppUser = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (currentAppUser is not IgnaCheck.Infrastructure.Identity.ApplicationUser currentUser)
+        var currentUser = await _identityService.GetUserByIdAsync(_currentUser.Id);
+        if (currentUser == null)
         {
             return Result.Failure(new[] { "Current user not found." });
         }

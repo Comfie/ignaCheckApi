@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Anthropic.SDK;
-using Anthropic.SDK.Constants;
 using Anthropic.SDK.Messaging;
 using Azure.AI.OpenAI;
 using OpenAI.Chat;
@@ -579,7 +578,7 @@ public class AIAnalysisService : IAIAnalysisService
                 EvidenceReferences = aiResponse.EvidenceReferences?.Select(er => new EvidenceReference
                 {
                     DocumentId = Guid.TryParse(er.DocumentId, out var docId) ? docId : Guid.Empty,
-                    FileName = er.FileName ?? string.Empty,
+                    DocumentName = er.FileName ?? string.Empty,
                     Excerpt = er.Excerpt ?? string.Empty,
                     PageReference = er.PageReference,
                     RelevanceScore = (decimal?)er.RelevanceScore ?? 0.5m
@@ -596,7 +595,7 @@ public class AIAnalysisService : IAIAnalysisService
             return new ControlAnalysisResult
             {
                 ControlId = request.ControlId,
-                Status = ComplianceStatus.NotStarted,
+                Status = ComplianceStatus.NotAssessed,
                 RiskLevel = RiskLevel.High,
                 FindingTitle = $"Analysis Error for {request.ControlCode}",
                 FindingDescription = $"AI returned invalid response format. Error: {ex.Message}",
@@ -617,7 +616,7 @@ public class AIAnalysisService : IAIAnalysisService
             "partiallycompliant" => ComplianceStatus.PartiallyCompliant,
             "noncompliant" => ComplianceStatus.NonCompliant,
             "notapplicable" => ComplianceStatus.NotApplicable,
-            _ => ComplianceStatus.NotStarted
+            _ => ComplianceStatus.NotAssessed
         };
     }
 
@@ -678,7 +677,7 @@ public class AIAnalysisService : IAIAnalysisService
             CompliantCount = results.Count(r => r.Status == ComplianceStatus.Compliant),
             PartiallyCompliantCount = results.Count(r => r.Status == ComplianceStatus.PartiallyCompliant),
             NonCompliantCount = results.Count(r => r.Status == ComplianceStatus.NonCompliant),
-            NotAssessedCount = results.Count(r => r.Status == ComplianceStatus.NotStarted),
+            NotAssessedCount = results.Count(r => r.Status == ComplianceStatus.NotAssessed),
             CriticalFindings = results.Count(r => r.RiskLevel == RiskLevel.Critical),
             HighRiskFindings = results.Count(r => r.RiskLevel == RiskLevel.High),
             MediumRiskFindings = results.Count(r => r.RiskLevel == RiskLevel.Medium),

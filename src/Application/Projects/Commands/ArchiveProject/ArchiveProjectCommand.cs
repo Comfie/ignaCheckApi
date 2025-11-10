@@ -88,12 +88,12 @@ public class ArchiveProjectCommandHandler : IRequestHandler<ArchiveProjectComman
 
         // Get user details for activity log
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result.Failure(new[] { "User not found." });
         }
 
-        var userName = $"{appUser.FirstName} {appUser.LastName}".Trim();
+        var userName = $"{user.FirstName} {user.LastName}".Trim();
 
         // Archive or restore
         var previousStatus = project.Status;
@@ -109,7 +109,7 @@ public class ArchiveProjectCommandHandler : IRequestHandler<ArchiveProjectComman
                 ProjectId = project.Id,
                 UserId = _currentUser.Id,
                 UserName = userName,
-                UserEmail = appUser.Email!,
+                UserEmail = user.Email!,
                 ActivityType = ActivityType.ProjectArchived,
                 EntityType = "Project",
                 EntityId = project.Id,
@@ -132,7 +132,7 @@ public class ArchiveProjectCommandHandler : IRequestHandler<ArchiveProjectComman
                 ProjectId = project.Id,
                 UserId = _currentUser.Id,
                 UserName = userName,
-                UserEmail = appUser.Email!,
+                UserEmail = user.Email!,
                 ActivityType = ActivityType.ProjectRestored,
                 EntityType = "Project",
                 EntityId = project.Id,

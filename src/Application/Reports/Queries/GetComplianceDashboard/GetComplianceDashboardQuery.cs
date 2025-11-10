@@ -117,7 +117,7 @@ public record TopFindingDto
     public string Title { get; init; } = string.Empty;
     public RiskLevel RiskLevel { get; init; }
     public string FrameworkName { get; init; } = string.Empty;
-    public string ControlReference { get; init; } = string.Empty;
+    public string ControlCode { get; init; } = string.Empty;
     public FindingWorkflowStatus WorkflowStatus { get; init; }
     public string? AssignedTo { get; init; }
 }
@@ -273,7 +273,7 @@ public class GetComplianceDashboardQueryHandler : IRequestHandler<GetComplianceD
                 Title = f.Title,
                 RiskLevel = f.RiskLevel,
                 FrameworkName = f.Control.Framework.Name,
-                ControlReference = f.Control.ControlReference,
+                ControlCode = f.Control.ControlCode,
                 WorkflowStatus = f.WorkflowStatus,
                 AssignedTo = f.AssignedTo
             })

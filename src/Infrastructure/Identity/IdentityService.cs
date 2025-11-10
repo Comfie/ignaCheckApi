@@ -107,14 +107,44 @@ public class IdentityService : IIdentityService
         return Result<string>.Success(user.Id);
     }
 
-    public async Task<object?> GetUserByEmailAsync(string email)
+    public async Task<ApplicationUserDto?> GetUserByEmailAsync(string email)
     {
-        return await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email);
+        return user == null ? null : MapToDto(user);
     }
 
-    public async Task<object?> GetUserByIdAsync(string userId)
+    public async Task<ApplicationUserDto?> GetUserByIdAsync(string userId)
     {
-        return await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
+        return user == null ? null : MapToDto(user);
+    }
+
+    private static ApplicationUserDto MapToDto(ApplicationUser user)
+    {
+        return new ApplicationUserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            UserName = user.UserName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            AvatarUrl = user.AvatarUrl,
+            JobTitle = user.JobTitle,
+            Department = user.Department,
+            PhoneNumber = user.PhoneNumber,
+            PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+            TimeZone = user.TimeZone,
+            PreferredLanguage = user.PreferredLanguage,
+            NotificationPreferences = user.NotificationPreferences,
+            EmailConfirmed = user.EmailConfirmed,
+            IsActive = user.IsActive,
+            InvitedDate = user.InvitedDate,
+            RegistrationCompletedDate = user.RegistrationCompletedDate,
+            LastLoginDate = user.LastLoginDate,
+            Created = user.CreatedDate,
+            LastModified = user.UpdatedDate,
+            Bio = user.Bio
+        };
     }
 
     // Email verification methods
@@ -208,5 +238,100 @@ public class IdentityService : IIdentityService
             user.LastLoginDate = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
         }
+    }
+
+    // Profile management methods
+
+    public async Task<bool> UpdateUserAvatarAsync(string userId, string avatarUrl)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        user.AvatarUrl = avatarUrl;
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
+    }
+
+    public async Task<bool> UpdateUserProfileAsync(
+        string userId,
+        string? firstName,
+        string? lastName,
+        string? jobTitle,
+        string? department,
+        string? phoneNumber,
+        string? timeZone,
+        string? preferredLanguage)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        // Update fields if provided
+        if (firstName != null)
+        {
+            user.FirstName = firstName;
+        }
+
+        if (lastName != null)
+        {
+            user.LastName = lastName;
+        }
+
+        if (jobTitle != null)
+        {
+            user.JobTitle = jobTitle;
+        }
+
+        if (department != null)
+        {
+            user.Department = department;
+        }
+
+        if (phoneNumber != null)
+        {
+            user.PhoneNumber = phoneNumber;
+            // Reset phone number confirmation if changed
+            if (user.PhoneNumber != phoneNumber)
+            {
+                user.PhoneNumberConfirmed = false;
+            }
+        }
+
+        if (timeZone != null)
+        {
+            user.TimeZone = timeZone;
+        }
+
+        if (preferredLanguage != null)
+        {
+            user.PreferredLanguage = preferredLanguage;
+        }
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
+    }
+
+    public async Task<bool> UpdateNotificationPreferencesAsync(string userId, string notificationPreferences)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        user.NotificationPreferences = notificationPreferences;
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
+    }
+
+    public async Task<string?> GetNotificationPreferencesAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        return user?.NotificationPreferences;
     }
 }

@@ -1,11 +1,10 @@
+using IgnaCheck.Infrastructure;
 using IgnaCheck.Infrastructure.Data;
+using IgnaCheck.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-#if (UseAspire)
-builder.AddServiceDefaults();
-#endif
 builder.AddKeyVaultIfConfigured();
 builder.AddApplicationServices();
 builder.AddInfrastructureServices();
@@ -13,10 +12,27 @@ builder.AddWebServices();
 
 var app = builder.Build();
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("IgnaCheck API starting up...");
+logger.LogInformation("Environment: {Environment}", app.Environment.EnvironmentName);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    await app.InitialiseDatabaseAsync();
+    // Skip database initialization if running under NSwag (for faster OpenAPI generation)
+    var skipDbInit = Environment.GetEnvironmentVariable("SKIP_DB_INIT") == "true"
+                     || Environment.GetEnvironmentVariable("NSWAG_EXECUTOR_MODE") == "true";
+
+    if (!skipDbInit)
+    {
+        logger.LogInformation("Initializing database...");
+        await app.InitialiseDatabaseAsync();
+        logger.LogInformation("Database initialization completed.");
+    }
+    else
+    {
+        logger.LogInformation("Database initialization skipped (SKIP_DB_INIT or NSWAG_EXECUTOR_MODE set)");
+    }
 }
 else
 {
@@ -24,11 +40,12 @@ else
     app.UseHsts();
 }
 
-#if (!UseAspire)
 app.UseHealthChecks("/health");
-#endif
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Enable CORS for separated frontend deployment
+app.UseCors("AllowFrontend");
 
 app.UseSwaggerUi(settings =>
 {
@@ -36,28 +53,17 @@ app.UseSwaggerUi(settings =>
     settings.DocumentPath = "/api/specification.json";
 });
 
-#if (!UseApiOnly)
-app.MapRazorPages();
-
-app.MapFallbackToFile("index.html");
-#endif
-
 app.UseExceptionHandler(options => { });
 
 // Add authentication and authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-#if (UseApiOnly)
-app.Map("/", () => Results.Redirect("/api"));
-#endif
-
-#if (UseAspire)
-app.MapDefaultEndpoints();
-#endif
 app.MapControllers();
 app.MapEndpoints();
 
+logger.LogInformation("Application configured. Starting web server...");
+logger.LogInformation("API running in standalone mode (frontend deployed separately)");
 app.Run();
 
 public partial class Program { }

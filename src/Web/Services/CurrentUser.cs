@@ -16,4 +16,12 @@ public class CurrentUser : IUser
     public string? Id => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
     public List<string>? Roles => _httpContextAccessor.HttpContext?.User?.FindAll(ClaimTypes.Role).Select(x => x.Value).ToList();
 
+    public Guid? OrganizationId
+    {
+        get
+        {
+            var orgIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirstValue("OrganizationId");
+            return string.IsNullOrEmpty(orgIdClaim) ? null : Guid.Parse(orgIdClaim);
+        }
+    }
 }

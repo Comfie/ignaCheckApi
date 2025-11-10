@@ -1,4 +1,6 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Constants;
+using IgnaCheck.Domain.Entities;
 
 namespace IgnaCheck.Application.Workspaces.Commands.DeleteWorkspace;
 
@@ -81,7 +83,7 @@ public class DeleteWorkspaceCommandHandler : IRequestHandler<DeleteWorkspaceComm
 
         // Verify user is an owner
         var member = organization.Members.FirstOrDefault(m => m.UserId == _currentUser.Id);
-        if (member == null || member.Role != Domain.Enums.OrganizationRole.Owner)
+        if (member == null || member.Role != WorkspaceRoles.Owner)
         {
             return Result.Failure(new[] { "Access denied. Only workspace owners can delete the workspace." });
         }
@@ -169,11 +171,11 @@ public class DeleteWorkspaceCommandHandler : IRequestHandler<DeleteWorkspaceComm
         _context.ComplianceFindings.RemoveRange(findings);
 
         // Delete task attachments
-        var taskAttachments = await _context.Set<Domain.Entities.TaskAttachment>()
+        var taskAttachments = await _context.TaskAttachments
             .Include(ta => ta.Task)
             .Where(ta => ta.Task.OrganizationId == request.OrganizationId)
             .ToListAsync(cancellationToken);
-        _context.Set<Domain.Entities.TaskAttachment>().RemoveRange(taskAttachments);
+        _context.TaskAttachments.RemoveRange(taskAttachments);
 
         // Delete tasks
         var tasks = await _context.RemediationTasks

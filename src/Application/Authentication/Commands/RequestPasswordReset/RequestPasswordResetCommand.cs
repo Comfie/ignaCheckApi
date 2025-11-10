@@ -35,15 +35,15 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
         // But only send email if user exists
 
         var user = await _identityService.GetUserByEmailAsync(request.Email);
-        if (user is IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user != null)
         {
             // Generate password reset token
-            var resetToken = await _identityService.GeneratePasswordResetTokenAsync(appUser.Id);
+            var resetToken = await _identityService.GeneratePasswordResetTokenAsync(user.Id);
 
             // Send password reset email
             await _emailService.SendPasswordResetAsync(
-                appUser.Email!,
-                appUser.FirstName,
+                user.Email!,
+                user.FirstName,
                 resetToken,
                 cancellationToken);
         }

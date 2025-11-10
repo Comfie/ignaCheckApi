@@ -74,15 +74,16 @@ public class GetWorkspaceSettingsQueryHandler : IRequestHandler<GetWorkspaceSett
             TrialEndsAt = organization.TrialEndsAt,
             IsActive = organization.IsActive,
             BillingEmail = organization.BillingEmail,
-            CompanyName = organization.CompanyName,
-            TaxId = organization.TaxId,
-            BillingAddress = organization.BillingAddress,
-            DefaultCurrency = organization.DefaultCurrency,
-            DefaultTimezone = organization.DefaultTimezone,
-            DefaultLanguage = organization.DefaultLanguage,
+            // TODO: Read these from Organization.Settings JSON field
+            // CompanyName = null,
+            // TaxId = null,
+            // BillingAddress = null,
+            // DefaultCurrency = null,
+            // DefaultTimezone = null,
+            // DefaultLanguage = null,
             MaxMembers = organization.MaxMembers,
             MaxProjects = organization.MaxProjects,
-            MaxStorageGB = organization.MaxStorageGB,
+            MaxStorageGb = organization.MaxStorageGb,
             CreatedDate = organization.Created,
             LastModifiedDate = organization.LastModified
         };

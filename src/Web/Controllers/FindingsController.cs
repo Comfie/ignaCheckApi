@@ -1,3 +1,4 @@
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Findings.Commands.AddFindingComment;
 using IgnaCheck.Application.Findings.Commands.AssignFinding;
 using IgnaCheck.Application.Findings.Commands.UpdateFindingStatus;

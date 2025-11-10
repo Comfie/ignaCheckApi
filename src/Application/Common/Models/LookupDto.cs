@@ -8,12 +8,11 @@ public class LookupDto
 
     public string? Title { get; init; }
 
-    private class Mapping : Profile
+    private class Mapping : AutoMapper.Profile
     {
         public Mapping()
         {
-            CreateMap<TodoList, LookupDto>();
-            CreateMap<TodoItem, LookupDto>();
+            // Add mappings here as needed for lookup entities
         }
     }
 }

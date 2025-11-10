@@ -41,13 +41,16 @@ public class GetWorkspaceInvitationsQueryHandler : IRequestHandler<GetWorkspaceI
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _currentUser;
+    private readonly IIdentityService _identityService;
 
     public GetWorkspaceInvitationsQueryHandler(
         IApplicationDbContext context,
-        IUser currentUser)
+        IUser currentUser,
+        IIdentityService identityService)
     {
         _context = context;
         _currentUser = currentUser;
+        _identityService = identityService;
     }
 
     public async Task<Result<List<InvitationDto>>> Handle(GetWorkspaceInvitationsQuery request, CancellationToken cancellationToken)
@@ -90,28 +93,39 @@ public class GetWorkspaceInvitationsQueryHandler : IRequestHandler<GetWorkspaceI
             query = query.Where(i => i.Status.ToString() == request.Status);
         }
 
-        // Get invitations with inviter details
+        // Get invitations
         var invitations = await query
             .OrderByDescending(i => i.Created)
-            .Select(i => new InvitationDto
-            {
-                Id = i.Id,
-                Email = i.Email,
-                Role = i.Role,
-                Status = i.Status.ToString(),
-                CreatedDate = i.Created,
-                ExpiresDate = i.ExpiresDate,
-                AcceptedDate = i.AcceptedDate,
-                InvitedByUserName = i.InvitedByUserId != null
-                    ? _context.Users
-                        .Where(u => u.Id == i.InvitedByUserId)
-                        .Select(u => u.FirstName + " " + u.LastName)
-                        .FirstOrDefault()
-                    : null,
-                Message = i.Message
-            })
             .ToListAsync(cancellationToken);
 
-        return Result<List<InvitationDto>>.Success(invitations);
+        // Map to DTOs and fetch inviter names using IIdentityService
+        var invitationDtos = new List<InvitationDto>();
+        foreach (var invitation in invitations)
+        {
+            string? invitedByUserName = null;
+            if (!string.IsNullOrEmpty(invitation.InvitedBy))
+            {
+                var inviterUser = await _identityService.GetUserByIdAsync(invitation.InvitedBy);
+                if (inviterUser != null)
+                {
+                    invitedByUserName = $"{inviterUser.FirstName} {inviterUser.LastName}".Trim();
+                }
+            }
+
+            invitationDtos.Add(new InvitationDto
+            {
+                Id = invitation.Id,
+                Email = invitation.Email,
+                Role = invitation.Role,
+                Status = invitation.Status.ToString(),
+                CreatedDate = invitation.Created,
+                ExpiresDate = invitation.ExpiresDate,
+                AcceptedDate = invitation.AcceptedDate,
+                InvitedByUserName = invitedByUserName,
+                Message = invitation.Message
+            });
+        }
+
+        return Result<List<InvitationDto>>.Success(invitationDtos);
     }
 }

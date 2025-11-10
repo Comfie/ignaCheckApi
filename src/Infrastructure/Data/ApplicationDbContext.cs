@@ -5,20 +5,31 @@ using IgnaCheck.Domain.Entities;
 using IgnaCheck.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IgnaCheck.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
-    private readonly ITenantService? _tenantService;
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    private readonly IServiceProvider _serviceProvider;
+    private ITenantService? _tenantService;
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
-        ITenantService tenantService) : base(options)
+        IServiceProvider serviceProvider) : base(options)
     {
-        _tenantService = tenantService;
+        _serviceProvider = serviceProvider;
+    }
+
+    private ITenantService? TenantService
+    {
+        get
+        {
+            // Lazy resolution to avoid circular dependency
+            // TenantService -> IApplicationDbContext -> ApplicationDbContext -> ITenantService
+            _tenantService ??= _serviceProvider.GetService<ITenantService>();
+            return _tenantService;
+        }
     }
 
     public DbSet<Organization> Organizations => Set<Organization>();
@@ -49,6 +60,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     public DbSet<TaskComment> TaskComments => Set<TaskComment>();
 
+    public DbSet<TaskAttachment> TaskAttachments => Set<TaskAttachment>();
+
     public DbSet<FindingComment> FindingComments => Set<FindingComment>();
 
     public DbSet<Notification> Notifications => Set<Notification>();
@@ -70,14 +83,46 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
                 method.Invoke(this, new object[] { builder });
             }
         }
+
+        // Configure DateTime handling for PostgreSQL
+        // PostgreSQL requires DateTime values to have Kind=UTC for timestamp with time zone
+        ConfigureDateTimeProperties(builder);
+    }
+
+    private static void ConfigureDateTimeProperties(ModelBuilder builder)
+    {
+        var dateTimeConverter = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
+            v => v.Kind == DateTimeKind.Unspecified ? DateTime.SpecifyKind(v, DateTimeKind.Utc) : v.ToUniversalTime(),
+            v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
+        var nullableDateTimeConverter = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime?, DateTime?>(
+            v => v.HasValue
+                ? (v.Value.Kind == DateTimeKind.Unspecified ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v.Value.ToUniversalTime())
+                : v,
+            v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
+
+        foreach (var entityType in builder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(DateTime))
+                {
+                    property.SetValueConverter(dateTimeConverter);
+                }
+                else if (property.ClrType == typeof(DateTime?))
+                {
+                    property.SetValueConverter(nullableDateTimeConverter);
+                }
+            }
+        }
     }
 
     private static readonly System.Reflection.MethodInfo SetGlobalQueryMethod =
         typeof(ApplicationDbContext).GetMethod(nameof(SetGlobalQuery),
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
 
-    private static void SetGlobalQuery<T>(ModelBuilder builder) where T : class, ITenantEntity
+    private void SetGlobalQuery<T>(ModelBuilder builder) where T : class, ITenantEntity
     {
-        builder.Entity<T>().HasQueryFilter(e => _tenantService == null || _tenantService.GetCurrentTenantId() == null ||  e.OrganizationId == _tenantService.GetCurrentTenantId());
+        builder.Entity<T>().HasQueryFilter(e => TenantService == null || TenantService.GetCurrentTenantId() == null ||  e.OrganizationId == TenantService.GetCurrentTenantId());
     }
 }

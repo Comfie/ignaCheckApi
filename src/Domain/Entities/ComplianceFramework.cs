@@ -3,8 +3,9 @@ namespace IgnaCheck.Domain.Entities;
 /// <summary>
 /// Represents a regulatory compliance framework (e.g., ISO 27001, SOC 2, GDPR, PCI DSS).
 /// This is an aggregate root that contains compliance controls and requirements.
+/// Can be system-wide (OrganizationId = null) or tenant-specific (OrganizationId = value).
 /// </summary>
-public class ComplianceFramework : BaseAuditableEntity, ITenantEntity
+public class ComplianceFramework : BaseAuditableEntity
 {
     /// <summary>
     /// Organization (tenant) that owns this framework customization.

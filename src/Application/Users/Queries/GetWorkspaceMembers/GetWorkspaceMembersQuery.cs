@@ -85,13 +85,16 @@ public class GetWorkspaceMembersQueryHandler : IRequestHandler<GetWorkspaceMembe
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _currentUser;
+    private readonly IIdentityService _identityService;
 
     public GetWorkspaceMembersQueryHandler(
         IApplicationDbContext context,
-        IUser currentUser)
+        IUser currentUser,
+        IIdentityService identityService)
     {
         _context = context;
         _currentUser = currentUser;
+        _identityService = identityService;
     }
 
     public async Task<Result<WorkspaceMembersResponse>> Handle(GetWorkspaceMembersQuery request, CancellationToken cancellationToken)
@@ -118,78 +121,95 @@ public class GetWorkspaceMembersQueryHandler : IRequestHandler<GetWorkspaceMembe
             return Result<WorkspaceMembersResponse>.Failure(new[] { "You are not a member of this workspace." });
         }
 
-        // Build query
+        // Build query for OrganizationMembers
         var query = _context.OrganizationMembers
-            .Where(m => m.OrganizationId == workspaceId.Value)
-            .Include(m => m.User);
+            .Where(m => m.OrganizationId == workspaceId.Value);
 
-        // Apply filters
-        if (!string.IsNullOrEmpty(request.SearchQuery))
-        {
-            var searchLower = request.SearchQuery.ToLower();
-            query = query.Where(m =>
-                (m.User.FirstName != null && m.User.FirstName.ToLower().Contains(searchLower)) ||
-                (m.User.LastName != null && m.User.LastName.ToLower().Contains(searchLower)) ||
-                (m.User.Email != null && m.User.Email.ToLower().Contains(searchLower))
-            );
-        }
-
+        // Apply role filter
         if (!string.IsNullOrEmpty(request.Role))
         {
             query = query.Where(m => m.Role == request.Role);
         }
 
+        // Apply active status filter
         if (request.IsActive.HasValue)
         {
             query = query.Where(m => m.IsActive == request.IsActive.Value);
         }
 
-        // Get total count before pagination
-        var totalCount = await query.CountAsync(cancellationToken);
+        // Get all members (we'll filter by search after getting user details)
+        var allMembers = await query.ToListAsync(cancellationToken);
+
+        // Fetch user details for each member using IIdentityService
+        var memberDtos = new List<WorkspaceMemberDto>();
+        foreach (var member in allMembers)
+        {
+            var user = await _identityService.GetUserByIdAsync(member.UserId);
+            if (user != null)
+            {
+                // Apply search filter if provided
+                if (!string.IsNullOrEmpty(request.SearchQuery))
+                {
+                    var searchLower = request.SearchQuery.ToLower();
+                    var matchesSearch =
+                        (user.FirstName != null && user.FirstName.ToLower().Contains(searchLower)) ||
+                        (user.LastName != null && user.LastName.ToLower().Contains(searchLower)) ||
+                        (user.Email != null && user.Email.ToLower().Contains(searchLower));
+
+                    if (!matchesSearch)
+                    {
+                        continue; // Skip this member
+                    }
+                }
+
+                memberDtos.Add(new WorkspaceMemberDto
+                {
+                    UserId = member.UserId,
+                    Email = user.Email ?? string.Empty,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    FullName = (user.FirstName + " " + user.LastName).Trim(),
+                    AvatarUrl = user.AvatarUrl,
+                    JobTitle = user.JobTitle,
+                    Role = member.Role,
+                    JoinedDate = member.JoinedDate,
+                    LastLoginDate = user.LastLoginDate,
+                    IsActive = member.IsActive
+                });
+            }
+        }
 
         // Apply sorting
         var sortBy = request.SortBy?.ToLower() ?? "name";
         var sortDirection = request.SortDirection?.ToLower() ?? "asc";
 
-        query = sortBy switch
+        memberDtos = sortBy switch
         {
             "email" => sortDirection == "desc"
-                ? query.OrderByDescending(m => m.User.Email)
-                : query.OrderBy(m => m.User.Email),
+                ? memberDtos.OrderByDescending(x => x.Email).ToList()
+                : memberDtos.OrderBy(x => x.Email).ToList(),
             "joineddate" => sortDirection == "desc"
-                ? query.OrderByDescending(m => m.JoinedDate)
-                : query.OrderBy(m => m.JoinedDate),
+                ? memberDtos.OrderByDescending(x => x.JoinedDate).ToList()
+                : memberDtos.OrderBy(x => x.JoinedDate).ToList(),
             "role" => sortDirection == "desc"
-                ? query.OrderByDescending(m => m.Role)
-                : query.OrderBy(m => m.Role),
+                ? memberDtos.OrderByDescending(x => x.Role).ToList()
+                : memberDtos.OrderBy(x => x.Role).ToList(),
             _ => sortDirection == "desc"
-                ? query.OrderByDescending(m => m.User.FirstName).ThenByDescending(m => m.User.LastName)
-                : query.OrderBy(m => m.User.FirstName).ThenBy(m => m.User.LastName)
+                ? memberDtos.OrderByDescending(x => x.FirstName).ThenByDescending(x => x.LastName).ToList()
+                : memberDtos.OrderBy(x => x.FirstName).ThenBy(x => x.LastName).ToList()
         };
+
+        var totalCount = memberDtos.Count;
 
         // Apply pagination
         var pageNumber = Math.Max(1, request.PageNumber);
         var pageSize = Math.Min(100, Math.Max(1, request.PageSize));
         var skip = (pageNumber - 1) * pageSize;
 
-        var members = await query
+        var members = memberDtos
             .Skip(skip)
             .Take(pageSize)
-            .Select(m => new WorkspaceMemberDto
-            {
-                UserId = m.UserId,
-                Email = m.User.Email ?? string.Empty,
-                FirstName = m.User.FirstName,
-                LastName = m.User.LastName,
-                FullName = (m.User.FirstName + " " + m.User.LastName).Trim(),
-                AvatarUrl = m.User.AvatarUrl,
-                JobTitle = m.User.JobTitle,
-                Role = m.Role,
-                JoinedDate = m.JoinedDate,
-                LastLoginDate = m.User.LastLoginDate,
-                IsActive = m.IsActive
-            })
-            .ToListAsync(cancellationToken);
+            .ToList();
 
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 

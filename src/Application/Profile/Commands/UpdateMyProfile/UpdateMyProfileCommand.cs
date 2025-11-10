@@ -51,16 +51,13 @@ public class UpdateMyProfileCommandHandler : IRequestHandler<UpdateMyProfileComm
 {
     private readonly IUser _currentUser;
     private readonly IIdentityService _identityService;
-    private readonly IApplicationDbContext _context;
 
     public UpdateMyProfileCommandHandler(
         IUser currentUser,
-        IIdentityService identityService,
-        IApplicationDbContext context)
+        IIdentityService identityService)
     {
         _currentUser = currentUser;
         _identityService = identityService;
-        _context = context;
     }
 
     public async Task<Result<UserProfileDto>> Handle(UpdateMyProfileCommand request, CancellationToken cancellationToken)
@@ -71,55 +68,29 @@ public class UpdateMyProfileCommandHandler : IRequestHandler<UpdateMyProfileComm
             return Result<UserProfileDto>.Failure(new[] { "User must be authenticated." });
         }
 
-        // Get user from database (need EF tracking)
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _currentUser.Id, cancellationToken);
+        // Update profile using identity service
+        var updateResult = await _identityService.UpdateUserProfileAsync(
+            _currentUser.Id,
+            request.FirstName,
+            request.LastName,
+            request.JobTitle,
+            request.Department,
+            request.PhoneNumber,
+            request.TimeZone,
+            request.PreferredLanguage
+        );
+
+        if (!updateResult)
+        {
+            return Result<UserProfileDto>.Failure(new[] { "Failed to update profile." });
+        }
+
+        // Get updated user details
+        var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
         if (user == null)
         {
             return Result<UserProfileDto>.Failure(new[] { "User not found." });
         }
-
-        // Update fields if provided
-        if (request.FirstName != null)
-        {
-            user.FirstName = request.FirstName;
-        }
-
-        if (request.LastName != null)
-        {
-            user.LastName = request.LastName;
-        }
-
-        if (request.JobTitle != null)
-        {
-            user.JobTitle = request.JobTitle;
-        }
-
-        if (request.Department != null)
-        {
-            user.Department = request.Department;
-        }
-
-        if (request.PhoneNumber != null)
-        {
-            user.PhoneNumber = request.PhoneNumber;
-            // Reset phone number confirmation if changed
-            if (user.PhoneNumber != request.PhoneNumber)
-            {
-                user.PhoneNumberConfirmed = false;
-            }
-        }
-
-        if (request.TimeZone != null)
-        {
-            user.TimeZone = request.TimeZone;
-        }
-
-        if (request.PreferredLanguage != null)
-        {
-            user.PreferredLanguage = request.PreferredLanguage;
-        }
-
-        await _context.SaveChangesAsync(cancellationToken);
 
         // Return updated profile
         var profile = new UserProfileDto

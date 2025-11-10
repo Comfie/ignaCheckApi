@@ -101,12 +101,6 @@ public class Organization : BaseAuditableEntity
     public string? DeactivationReason { get; set; }
 
     /// <summary>
-    /// User who created this organization (by ID).
-    /// Typically becomes the first Owner.
-    /// </summary>
-    public string? CreatedBy { get; set; }
-
-    /// <summary>
     /// Workspace settings stored as JSON.
     /// Example: {"allowPublicProjects": false, "requireMfa": true, "defaultProjectRole": "Viewer"}
     /// </summary>

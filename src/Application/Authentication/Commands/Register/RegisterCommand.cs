@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
 
 namespace IgnaCheck.Application.Authentication.Commands.Register;
 
@@ -99,7 +100,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<st
         // Create workspace if requested
         if (request.CreateWorkspace && !string.IsNullOrWhiteSpace(request.WorkspaceName))
         {
-            var organization = new IgnaCheck.Domain.Entities.Organization
+            var organization = new Organization
             {
                 Name = request.WorkspaceName,
                 Slug = GenerateSlug(request.WorkspaceName),
@@ -110,21 +111,21 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<st
                 MaxMembers = 5, // Free tier limit
                 MaxProjects = 3,
                 MaxStorageGb = 1,
-                CreatedAt = DateTime.UtcNow
+                Created = DateTime.UtcNow
             };
 
             _context.Organizations.Add(organization);
             await _context.SaveChangesAsync(cancellationToken);
 
             // Add user as owner of the organization
-            var organizationMember = new IgnaCheck.Domain.Entities.OrganizationMember
+            var organizationMember = new OrganizationMember
             {
                 OrganizationId = organization.Id,
                 UserId = userId,
                 Role = IgnaCheck.Domain.Constants.WorkspaceRoles.Owner,
                 JoinedDate = DateTime.UtcNow,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                Created = DateTime.UtcNow
             };
 
             _context.OrganizationMembers.Add(organizationMember);

@@ -34,7 +34,7 @@ public class ProjectFramework : BaseAuditableEntity
     /// <summary>
     /// Overall compliance status for this framework on this project.
     /// </summary>
-    public ComplianceStatus Status { get; set; } = ComplianceStatus.NotStarted;
+    public ComplianceStatus Status { get; set; } = ComplianceStatus.NotAssessed;
 
     /// <summary>
     /// Percentage of controls that are compliant (0-100).

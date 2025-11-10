@@ -33,10 +33,11 @@ public record CreateWorkspaceCommand : IRequest<Result<CreateWorkspaceResponse>>
     /// </summary>
     public string? BillingEmail { get; init; }
 
-    /// <summary>
-    /// Company name for billing.
-    /// </summary>
-    public string? CompanyName { get; init; }
+    // TODO: CompanyName should be stored in Organization.Settings JSON field
+    // /// <summary>
+    // /// Company name for billing.
+    // /// </summary>
+    // public string? CompanyName { get; init; }
 }
 
 /// <summary>
@@ -112,7 +113,7 @@ public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceComm
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result<CreateWorkspaceResponse>.Failure(new[] { "User not found." });
         }
@@ -157,7 +158,8 @@ public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceComm
             TrialEndsAt = trialEndsAt,
             IsActive = true,
             BillingEmail = request.BillingEmail,
-            CompanyName = request.CompanyName,
+            // TODO: Store CompanyName in Organization.Settings JSON field
+            // CompanyName = request.CompanyName,
             // Set resource limits based on tier
             MaxMembers = subscriptionTier switch
             {
@@ -173,7 +175,7 @@ public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceComm
                 "Enterprise" => null, // Unlimited
                 _ => 3
             },
-            MaxStorageGB = subscriptionTier switch
+            MaxStorageGb = subscriptionTier switch
             {
                 "Free" => 1,
                 "Pro" => 100,
@@ -205,9 +207,9 @@ public class CreateWorkspaceCommandHandler : IRequestHandler<CreateWorkspaceComm
         // Generate new JWT token with organization context
         var accessToken = _jwtTokenGenerator.GenerateAccessToken(
             userId: _currentUser.Id,
-            email: appUser.Email!,
-            firstName: appUser.FirstName,
-            lastName: appUser.LastName,
+            email: user.Email!,
+            firstName: user.FirstName,
+            lastName: user.LastName,
             roles: roles,
             organizationId: organization.Id,
             organizationRole: member.Role,

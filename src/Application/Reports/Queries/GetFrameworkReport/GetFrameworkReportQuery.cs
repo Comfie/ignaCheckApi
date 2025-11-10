@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
 
 namespace IgnaCheck.Application.Reports.Queries.GetFrameworkReport;
@@ -56,7 +57,7 @@ public record FrameworkReportDto
 public record ControlComplianceDto
 {
     public Guid ControlId { get; init; }
-    public string ControlReference { get; init; } = string.Empty;
+    public string ControlCode { get; init; } = string.Empty;
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public ComplianceStatus Status { get; init; }
@@ -126,7 +127,7 @@ public class GetFrameworkReportQueryHandler : IRequestHandler<GetFrameworkReport
         // Get all controls for this framework
         var controls = await _context.ComplianceControls
             .Where(c => c.FrameworkId == request.FrameworkId)
-            .OrderBy(c => c.ControlReference)
+            .OrderBy(c => c.ControlCode)
             .ToListAsync(cancellationToken);
 
         // Get all findings for this framework and project
@@ -164,7 +165,7 @@ public class GetFrameworkReportQueryHandler : IRequestHandler<GetFrameworkReport
         // Build control compliance details
         var controlComplianceList = controls.Select(control =>
         {
-            var controlFindings = findingsByControl.GetValueOrDefault(control.Id, new List<Domain.Entities.ComplianceFinding>());
+            var controlFindings = findingsByControl.GetValueOrDefault(control.Id, new List<ComplianceFinding>());
 
             // Determine control status (if there are findings, use the finding status; otherwise NotAssessed)
             var controlStatus = controlFindings.Any()
@@ -174,7 +175,7 @@ public class GetFrameworkReportQueryHandler : IRequestHandler<GetFrameworkReport
             return new ControlComplianceDto
             {
                 ControlId = control.Id,
-                ControlReference = control.ControlReference,
+                ControlCode = control.ControlCode,
                 Title = control.Title,
                 Description = control.Description,
                 Status = controlStatus,

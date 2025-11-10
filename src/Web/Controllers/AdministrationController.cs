@@ -1,5 +1,7 @@
 using IgnaCheck.Application.Administration.Queries.GetAuditLogs;
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Workspaces.Commands.DeleteWorkspace;
+using IgnaCheck.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +45,7 @@ public class AdministrationController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Result<AuditLogsResultDto>>> GetAuditLogs(
-        [FromQuery] Domain.Entities.ActivityType? activityType = null,
+        [FromQuery] ActivityType? activityType = null,
         [FromQuery] string? userId = null,
         [FromQuery] string? entityType = null,
         [FromQuery] Guid? entityId = null,
@@ -94,7 +96,7 @@ public class AdministrationController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult> ExportAuditLogs(
-        [FromQuery] Domain.Entities.ActivityType? activityType = null,
+        [FromQuery] ActivityType? activityType = null,
         [FromQuery] string? userId = null,
         [FromQuery] string? entityType = null,
         [FromQuery] Guid? entityId = null,

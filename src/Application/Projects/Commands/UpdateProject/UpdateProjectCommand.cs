@@ -104,12 +104,12 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
 
         // Get user details for activity log
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result<UpdateProjectResponse>.Failure(new[] { "User not found." });
         }
 
-        var userName = $"{appUser.FirstName} {appUser.LastName}".Trim();
+        var userName = $"{user.FirstName} {user.LastName}".Trim();
 
         // Track changes for activity log
         var changes = new List<string>();
@@ -149,7 +149,7 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
                 ProjectId = project.Id,
                 UserId = _currentUser.Id,
                 UserName = userName,
-                UserEmail = appUser.Email!,
+                UserEmail = user.Email!,
                 ActivityType = ActivityType.ProjectUpdated,
                 EntityType = "Project",
                 EntityId = project.Id,
@@ -170,7 +170,7 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             Description = project.Description,
             Status = project.Status,
             TargetDate = project.TargetDate,
-            LastModified = project.LastModified ?? project.Created
+            LastModified = project.LastModified
         };
 
         return Result<UpdateProjectResponse>.Success(response);
