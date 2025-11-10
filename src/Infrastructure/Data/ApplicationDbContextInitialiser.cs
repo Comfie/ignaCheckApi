@@ -3,6 +3,7 @@ using IgnaCheck.Domain.Entities;
 using IgnaCheck.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -47,21 +48,25 @@ public class ApplicationDbContextInitialiser
     {
         try
         {
-            // Skip recreation if SKIP_DB_RECREATE is set (useful for faster startup during testing/NSwag)
-            var skipRecreate = Environment.GetEnvironmentVariable("SKIP_DB_RECREATE") == "true";
+            _logger.LogInformation("Starting database initialization...");
 
-            if (skipRecreate)
+            // Apply any pending migrations
+            var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
+            if (pendingMigrations.Any())
             {
-                // Just ensure database exists without recreating
-                await _context.Database.EnsureCreatedAsync();
-                _logger.LogInformation("Database initialization skipped (SKIP_DB_RECREATE=true)");
+                _logger.LogInformation("Found {Count} pending migrations. Applying...", pendingMigrations.Count());
+                foreach (var migration in pendingMigrations)
+                {
+                    _logger.LogInformation("  - {Migration}", migration);
+                }
             }
             else
             {
-                // See https://jasontaylor.dev/ef-core-database-initialisation-strategies
-                await _context.Database.EnsureDeletedAsync();
-                await _context.Database.EnsureCreatedAsync();
+                _logger.LogInformation("No pending migrations found.");
             }
+
+            await _context.Database.MigrateAsync();
+            _logger.LogInformation("Database initialization completed successfully.");
         }
         catch (Exception ex)
         {

@@ -11,6 +11,10 @@ builder.AddWebServices();
 
 var app = builder.Build();
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("IgnaCheck API starting up...");
+logger.LogInformation("Environment: {Environment}", app.Environment.EnvironmentName);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -20,7 +24,13 @@ if (app.Environment.IsDevelopment())
 
     if (!skipDbInit)
     {
+        logger.LogInformation("Initializing database...");
         await app.InitialiseDatabaseAsync();
+        logger.LogInformation("Database initialization completed.");
+    }
+    else
+    {
+        logger.LogInformation("Database initialization skipped (SKIP_DB_INIT or NSWAG_EXECUTOR_MODE set)");
     }
 }
 else
@@ -52,6 +62,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapEndpoints();
 
+logger.LogInformation("Application configured. Starting web server...");
 app.Run();
 
 public partial class Program { }
