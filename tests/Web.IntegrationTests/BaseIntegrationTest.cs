@@ -11,6 +11,8 @@ public abstract class BaseIntegrationTest
     public async Task TestSetUp()
     {
         await Testing.ResetState();
+        // Clear the test organization context
+        TestUser.ClearOrganizationId();
     }
 
     protected static Task<TResponse> SendAsync<TResponse>(IRequest<TResponse> request)
@@ -43,5 +45,10 @@ public abstract class BaseIntegrationTest
     protected static HttpClient CreateClient()
     {
         return Testing.CreateClient();
+    }
+
+    protected static void SetCurrentOrganization(Guid organizationId)
+    {
+        TestUser.SetOrganizationId(organizationId);
     }
 }
