@@ -13,7 +13,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    await app.InitialiseDatabaseAsync();
+    // Skip database initialization if running under NSwag (for faster OpenAPI generation)
+    var skipDbInit = Environment.GetEnvironmentVariable("SKIP_DB_INIT") == "true"
+                     || Environment.GetEnvironmentVariable("NSWAG_EXECUTOR_MODE") == "true";
+
+    if (!skipDbInit)
+    {
+        await app.InitialiseDatabaseAsync();
+    }
 }
 else
 {

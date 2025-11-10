@@ -47,9 +47,21 @@ public class ApplicationDbContextInitialiser
     {
         try
         {
-            // See https://jasontaylor.dev/ef-core-database-initialisation-strategies
-            await _context.Database.EnsureDeletedAsync();
-            await _context.Database.EnsureCreatedAsync();
+            // Skip recreation if SKIP_DB_RECREATE is set (useful for faster startup during testing/NSwag)
+            var skipRecreate = Environment.GetEnvironmentVariable("SKIP_DB_RECREATE") == "true";
+
+            if (skipRecreate)
+            {
+                // Just ensure database exists without recreating
+                await _context.Database.EnsureCreatedAsync();
+                _logger.LogInformation("Database initialization skipped (SKIP_DB_RECREATE=true)");
+            }
+            else
+            {
+                // See https://jasontaylor.dev/ef-core-database-initialisation-strategies
+                await _context.Database.EnsureDeletedAsync();
+                await _context.Database.EnsureCreatedAsync();
+            }
         }
         catch (Exception ex)
         {
