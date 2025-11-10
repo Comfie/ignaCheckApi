@@ -9,6 +9,7 @@ using IgnaCheck.Application.Projects.Commands.UpdateProject;
 using IgnaCheck.Application.Projects.Commands.UpdateProjectMemberRole;
 using IgnaCheck.Application.Projects.Queries.GetProjectDetails;
 using IgnaCheck.Application.Projects.Queries.GetProjectsList;
+using IgnaCheck.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -289,7 +290,7 @@ public class ProjectsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Result<List<ActivityLogDto>>>> GetProjectActivity(
         Guid id,
-        [FromQuery] Domain.Entities.ActivityType? activityType = null,
+        [FromQuery] ActivityType? activityType = null,
         [FromQuery] string? userId = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,

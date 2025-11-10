@@ -1,3 +1,4 @@
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Users.Commands.AcceptInvitation;
 using IgnaCheck.Application.Users.Commands.DeclineInvitation;
 using IgnaCheck.Application.Users.Commands.InviteUser;

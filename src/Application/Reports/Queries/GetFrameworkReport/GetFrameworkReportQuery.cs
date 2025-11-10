@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
 
 namespace IgnaCheck.Application.Reports.Queries.GetFrameworkReport;
@@ -164,7 +165,7 @@ public class GetFrameworkReportQueryHandler : IRequestHandler<GetFrameworkReport
         // Build control compliance details
         var controlComplianceList = controls.Select(control =>
         {
-            var controlFindings = findingsByControl.GetValueOrDefault(control.Id, new List<Domain.Entities.ComplianceFinding>());
+            var controlFindings = findingsByControl.GetValueOrDefault(control.Id, new List<ComplianceFinding>());
 
             // Determine control status (if there are findings, use the finding status; otherwise NotAssessed)
             var controlStatus = controlFindings.Any()

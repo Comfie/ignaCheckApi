@@ -7,8 +7,6 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Anthropic.SDK;
-using Anthropic.SDK.Constants;
-using Anthropic.SDK.Messaging;
 using Azure.AI.OpenAI;
 using OpenAI.Chat;
 

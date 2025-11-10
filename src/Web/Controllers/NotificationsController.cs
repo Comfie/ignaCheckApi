@@ -1,3 +1,4 @@
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Notifications.Commands.MarkNotificationsAsRead;
 using IgnaCheck.Application.Notifications.Commands.UpdateNotificationPreferences;
 using IgnaCheck.Application.Notifications.Queries.GetNotificationPreferences;

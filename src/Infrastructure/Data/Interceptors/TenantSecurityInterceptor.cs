@@ -50,7 +50,7 @@ public class TenantSecurityInterceptor : SaveChangesInterceptor
 
                 case EntityState.Modified:
                     // Prevent changing the organization ID
-                    var originalOrgId = entry.OriginalValues.GetValue<int>(nameof(ITenantEntity.OrganizationId));
+                    var originalOrgId = entry.OriginalValues.GetValue<Guid>(nameof(ITenantEntity.OrganizationId));
                     var currentOrgId = entry.Entity.OrganizationId;
 
                     if (originalOrgId != currentOrgId)

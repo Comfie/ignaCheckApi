@@ -224,7 +224,7 @@ public static class CompliancePromptBuilder
         prompt.AppendLine(request.GapDescription);
         prompt.AppendLine();
         prompt.AppendLine("CURRENT STATUS:");
-        prompt.AppendLine(request.CurrentStatus);
+        prompt.AppendLine(request.CurrentStatus.ToString());
         prompt.AppendLine();
         prompt.AppendLine("TASK: Provide detailed, actionable remediation guidance.");
         prompt.AppendLine();

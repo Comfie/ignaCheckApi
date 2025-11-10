@@ -101,7 +101,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<st
         // Create workspace if requested
         if (request.CreateWorkspace && !string.IsNullOrWhiteSpace(request.WorkspaceName))
         {
-            var organization = new IgnaCheck.Domain.Entities.Organization
+            var organization = new Organization
             {
                 Name = request.WorkspaceName,
                 Slug = GenerateSlug(request.WorkspaceName),
@@ -119,7 +119,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<st
             await _context.SaveChangesAsync(cancellationToken);
 
             // Add user as owner of the organization
-            var organizationMember = new IgnaCheck.Domain.Entities.OrganizationMember
+            var organizationMember = new OrganizationMember
             {
                 OrganizationId = organization.Id,
                 UserId = userId,

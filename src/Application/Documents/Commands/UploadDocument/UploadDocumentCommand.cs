@@ -199,7 +199,8 @@ public class UploadDocumentCommandHandler : IRequestHandler<UploadDocumentComman
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        var userName = user is IgnaCheck.Infrastructure.Identity.ApplicationUser appUser
+        var appUser = user as IgnaCheck.Infrastructure.Identity.ApplicationUser;
+        var userName = appUser != null
             ? $"{appUser.FirstName} {appUser.LastName}".Trim()
             : "Unknown User";
 
@@ -210,7 +211,7 @@ public class UploadDocumentCommandHandler : IRequestHandler<UploadDocumentComman
             OrganizationId = organizationId.Value,
             ProjectId = project.Id,
             FileName = request.File.FileName,
-            DisplayName = Path.GetFileNameWithoutExtension(request.File.FileName),
+            DisplayName = Path.GetFileNameWithoutExtension((string)request.File.FileName),
             Description = request.Description,
             ContentType = request.File.ContentType,
             FileSizeBytes = request.File.Length,

@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Audit.Commands.RunAuditCheck;
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Common.Models.AI;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

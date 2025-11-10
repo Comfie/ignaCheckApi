@@ -1,3 +1,4 @@
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Search.Queries.GlobalSearch;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

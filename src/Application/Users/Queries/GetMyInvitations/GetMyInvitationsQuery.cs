@@ -54,7 +54,7 @@ public class GetMyInvitationsQueryHandler : IRequestHandler<GetMyInvitationsQuer
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not Infrastructure.Identity.ApplicationUser appUser || string.IsNullOrEmpty(appUser.Email))
+        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser || string.IsNullOrEmpty(appUser.Email))
         {
             return Result<List<MyInvitationDto>>.Failure(new[] { "User not found." });
         }
@@ -76,7 +76,7 @@ public class GetMyInvitationsQueryHandler : IRequestHandler<GetMyInvitationsQuer
             if (!string.IsNullOrEmpty(invitation.InvitedBy))
             {
                 var inviterUser = await _identityService.GetUserByIdAsync(invitation.InvitedBy);
-                if (inviterUser is Infrastructure.Identity.ApplicationUser inviterAppUser)
+                if (inviterUser is IgnaCheck.Infrastructure.Identity.ApplicationUser inviterAppUser)
                 {
                     invitedByUserName = $"{inviterAppUser.FirstName} {inviterAppUser.LastName}".Trim();
                 }

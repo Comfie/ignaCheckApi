@@ -29,8 +29,9 @@ public class CreateWorkspaceCommandValidator : AbstractValidator<CreateWorkspace
             .EmailAddress().WithMessage("Billing email must be a valid email address.")
             .When(x => !string.IsNullOrEmpty(x.BillingEmail));
 
-        RuleFor(x => x.CompanyName)
-            .MaximumLength(200).WithMessage("Company name must not exceed 200 characters.")
-            .When(x => !string.IsNullOrEmpty(x.CompanyName));
+        // TODO: CompanyName should be stored in Organization.Settings JSON field
+        // RuleFor(x => x.CompanyName)
+        //     .MaximumLength(200).WithMessage("Company name must not exceed 200 characters.")
+        //     .When(x => !string.IsNullOrEmpty(x.CompanyName));
     }
 }

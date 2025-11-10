@@ -1,7 +1,9 @@
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Documents.Commands.DeleteDocument;
 using IgnaCheck.Application.Documents.Commands.UploadDocument;
 using IgnaCheck.Application.Documents.Queries.DownloadDocument;
 using IgnaCheck.Application.Documents.Queries.GetDocumentsList;
+using IgnaCheck.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +38,7 @@ public class DocumentsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Result<List<DocumentDto>>>> GetDocuments(
         Guid projectId,
-        [FromQuery] Domain.Entities.DocumentCategory? category = null,
+        [FromQuery] DocumentCategory? category = null,
         [FromQuery] string? searchTerm = null)
     {
         var query = new GetDocumentsListQuery
@@ -74,7 +76,7 @@ public class DocumentsController : ApiControllerBase
     public async Task<ActionResult<Result<UploadDocumentResponse>>> UploadDocument(
         Guid projectId,
         IFormFile file,
-        [FromForm] Domain.Entities.DocumentCategory? category = null,
+        [FromForm] DocumentCategory? category = null,
         [FromForm] string? description = null,
         [FromForm] string? tags = null)
     {

@@ -3,6 +3,7 @@ using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Reports.Queries.GetComplianceDashboard;
 using IgnaCheck.Application.Reports.Queries.GetExecutiveSummary;
 using IgnaCheck.Application.Reports.Queries.GetFrameworkReport;
+using IgnaCheck.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -114,7 +115,7 @@ public class ReportsController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<Result<List<ActivityLogDto>>>> GetAuditTrail(
         Guid projectId,
-        [FromQuery] Domain.Entities.ActivityType? activityType = null,
+        [FromQuery] ActivityType? activityType = null,
         [FromQuery] string? userId = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,

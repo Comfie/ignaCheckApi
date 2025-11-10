@@ -160,17 +160,19 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
                 try
                 {
                     // Retrieve file from storage
-                    using var fileStream = await _fileStorageService.GetFileAsync(doc.StoragePath, cancellationToken);
-
-                    // Extract text on-the-fly
-                    var parseResult = await _documentParsingService.ParseDocumentAsync(
-                        fileStream,
-                        doc.ContentType,
-                        cancellationToken);
-
-                    if (parseResult.IsSuccessful)
+                    var (fileStream, _) = await _fileStorageService.DownloadFileAsync(doc.StoragePath, cancellationToken);
+                    using (fileStream)
                     {
-                        textContent = parseResult.ExtractedText ?? string.Empty;
+                        // Extract text on-the-fly
+                        var parseResult = await _documentParsingService.ParseDocumentAsync(
+                            fileStream,
+                            doc.ContentType,
+                            cancellationToken);
+
+                        if (parseResult.IsSuccessful)
+                        {
+                            textContent = parseResult.ExtractedText ?? string.Empty;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -262,7 +264,7 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
                 OrganizationId = organizationId.Value,
                 ProjectId = project.Id,
                 ControlId = result.ControlId,
-                FindingCode = $"{framework.Code}-{result.ControlId:N}".Substring(0, 20),
+                FindingCode = $"{framework.Code}-{result.ControlId.ToString("N")}".Substring(0, 20),
                 Title = result.FindingTitle,
                 Description = result.FindingDescription,
                 Status = result.Status,
@@ -286,7 +288,7 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
                     Id = Guid.NewGuid(),
                     FindingId = finding.Id,
                     DocumentId = evidenceRef.DocumentId,
-                    EvidenceType = (Domain.Entities.EvidenceType)(int)evidenceRef.EvidenceType,
+                    EvidenceType = (EvidenceType)(int)evidenceRef.EvidenceType,
                     Excerpt = evidenceRef.Excerpt,
                     PageReference = evidenceRef.PageReference,
                     RelevanceScore = evidenceRef.RelevanceScore,

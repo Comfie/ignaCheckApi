@@ -55,11 +55,11 @@ public class DocumentParsingService : IDocumentParsingService
             // Parse creation date if available
             if (info?.CreationDate != null)
             {
-                try
+                if (DateTime.TryParse(info.CreationDate, out var parsedDate))
                 {
-                    creationDate = DateTime.Parse(info.CreationDate);
+                    creationDate = parsedDate;
                 }
-                catch
+                else
                 {
                     // If parsing fails, leave as null
                     _logger.LogWarning("Failed to parse PDF creation date: {CreationDate}", info.CreationDate);

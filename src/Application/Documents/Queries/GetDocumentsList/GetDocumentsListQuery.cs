@@ -16,7 +16,7 @@ public record GetDocumentsListQuery : IRequest<Result<List<DocumentDto>>>
     /// <summary>
     /// Filter by document category (optional).
     /// </summary>
-    public Domain.Entities.DocumentCategory? Category { get; init; }
+    public DocumentCategory? Category { get; init; }
 
     /// <summary>
     /// Search by filename or description (optional).
@@ -97,8 +97,7 @@ public class GetDocumentsListQueryHandler : IRequestHandler<GetDocumentsListQuer
 
         // Build query
         var query = _context.Documents
-            .Where(d => d.ProjectId == request.ProjectId)
-            .AsQueryable();
+            .Where(d => d.ProjectId == request.ProjectId);
 
         // Apply filters
         if (request.Category.HasValue)

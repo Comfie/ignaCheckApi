@@ -1,5 +1,6 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Constants;
+using IgnaCheck.Domain.Entities;
 
 namespace IgnaCheck.Application.Workspaces.Commands.DeleteWorkspace;
 
@@ -170,11 +171,11 @@ public class DeleteWorkspaceCommandHandler : IRequestHandler<DeleteWorkspaceComm
         _context.ComplianceFindings.RemoveRange(findings);
 
         // Delete task attachments
-        var taskAttachments = await _context.Set<Domain.Entities.TaskAttachment>()
+        var taskAttachments = await _context.Set<TaskAttachment>()
             .Include(ta => ta.Task)
             .Where(ta => ta.Task.OrganizationId == request.OrganizationId)
             .ToListAsync(cancellationToken);
-        _context.Set<Domain.Entities.TaskAttachment>().RemoveRange(taskAttachments);
+        _context.Set<TaskAttachment>().RemoveRange(taskAttachments);
 
         // Delete tasks
         var tasks = await _context.RemediationTasks

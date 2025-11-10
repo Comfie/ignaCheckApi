@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
 
 namespace IgnaCheck.Application.Search.Queries.GlobalSearch;
@@ -86,8 +87,8 @@ public record TaskSearchResult
     public Guid ProjectId { get; init; }
     public string ProjectName { get; init; } = string.Empty;
     public string Title { get; init; } = string.Empty;
-    public Domain.Entities.TaskStatus Status { get; init; }
-    public Domain.Entities.PriorityLevel Priority { get; init; }
+    public TaskStatus Status { get; init; }
+    public PriorityLevel Priority { get; init; }
     public string Highlight { get; init; } = string.Empty;
 }
 

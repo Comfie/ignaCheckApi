@@ -1,3 +1,4 @@
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Profile.Commands.UpdateAvatar;
 using IgnaCheck.Application.Profile.Commands.UpdateMyProfile;
 using IgnaCheck.Application.Profile.Commands.UpdateNotificationPreferences;

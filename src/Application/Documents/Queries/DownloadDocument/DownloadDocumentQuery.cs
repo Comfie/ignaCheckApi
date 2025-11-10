@@ -90,7 +90,8 @@ public class DownloadDocumentQueryHandler : IRequestHandler<DownloadDocumentQuer
 
         // Get user details for activity log
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        var userName = user is IgnaCheck.Infrastructure.Identity.ApplicationUser appUser
+        var appUser = user as IgnaCheck.Infrastructure.Identity.ApplicationUser;
+        var userName = appUser != null
             ? $"{appUser.FirstName} {appUser.LastName}".Trim()
             : "Unknown User";
 

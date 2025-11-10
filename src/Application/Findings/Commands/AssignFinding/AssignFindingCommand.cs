@@ -1,5 +1,6 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Entities;
+using IgnaCheck.Domain.Enums;
 
 namespace IgnaCheck.Application.Findings.Commands.AssignFinding;
 
@@ -84,7 +85,7 @@ public class AssignFindingCommandHandler : IRequestHandler<AssignFindingCommand,
         }
 
         // Only owners and admins can assign findings
-        if (member.Role == Domain.Enums.ProjectRole.Viewer || member.Role == Domain.Enums.ProjectRole.Contributor)
+        if (member.Role == ProjectRole.Viewer || member.Role == ProjectRole.Contributor)
         {
             return Result.Failure(new[] { "Access denied. Only project owners can assign findings." });
         }

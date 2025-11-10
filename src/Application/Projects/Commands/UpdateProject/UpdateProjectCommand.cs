@@ -170,7 +170,7 @@ public class UpdateProjectCommandHandler : IRequestHandler<UpdateProjectCommand,
             Description = project.Description,
             Status = project.Status,
             TargetDate = project.TargetDate,
-            LastModified = project.LastModified ?? project.Created
+            LastModified = project.LastModified
         };
 
         return Result<UpdateProjectResponse>.Success(response);

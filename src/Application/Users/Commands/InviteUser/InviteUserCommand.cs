@@ -131,7 +131,8 @@ public class InviteUserCommandHandler : IRequestHandler<InviteUserCommand, Resul
         }
 
         // Check if user with this email already exists and is already a member
-        var existingUser = await _identityService.GetUserByEmailAsync(request.Email);
+        var existingUserObj = await _identityService.GetUserByEmailAsync(request.Email);
+        var existingUser = existingUserObj as Infrastructure.Identity.ApplicationUser;
         OrganizationMember? existingMembership = null;
 
         if (existingUser != null)
