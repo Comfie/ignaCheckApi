@@ -20,8 +20,6 @@ public static class DependencyInjection
 
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
-        builder.Services.AddRazorPages();
-
         // Add Controllers
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
