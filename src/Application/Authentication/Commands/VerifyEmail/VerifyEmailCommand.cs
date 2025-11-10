@@ -1,5 +1,4 @@
 using IgnaCheck.Application.Common.Interfaces;
-using IgnaCheck.Infrastructure.Identity;
 
 namespace IgnaCheck.Application.Authentication.Commands.VerifyEmail;
 
@@ -52,11 +51,11 @@ public class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, Res
 
         // Send welcome email
         var user = await _identityService.GetUserByIdAsync(request.UserId);
-        if (user is IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user != null)
         {
             await _emailService.SendWelcomeEmailAsync(
-                appUser.Email!,
-                appUser.FirstName,
+                user.Email!,
+                user.FirstName,
                 cancellationToken);
         }
 

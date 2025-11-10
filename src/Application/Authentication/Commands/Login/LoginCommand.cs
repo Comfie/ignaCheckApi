@@ -1,5 +1,4 @@
 using IgnaCheck.Application.Common.Interfaces;
-using IgnaCheck.Infrastructure.Identity;
 
 namespace IgnaCheck.Application.Authentication.Commands.Login;
 
@@ -96,13 +95,13 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginRes
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(userId);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result<LoginResponse>.Failure(new[] { "User not found." });
         }
 
         // Check if email is verified
-        if (!appUser.EmailConfirmed)
+        if (!user.EmailConfirmed)
         {
             return Result<LoginResponse>.Failure(new[] { "Please verify your email address before logging in." });
         }
@@ -114,10 +113,10 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginRes
         // Generate JWT access token
         var expiresInMinutes = request.RememberMe ? 43200 : 60; // 30 days or 1 hour
         var accessToken = _jwtTokenGenerator.GenerateAccessToken(
-            userId: appUser.Id,
-            email: appUser.Email!,
-            firstName: appUser.FirstName,
-            lastName: appUser.LastName,
+            userId: user.Id,
+            email: user.Email!,
+            firstName: user.FirstName,
+            lastName: user.LastName,
             roles: roles,
             organizationId: null, // Will be set when user selects workspace
             organizationRole: null,
@@ -129,10 +128,10 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<LoginRes
             AccessToken = accessToken,
             TokenType = "Bearer",
             ExpiresIn = expiresInMinutes * 60, // Convert to seconds
-            UserId = appUser.Id,
-            Email = appUser.Email!,
-            FirstName = appUser.FirstName,
-            LastName = appUser.LastName
+            UserId = user.Id,
+            Email = user.Email!,
+            FirstName = user.FirstName,
+            LastName = user.LastName
         };
 
         return Result<LoginResponse>.Success(response);

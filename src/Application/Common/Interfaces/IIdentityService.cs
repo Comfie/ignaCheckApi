@@ -28,12 +28,12 @@ public interface IIdentityService
     /// <summary>
     /// Gets a user by email address.
     /// </summary>
-    Task<object?> GetUserByEmailAsync(string email);
+    Task<ApplicationUserDto?> GetUserByEmailAsync(string email);
 
     /// <summary>
     /// Gets a user by ID.
     /// </summary>
-    Task<object?> GetUserByIdAsync(string userId);
+    Task<ApplicationUserDto?> GetUserByIdAsync(string userId);
 
     // Email verification methods
 

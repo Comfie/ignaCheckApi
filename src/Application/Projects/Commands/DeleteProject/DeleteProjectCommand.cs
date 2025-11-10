@@ -87,12 +87,12 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
 
         // Get user details for activity log
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result.Failure(new[] { "User not found." });
         }
 
-        var userName = $"{appUser.FirstName} {appUser.LastName}".Trim();
+        var userName = $"{user.FirstName} {user.LastName}".Trim();
 
         // Delete all documents from storage
         foreach (var document in project.Documents)
@@ -115,7 +115,7 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
             ProjectId = null, // Project will be deleted
             UserId = _currentUser.Id,
             UserName = userName,
-            UserEmail = appUser.Email!,
+            UserEmail = user.Email!,
             ActivityType = ActivityType.ProjectDeleted,
             EntityType = "Project",
             EntityId = project.Id,

@@ -1,7 +1,6 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
-using IgnaCheck.Infrastructure.Identity;
 
 namespace IgnaCheck.Application.Documents.Queries.DownloadDocument;
 
@@ -90,9 +89,8 @@ public class DownloadDocumentQueryHandler : IRequestHandler<DownloadDocumentQuer
 
         // Get user details for activity log
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        var appUser = user as IgnaCheck.Infrastructure.Identity.ApplicationUser;
-        var userName = appUser != null
-            ? $"{appUser.FirstName} {appUser.LastName}".Trim()
+        var userName = user != null
+            ? $"{user.FirstName} {user.LastName}".Trim()
             : "Unknown User";
 
         // Log download activity (fire and forget - don't block response)
@@ -103,7 +101,7 @@ public class DownloadDocumentQueryHandler : IRequestHandler<DownloadDocumentQuer
             ProjectId = document.ProjectId,
             UserId = _currentUser.Id,
             UserName = userName,
-            UserEmail = appUser?.Email ?? "unknown@example.com",
+            UserEmail = user?.Email ?? "unknown@example.com",
             ActivityType = ActivityType.DocumentDownloaded,
             EntityType = "Document",
             EntityId = document.Id,

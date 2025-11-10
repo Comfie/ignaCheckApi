@@ -73,7 +73,7 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result<AcceptInvitationResponse>.Failure(new[] { "User not found." });
         }
@@ -89,7 +89,7 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
         }
 
         // Check if invitation is for this user's email
-        if (invitation.Email.ToLower() != appUser.Email?.ToLower())
+        if (invitation.Email.ToLower() != user.Email?.ToLower())
         {
             return Result<AcceptInvitationResponse>.Failure(new[] { "This invitation is not for your email address." });
         }
@@ -164,9 +164,9 @@ public class AcceptInvitationCommandHandler : IRequestHandler<AcceptInvitationCo
         // Generate new JWT token with organization context
         var accessToken = _jwtTokenGenerator.GenerateAccessToken(
             userId: _currentUser.Id,
-            email: appUser.Email!,
-            firstName: appUser.FirstName,
-            lastName: appUser.LastName,
+            email: user.Email!,
+            firstName: user.FirstName,
+            lastName: user.LastName,
             roles: roles,
             organizationId: invitation.OrganizationId,
             organizationRole: invitation.Role,

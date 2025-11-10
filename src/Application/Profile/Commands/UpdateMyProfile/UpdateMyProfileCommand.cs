@@ -87,7 +87,7 @@ public class UpdateMyProfileCommandHandler : IRequestHandler<UpdateMyProfileComm
 
         // Get updated user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result<UserProfileDto>.Failure(new[] { "User not found." });
         }
@@ -95,26 +95,26 @@ public class UpdateMyProfileCommandHandler : IRequestHandler<UpdateMyProfileComm
         // Return updated profile
         var profile = new UserProfileDto
         {
-            UserId = appUser.Id,
-            Email = appUser.Email ?? string.Empty,
-            EmailConfirmed = appUser.EmailConfirmed,
-            FirstName = appUser.FirstName,
-            LastName = appUser.LastName,
-            FullName = (appUser.FirstName + " " + appUser.LastName).Trim(),
-            AvatarUrl = appUser.AvatarUrl,
-            JobTitle = appUser.JobTitle,
-            Department = appUser.Department,
-            PhoneNumber = appUser.PhoneNumber,
-            PhoneNumberConfirmed = appUser.PhoneNumberConfirmed,
-            TimeZone = appUser.TimeZone,
-            PreferredLanguage = appUser.PreferredLanguage,
-            NotificationPreferences = appUser.NotificationPreferences,
-            IsActive = appUser.IsActive,
-            InvitedDate = appUser.InvitedDate,
-            RegistrationCompletedDate = appUser.RegistrationCompletedDate,
-            LastLoginDate = appUser.LastLoginDate,
-            CreatedDate = appUser.Created,
-            LastModifiedDate = appUser.LastModified
+            UserId = user.Id,
+            Email = user.Email ?? string.Empty,
+            EmailConfirmed = user.EmailConfirmed,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            FullName = (user.FirstName + " " + user.LastName).Trim(),
+            AvatarUrl = user.AvatarUrl,
+            JobTitle = user.JobTitle,
+            Department = user.Department,
+            PhoneNumber = user.PhoneNumber,
+            PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+            TimeZone = user.TimeZone,
+            PreferredLanguage = user.PreferredLanguage,
+            NotificationPreferences = user.NotificationPreferences,
+            IsActive = user.IsActive,
+            InvitedDate = user.InvitedDate,
+            RegistrationCompletedDate = user.RegistrationCompletedDate,
+            LastLoginDate = user.LastLoginDate,
+            CreatedDate = user.Created,
+            LastModifiedDate = user.LastModified
         };
 
         return Result<UserProfileDto>.Success(profile);

@@ -111,7 +111,7 @@ public class AddProjectMemberCommandHandler : IRequestHandler<AddProjectMemberCo
         {
             // Get user details
             var userToAdd = await _identityService.GetUserByIdAsync(request.UserId);
-            if (userToAdd is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUserToAdd)
+            if (userToAdd == null)
             {
                 return Result.Failure(new[] { "User not found." });
             }
@@ -123,8 +123,8 @@ public class AddProjectMemberCommandHandler : IRequestHandler<AddProjectMemberCo
                 ProjectId = project.Id,
                 OrganizationId = organizationId.Value,
                 UserId = request.UserId,
-                UserName = $"{appUserToAdd.FirstName} {appUserToAdd.LastName}".Trim(),
-                UserEmail = appUserToAdd.Email!,
+                UserName = $"{userToAdd.FirstName} {userToAdd.LastName}".Trim(),
+                UserEmail = userToAdd.Email!,
                 Role = request.Role,
                 JoinedDate = DateTime.UtcNow,
                 AddedBy = _currentUser.Id,
@@ -135,8 +135,8 @@ public class AddProjectMemberCommandHandler : IRequestHandler<AddProjectMemberCo
         }
 
         // Get current user details for activity log
-        var currentAppUser = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (currentAppUser is not IgnaCheck.Infrastructure.Identity.ApplicationUser currentUser)
+        var currentUser = await _identityService.GetUserByIdAsync(_currentUser.Id);
+        if (currentUser == null)
         {
             return Result.Failure(new[] { "Current user not found." });
         }
@@ -145,8 +145,8 @@ public class AddProjectMemberCommandHandler : IRequestHandler<AddProjectMemberCo
 
         // Get added user details for activity log
         var addedUser = await _identityService.GetUserByIdAsync(request.UserId);
-        var addedUserName = addedUser is IgnaCheck.Infrastructure.Identity.ApplicationUser addedAppUser
-            ? $"{addedAppUser.FirstName} {addedAppUser.LastName}".Trim()
+        var addedUserName = addedUser != null
+            ? $"{addedUser.FirstName} {addedUser.LastName}".Trim()
             : "Unknown User";
 
         // Log activity

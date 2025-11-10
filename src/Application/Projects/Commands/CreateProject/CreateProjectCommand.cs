@@ -107,7 +107,7 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
 
         // Get user details for project member
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result<CreateProjectResponse>.Failure(new[] { "User not found." });
         }
@@ -132,8 +132,8 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             ProjectId = project.Id,
             OrganizationId = organizationId.Value,
             UserId = _currentUser.Id,
-            UserName = $"{appUser.FirstName} {appUser.LastName}".Trim(),
-            UserEmail = appUser.Email!,
+            UserName = $"{user.FirstName} {user.LastName}".Trim(),
+            UserEmail = user.Email!,
             Role = ProjectRole.Owner,
             JoinedDate = DateTime.UtcNow,
             AddedBy = _currentUser.Id,

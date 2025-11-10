@@ -54,14 +54,14 @@ public class GetMyInvitationsQueryHandler : IRequestHandler<GetMyInvitationsQuer
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser || string.IsNullOrEmpty(appUser.Email))
+        if (user == null || string.IsNullOrEmpty(user.Email))
         {
             return Result<List<MyInvitationDto>>.Failure(new[] { "User not found." });
         }
 
         // Get all pending invitations for this user's email
         var invitations = await _context.Invitations
-            .Where(i => i.Email.ToLower() == appUser.Email.ToLower() &&
+            .Where(i => i.Email.ToLower() == user.Email.ToLower() &&
                        i.Status == InvitationStatus.Pending &&
                        i.ExpiresDate > DateTime.UtcNow)
             .Include(i => i.Organization)
@@ -76,9 +76,9 @@ public class GetMyInvitationsQueryHandler : IRequestHandler<GetMyInvitationsQuer
             if (!string.IsNullOrEmpty(invitation.InvitedBy))
             {
                 var inviterUser = await _identityService.GetUserByIdAsync(invitation.InvitedBy);
-                if (inviterUser is IgnaCheck.Infrastructure.Identity.ApplicationUser inviterAppUser)
+                if (inviterUser != null)
                 {
-                    invitedByUserName = $"{inviterAppUser.FirstName} {inviterAppUser.LastName}".Trim();
+                    invitedByUserName = $"{inviterUser.FirstName} {inviterUser.LastName}".Trim();
                 }
             }
 

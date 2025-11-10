@@ -2,7 +2,6 @@ using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Application.Common.Models.AI;
 using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
-using IgnaCheck.Infrastructure.Identity;
 
 namespace IgnaCheck.Application.Audit.Commands.RunAuditCheck;
 
@@ -140,12 +139,12 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
 
         // Get user details for activity log
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result<AuditCheckResponse>.Failure(new[] { "User not found." });
         }
 
-        var userName = $"{appUser.FirstName} {appUser.LastName}".Trim();
+        var userName = $"{user.FirstName} {user.LastName}".Trim();
 
         // Prepare document contents for analysis
         // Extract text on-demand if not cached in database
@@ -224,7 +223,7 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
             ProjectId = project.Id,
             UserId = _currentUser.Id,
             UserName = userName,
-            UserEmail = appUser.Email!,
+            UserEmail = user.Email!,
             ActivityType = ActivityType.ComplianceCheckStarted,
             EntityType = "AuditCheck",
             EntityId = auditCheckId,
@@ -322,7 +321,7 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
             ProjectId = project.Id,
             UserId = _currentUser.Id,
             UserName = userName,
-            UserEmail = appUser.Email!,
+            UserEmail = user.Email!,
             ActivityType = ActivityType.ComplianceCheckCompleted,
             EntityType = "AuditCheck",
             EntityId = auditCheckId,

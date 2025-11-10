@@ -107,14 +107,44 @@ public class IdentityService : IIdentityService
         return Result<string>.Success(user.Id);
     }
 
-    public async Task<object?> GetUserByEmailAsync(string email)
+    public async Task<ApplicationUserDto?> GetUserByEmailAsync(string email)
     {
-        return await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email);
+        return user == null ? null : MapToDto(user);
     }
 
-    public async Task<object?> GetUserByIdAsync(string userId)
+    public async Task<ApplicationUserDto?> GetUserByIdAsync(string userId)
     {
-        return await _userManager.FindByIdAsync(userId);
+        var user = await _userManager.FindByIdAsync(userId);
+        return user == null ? null : MapToDto(user);
+    }
+
+    private static ApplicationUserDto MapToDto(ApplicationUser user)
+    {
+        return new ApplicationUserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            UserName = user.UserName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            AvatarUrl = user.AvatarUrl,
+            JobTitle = user.JobTitle,
+            Department = user.Department,
+            PhoneNumber = user.PhoneNumber,
+            PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+            TimeZone = user.TimeZone,
+            PreferredLanguage = user.PreferredLanguage,
+            NotificationPreferences = user.NotificationPreferences,
+            EmailConfirmed = user.EmailConfirmed,
+            IsActive = user.IsActive,
+            InvitedDate = user.InvitedDate,
+            RegistrationCompletedDate = user.RegistrationCompletedDate,
+            LastLoginDate = user.LastLoginDate,
+            Created = user.CreatedDate,
+            LastModified = user.UpdatedDate,
+            Bio = user.Bio
+        };
     }
 
     // Email verification methods

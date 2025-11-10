@@ -1,7 +1,6 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
-using IgnaCheck.Infrastructure.Identity;
 using Microsoft.AspNetCore.Http;
 
 namespace IgnaCheck.Application.Documents.Commands.UploadDocument;
@@ -199,9 +198,8 @@ public class UploadDocumentCommandHandler : IRequestHandler<UploadDocumentComman
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        var appUser = user as IgnaCheck.Infrastructure.Identity.ApplicationUser;
-        var userName = appUser != null
-            ? $"{appUser.FirstName} {appUser.LastName}".Trim()
+        var userName = user != null
+            ? $"{user.FirstName} {user.LastName}".Trim()
             : "Unknown User";
 
         // Create document entity
@@ -244,7 +242,7 @@ public class UploadDocumentCommandHandler : IRequestHandler<UploadDocumentComman
             ProjectId = project.Id,
             UserId = _currentUser.Id,
             UserName = userName,
-            UserEmail = appUser?.Email ?? "unknown@example.com",
+            UserEmail = user?.Email ?? "unknown@example.com",
             ActivityType = ActivityType.DocumentUploaded,
             EntityType = "Document",
             EntityId = document.Id,

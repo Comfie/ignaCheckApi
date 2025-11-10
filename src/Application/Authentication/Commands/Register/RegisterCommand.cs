@@ -1,6 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Entities;
-using IgnaCheck.Infrastructure.Identity;
 
 namespace IgnaCheck.Application.Authentication.Commands.Register;
 

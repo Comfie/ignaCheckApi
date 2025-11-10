@@ -144,8 +144,8 @@ public class GetWorkspaceMembersQueryHandler : IRequestHandler<GetWorkspaceMembe
         var memberDtos = new List<WorkspaceMemberDto>();
         foreach (var member in allMembers)
         {
-            var userObj = await _identityService.GetUserByIdAsync(member.UserId);
-            if (userObj is Infrastructure.Identity.ApplicationUser user)
+            var user = await _identityService.GetUserByIdAsync(member.UserId);
+            if (user != null)
             {
                 // Apply search filter if provided
                 if (!string.IsNullOrEmpty(request.SearchQuery))

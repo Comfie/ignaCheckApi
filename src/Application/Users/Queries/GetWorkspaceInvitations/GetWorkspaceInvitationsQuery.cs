@@ -106,9 +106,9 @@ public class GetWorkspaceInvitationsQueryHandler : IRequestHandler<GetWorkspaceI
             if (!string.IsNullOrEmpty(invitation.InvitedBy))
             {
                 var inviterUser = await _identityService.GetUserByIdAsync(invitation.InvitedBy);
-                if (inviterUser is Infrastructure.Identity.ApplicationUser inviterAppUser)
+                if (inviterUser != null)
                 {
-                    invitedByUserName = $"{inviterAppUser.FirstName} {inviterAppUser.LastName}".Trim();
+                    invitedByUserName = $"{inviterUser.FirstName} {inviterUser.LastName}".Trim();
                 }
             }
 

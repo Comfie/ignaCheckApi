@@ -43,7 +43,7 @@ public class DeclineInvitationCommandHandler : IRequestHandler<DeclineInvitation
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result.Failure(new[] { "User not found." });
         }
@@ -58,7 +58,7 @@ public class DeclineInvitationCommandHandler : IRequestHandler<DeclineInvitation
         }
 
         // Check if invitation is for this user's email
-        if (invitation.Email.ToLower() != appUser.Email?.ToLower())
+        if (invitation.Email.ToLower() != user.Email?.ToLower())
         {
             return Result.Failure(new[] { "This invitation is not for your email address." });
         }

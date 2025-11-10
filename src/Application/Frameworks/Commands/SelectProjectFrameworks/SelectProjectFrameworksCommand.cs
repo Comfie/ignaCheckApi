@@ -106,12 +106,12 @@ public class SelectProjectFrameworksCommandHandler : IRequestHandler<SelectProje
 
         // Get user details for activity log
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result.Failure(new[] { "User not found." });
         }
 
-        var userName = $"{appUser.FirstName} {appUser.LastName}".Trim();
+        var userName = $"{user.FirstName} {user.LastName}".Trim();
 
         // Add frameworks (skip if already assigned)
         var addedFrameworks = new List<string>();
@@ -159,7 +159,7 @@ public class SelectProjectFrameworksCommandHandler : IRequestHandler<SelectProje
                 ProjectId = project.Id,
                 UserId = _currentUser.Id,
                 UserName = userName,
-                UserEmail = appUser.Email!,
+                UserEmail = user.Email!,
                 ActivityType = ActivityType.FrameworkAdded,
                 EntityType = "ProjectFramework",
                 EntityId = projectFramework.Id,

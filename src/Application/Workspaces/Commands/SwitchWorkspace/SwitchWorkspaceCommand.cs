@@ -81,7 +81,7 @@ public class SwitchWorkspaceCommandHandler : IRequestHandler<SwitchWorkspaceComm
 
         // Get user details
         var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user is not IgnaCheck.Infrastructure.Identity.ApplicationUser appUser)
+        if (user == null)
         {
             return Result<SwitchWorkspaceResponse>.Failure(new[] { "User not found." });
         }
@@ -111,9 +111,9 @@ public class SwitchWorkspaceCommandHandler : IRequestHandler<SwitchWorkspaceComm
         var expiresInMinutes = 60; // 1 hour
         var accessToken = _jwtTokenGenerator.GenerateAccessToken(
             userId: _currentUser.Id,
-            email: appUser.Email!,
-            firstName: appUser.FirstName,
-            lastName: appUser.LastName,
+            email: user.Email!,
+            firstName: user.FirstName,
+            lastName: user.LastName,
             roles: roles,
             organizationId: organization.Id,
             organizationRole: membership.Role,
