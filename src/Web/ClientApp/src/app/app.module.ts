@@ -1,45 +1,43 @@
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_ID, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
-import { ModalModule } from 'ngx-bootstrap/modal';
-
-import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { TodoComponent } from './todo/todo.component';
-import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+// Core Module - Import ONCE (provides singleton services, guards, interceptors)
+import { CoreModule } from './core/core.module';
+
+/**
+ * Root Application Module
+ *
+ * This is the main entry point of the Angular application.
+ * - CoreModule is imported once to provide singleton services
+ * - Feature modules will be lazy-loaded via routing
+ * - Layout components will be added when generated
+ *
+ * Next Steps:
+ * 1. Generate feature modules: see SETUP-GUIDE.md
+ * 2. Generate layout components: ng generate component layout/main-layout
+ * 3. Add lazy routes to app-routing.module.ts
+ */
 @NgModule({
-    declarations: [
-        AppComponent,
-        NavMenuComponent,
-        HomeComponent,
-        CounterComponent,
-        FetchDataComponent,
-        TodoComponent
-    ],
-    bootstrap: [AppComponent],
-    imports: [
-        BrowserModule,
-        FormsModule,
-        RouterModule.forRoot([
-            { path: '', component: HomeComponent, pathMatch: 'full' },
-            { path: 'counter', component: CounterComponent },
-            { path: 'fetch-data', component: FetchDataComponent },
-            { path: 'todo', component: TodoComponent }
-        ]),
-        BrowserAnimationsModule,
-        ModalModule.forRoot()],
-    providers: [
-        { provide: APP_ID, useValue: 'ng-cli-universal' },
-        { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
-        provideHttpClient(withInterceptorsFromDi())
-    ]
+  declarations: [
+    AppComponent
+    // Layout components will be added here when generated
+    // Example:
+    // MainLayoutComponent,
+    // HeaderComponent,
+    // SidebarComponent,
+    // FooterComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    CoreModule,  // Imported ONCE - provides auth, interceptors, guards
+    AppRoutingModule  // Must be last
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
