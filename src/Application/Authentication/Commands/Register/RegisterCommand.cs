@@ -1,4 +1,6 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
+using IgnaCheck.Infrastructure.Identity;
 
 namespace IgnaCheck.Application.Authentication.Commands.Register;
 
@@ -110,7 +112,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<st
                 MaxMembers = 5, // Free tier limit
                 MaxProjects = 3,
                 MaxStorageGb = 1,
-                CreatedAt = DateTime.UtcNow
+                Created = DateTime.UtcNow
             };
 
             _context.Organizations.Add(organization);
@@ -124,7 +126,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<st
                 Role = IgnaCheck.Domain.Constants.WorkspaceRoles.Owner,
                 JoinedDate = DateTime.UtcNow,
                 IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                Created = DateTime.UtcNow
             };
 
             _context.OrganizationMembers.Add(organizationMember);

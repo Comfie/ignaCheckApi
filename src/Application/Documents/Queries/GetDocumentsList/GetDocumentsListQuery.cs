@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Enums;
 
 namespace IgnaCheck.Application.Documents.Queries.GetDocumentsList;
 

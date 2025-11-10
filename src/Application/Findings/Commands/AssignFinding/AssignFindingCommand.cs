@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Entities;
 
 namespace IgnaCheck.Application.Findings.Commands.AssignFinding;
 

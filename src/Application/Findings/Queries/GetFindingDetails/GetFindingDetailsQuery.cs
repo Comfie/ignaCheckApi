@@ -184,7 +184,7 @@ public class GetFindingDetailsQueryHandler : IRequestHandler<GetFindingDetailsQu
             Control = new ControlDto
             {
                 Id = finding.Control.Id,
-                ControlReference = finding.Control.ControlReference,
+                ControlReference = finding.Control.ControlCode,
                 Title = finding.Control.Title,
                 Description = finding.Control.Description,
                 ImplementationGuidance = finding.Control.ImplementationGuidance

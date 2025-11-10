@@ -1,5 +1,7 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Entities;
+using IgnaCheck.Domain.Enums;
+using IgnaCheck.Infrastructure.Identity;
 using Microsoft.AspNetCore.Http;
 
 namespace IgnaCheck.Application.Documents.Commands.UploadDocument;

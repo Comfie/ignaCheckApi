@@ -2,6 +2,7 @@ using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Application.Common.Models.AI;
 using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
+using IgnaCheck.Infrastructure.Identity;
 
 namespace IgnaCheck.Application.Audit.Commands.RunAuditCheck;
 

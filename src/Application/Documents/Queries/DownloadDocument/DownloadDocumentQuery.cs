@@ -1,5 +1,7 @@
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Entities;
+using IgnaCheck.Domain.Enums;
+using IgnaCheck.Infrastructure.Identity;
 
 namespace IgnaCheck.Application.Documents.Queries.DownloadDocument;
 
