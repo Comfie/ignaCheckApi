@@ -1,37 +1,37 @@
-import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { NotificationService } from '../services/notification.service';
 
 /**
- * Role Guard
+ * Role Guard (Functional)
  * Protects routes based on user roles
- * Usage: Add to route data: { roles: ['Owner', 'Admin'] }
+ *
+ * Usage in routes:
+ * {
+ *   path: 'admin',
+ *   component: AdminComponent,
+ *   canActivate: [roleGuard],
+ *   data: { roles: ['Owner', 'Admin'] }
+ * }
  */
-@Injectable({
-  providedIn: 'root'
-})
-export class RoleGuard implements CanActivate {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private notificationService: NotificationService
-  ) {}
+export const roleGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const notificationService = inject(NotificationService);
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    const requiredRoles = route.data['roles'] as string[];
+  const requiredRoles = route.data['roles'] as string[];
 
-    if (!requiredRoles || requiredRoles.length === 0) {
-      return true;
-    }
-
-    if (this.authService.hasAnyRole(requiredRoles)) {
-      return true;
-    }
-
-    // User doesn't have required role
-    this.notificationService.error('You don\'t have permission to access this page');
-    this.router.navigate(['/dashboard']);
-    return false;
+  if (!requiredRoles || requiredRoles.length === 0) {
+    return true;
   }
-}
+
+  if (authService.hasAnyRole(requiredRoles)) {
+    return true;
+  }
+
+  // User doesn't have required role
+  notificationService.error('You don\'t have permission to access this page');
+  router.navigate(['/dashboard']);
+  return false;
+};

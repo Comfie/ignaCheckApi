@@ -1,26 +1,37 @@
 # Frontend Architecture Guide
 
+**Angular Version:** 20.3.10 (Latest)
+**Architecture:** Standalone Components (Module-Free)
+
+## Overview
+
+This Angular application uses the modern **standalone components** architecture introduced in Angular 14+ and recommended as the default since Angular 15. This approach eliminates NgModules in favor of self-contained, composable components.
+
+### Key Benefits
+- ✅ Less boilerplate code (no module files)
+- ✅ Better tree-shaking and smaller bundle sizes
+- ✅ Simpler mental model (components import what they need)
+- ✅ Faster compilation
+- ✅ Component-level lazy loading
+- ✅ Future-proof (Angular's recommended approach)
+
 ## Project Structure
 
 ```
 src/app/
-├── core/                          # Singleton services (import once in AppModule)
+├── core/                          # Core services, guards, and interceptors
 │   ├── guards/
-│   │   ├── auth.guard.ts         # Protects authenticated routes
-│   │   └── role.guard.ts         # Protects role-based routes
+│   │   ├── auth.guard.ts         # Functional guard for authentication
+│   │   └── role.guard.ts         # Functional guard for role-based access
 │   ├── interceptors/
-│   │   ├── jwt.interceptor.ts    # Adds JWT token to requests
-│   │   ├── error.interceptor.ts  # Global error handling
-│   │   └── loading.interceptor.ts # Global loading state
+│   │   ├── jwt.interceptor.ts    # Functional interceptor for JWT tokens
+│   │   ├── error.interceptor.ts  # Functional interceptor for error handling
+│   │   └── loading.interceptor.ts # Functional interceptor for loading state
 │   ├── services/
 │   │   ├── auth.service.ts       # Authentication logic
 │   │   ├── token.service.ts      # Token storage/retrieval
 │   │   ├── loading.service.ts    # Loading state management
 │   │   └── notification.service.ts # Toast notifications
-│   ├── models/
-│   │   ├── user.model.ts         # User interface
-│   │   └── auth.model.ts         # Auth interfaces
-│   └── core.module.ts            # Core module definition
 │
 ├── shared/                        # Reusable components/pipes/directives
 │   ├── components/
@@ -124,29 +135,86 @@ src/app/
 │       ├── compliance-status.enum.ts
 │       └── user-role.enum.ts
 │
-├── app-routing.module.ts          # Main routing configuration
-├── app.component.ts               # Root component
+├── app.routes.ts                  # Route definitions (replaces app-routing.module.ts)
+├── app.config.ts                  # Application configuration (replaces app.module.ts)
+├── app.component.ts               # Root standalone component
 ├── app.component.html
 ├── app.component.scss
-└── app.module.ts                  # Root module
+└── main.ts                        # Bootstrap with bootstrapApplication()
 ```
 
-## Module Loading Strategy
+## Standalone Components Architecture
 
-### Eager Loading (AppModule)
-- CoreModule (singleton services)
-- SharedModule (if used in AppModule)
-- Layout components
+### No More NgModules! 🎉
 
-### Lazy Loading (Feature Modules)
-- All feature modules loaded on-demand
-- Reduces initial bundle size
-- Improves performance
+This application uses **zero NgModules**. Instead:
+- Components declare their dependencies directly via `imports: []`
+- Services use `providedIn: 'root'` for singleton behavior
+- Guards and interceptors are functional (not class-based)
+- Routing uses standalone route configuration
 
-## Routing Structure
+### Application Bootstrap
+
+**Old Way (NgModule):**
+```typescript
+platformBrowserDynamic().bootstrapModule(AppModule)
+```
+
+**New Way (Standalone):**
+```typescript
+// main.ts
+bootstrapApplication(AppComponent, appConfig)
+```
+
+### Configuration (app.config.ts)
+
+All application-level configuration is in `app.config.ts`:
 
 ```typescript
-const routes: Routes = [
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(withInterceptors([
+      jwtInterceptor,
+      errorInterceptor,
+      loadingInterceptor
+    ])),
+    provideAnimations(),
+    { provide: 'BASE_URL', useFactory: () => document.getElementsByTagName('base')[0].href }
+  ]
+};
+```
+
+## Component Loading Strategy
+
+### Eager Loading
+- AppComponent (root)
+- Layout components (when implemented)
+- Shared utilities (imported as needed)
+
+### Lazy Loading
+- **Component-level lazy loading** with `loadComponent`:
+  ```typescript
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./features/dashboard/dashboard.component')
+      .then(m => m.DashboardComponent)
+  }
+  ```
+
+- **Route-level lazy loading** with `loadChildren`:
+  ```typescript
+  {
+    path: 'projects',
+    loadChildren: () => import('./features/projects/project.routes')
+      .then(m => m.PROJECT_ROUTES)
+  }
+  ```
+
+## Routing Structure (app.routes.ts)
+
+```typescript
+export const routes: Routes = [
   {
     path: '',
     redirectTo: '/dashboard',
@@ -154,46 +222,30 @@ const routes: Routes = [
   },
   {
     path: 'auth',
-    loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
+    loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
   },
   {
     path: '',
-    component: MainLayoutComponent,
-    canActivate: [AuthGuard],
+    component: MainLayoutComponent, // Standalone component
+    canActivate: [authGuard], // Functional guard
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadComponent: () => import('./features/dashboard/dashboard.component')
+          .then(m => m.DashboardComponent),
+        canActivate: [authGuard]
       },
       {
         path: 'projects',
-        loadChildren: () => import('./features/projects/projects.module').then(m => m.ProjectsModule)
-      },
-      {
-        path: 'documents',
-        loadChildren: () => import('./features/documents/documents.module').then(m => m.DocumentsModule)
-      },
-      {
-        path: 'frameworks',
-        loadChildren: () => import('./features/frameworks/frameworks.module').then(m => m.FrameworksModule)
-      },
-      {
-        path: 'findings',
-        loadChildren: () => import('./features/findings/findings.module').then(m => m.FindingsModule)
-      },
-      {
-        path: 'reports',
-        loadChildren: () => import('./features/reports/reports.module').then(m => m.ReportsModule)
+        loadChildren: () => import('./features/projects/project.routes')
+          .then(m => m.PROJECT_ROUTES)
       },
       {
         path: 'settings',
-        loadChildren: () => import('./features/settings/settings.module').then(m => m.SettingsModule),
-        canActivate: [RoleGuard],
+        loadComponent: () => import('./features/settings/settings.component')
+          .then(m => m.SettingsComponent),
+        canActivate: [authGuard, roleGuard],
         data: { roles: ['Owner', 'Admin'] }
-      },
-      {
-        path: 'profile',
-        loadChildren: () => import('./features/profile/profile.module').then(m => m.ProfileModule)
       }
     ]
   },
@@ -202,6 +254,67 @@ const routes: Routes = [
     redirectTo: '/dashboard'
   }
 ];
+```
+
+## Functional Guards and Interceptors
+
+### Functional Guards (Modern Approach)
+
+**Old Way (Class-based):**
+```typescript
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+  constructor(private auth: AuthService, private router: Router) {}
+
+  canActivate(): boolean {
+    if (this.auth.isAuthenticated()) return true;
+    this.router.navigate(['/login']);
+    return false;
+  }
+}
+```
+
+**New Way (Functional):**
+```typescript
+export const authGuard: CanActivateFn = (route, state) => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+
+  if (auth.isAuthenticated()) return true;
+  router.navigate(['/login']);
+  return false;
+};
+```
+
+### Functional Interceptors
+
+**Old Way (Class-based):**
+```typescript
+@Injectable()
+export class JwtInterceptor implements HttpInterceptor {
+  constructor(private tokenService: TokenService) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const token = this.tokenService.getToken();
+    if (token) {
+      req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+    }
+    return next.handle(req);
+  }
+}
+```
+
+**New Way (Functional):**
+```typescript
+export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
+  const tokenService = inject(TokenService);
+  const token = tokenService.getToken();
+
+  if (token) {
+    req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+  }
+  return next(req);
+};
 ```
 
 ## State Management
@@ -266,19 +379,69 @@ export class ProjectService {
 }
 ```
 
+## Creating Standalone Components
+
+### Component Structure
+
+Every standalone component declares its own dependencies:
+
+```typescript
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+
+@Component({
+  selector: 'app-example',
+  standalone: true,  // ⭐ Key property
+  imports: [
+    CommonModule,    // For *ngIf, *ngFor, etc.
+    RouterModule,    // For routerLink
+    OtherComponent   // Import other standalone components
+  ],
+  templateUrl: './example.component.html',
+  styleUrls: ['./example.component.scss']
+})
+export class ExampleComponent { }
+```
+
+### Generating Components
+
+Use Angular CLI with `--standalone` flag (default in Angular 17+):
+
+```bash
+# Generate standalone component
+ng generate component features/dashboard --standalone
+
+# Generate standalone component with routing
+ng generate component features/projects/project-list --standalone
+```
+
 ## Component Patterns
 
 ### Smart vs Presentational Components
 
-**Smart Components (Container)**
-- Located in feature folders
-- Handle business logic
+**Smart Components (Container)** - Located in feature folders
+- Standalone components that import needed dependencies
+- Handle business logic and state
 - Connect to services
-- Manage state
 - Pass data to presentational components
 
 ```typescript
-// projects/project-list/project-list.component.ts
+// features/projects/project-list/project-list.component.ts
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
+import { ProjectService } from '../services/project.service';
+import { ProjectCardComponent } from '@shared/components/project-card';
+import { LoadingService } from '@core/services/loading.service';
+
+@Component({
+  selector: 'app-project-list',
+  standalone: true,
+  imports: [CommonModule, ProjectCardComponent], // Import what you need
+  templateUrl: './project-list.component.html',
+  styleUrls: ['./project-list.component.scss']
+})
 export class ProjectListComponent implements OnInit {
   projects$: Observable<Project[]>;
   loading$ = this.loadingService.loading$;
@@ -298,16 +461,26 @@ export class ProjectListComponent implements OnInit {
 }
 ```
 
-**Presentational Components (Dumb)**
-- Located in shared folder
+**Presentational Components (Dumb)** - Located in shared folder
+- Standalone components that are reusable
 - Only display data
 - Emit events via @Output
-- Reusable across features
+- Import minimal dependencies
 
 ```typescript
 // shared/components/project-card/project-card.component.ts
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-project-card',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './project-card.component.html',
+  styleUrls: ['./project-card.component.scss']
+})
 export class ProjectCardComponent {
-  @Input() project: Project;
+  @Input() project!: Project;
   @Output() select = new EventEmitter<string>();
 
   onSelect() {
