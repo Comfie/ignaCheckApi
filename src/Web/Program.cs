@@ -42,14 +42,13 @@ else
 app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSpaStaticFiles();
 
 app.UseSwaggerUi(settings =>
 {
     settings.Path = "/api";
     settings.DocumentPath = "/api/specification.json";
 });
-
-app.MapFallbackToFile("index.html");
 
 app.UseExceptionHandler(options => { });
 
@@ -59,6 +58,20 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapEndpoints();
+
+// Configure SPA
+app.UseSpa(spa =>
+{
+    spa.Options.SourcePath = "ClientApp";
+
+    if (app.Environment.IsDevelopment())
+    {
+        // In development, run Angular dev server separately
+        // Frontend dev: cd ClientApp && npm start
+        // Backend dev: dotnet run (this will proxy to Angular on port 44447)
+        spa.UseProxyToSpaDevelopmentServer("https://localhost:44447");
+    }
+});
 
 logger.LogInformation("Application configured. Starting web server...");
 app.Run();

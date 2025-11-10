@@ -38,6 +38,12 @@ public static class DependencyInjection
         {
             configure.Title = "IgnaCheck API";
         });
+
+        // Add SPA services
+        builder.Services.AddSpaStaticFiles(configuration =>
+        {
+            configuration.RootPath = "ClientApp/dist";
+        });
     }
 
     public static void AddKeyVaultIfConfigured(this IHostApplicationBuilder builder)
