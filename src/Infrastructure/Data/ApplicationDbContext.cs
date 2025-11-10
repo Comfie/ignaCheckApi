@@ -12,11 +12,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 {
     private readonly ITenantService? _tenantService;
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
-        ITenantService tenantService) : base(options)
+        ITenantService? tenantService = null) : base(options)
     {
         _tenantService = tenantService;
     }
