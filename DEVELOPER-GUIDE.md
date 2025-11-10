@@ -26,7 +26,66 @@ Development (Separated)           Production (Bundled)
 - Git
 - Code editor (VS Code recommended)
 
-### One-Time Setup
+### Choose Your Backend Option
+
+You have **3 options** for connecting to the API:
+
+#### Option A: Run Full Stack Locally (Recommended for Small Teams)
+**Best for:** Full independence, offline work, debugging
+**Requirements:** .NET SDK, PostgreSQL/SQLite, AI API key
+
+```bash
+# One-time setup
+1. Install .NET 9 SDK from https://dotnet.microsoft.com/download
+2. Install PostgreSQL 16+ (or use SQLite in dev)
+3. Clone repo and configure:
+   cd ignaCheckApi/src/Web
+   dotnet user-secrets set "AI:Claude:ApiKey" "your-key-here"
+
+# Daily workflow
+cd src/Web
+dotnet run  # Start API in background
+
+# Open new terminal
+cd src/Web/ClientApp
+npm install
+npm start   # Start Angular dev server
+```
+
+#### Option B: Connect to Shared Dev API (No .NET Installation)
+**Best for:** Larger teams, no local backend needed
+**Requirements:** Internet connection, shared dev API URL
+
+```bash
+# One-time setup
+cd ignaCheckApi/src/Web/ClientApp
+
+# Update proxy.conf.js to point to shared dev API
+# (Backend dev will provide the URL)
+# Example: https://ignacheck-dev.azurewebsites.net
+
+npm install
+npm start
+```
+
+#### Option C: Use Mock API (Fully Offline)
+**Best for:** UI-focused work, no backend available
+**Requirements:** None
+
+```bash
+# One-time setup
+cd ignaCheckApi/src/Web/ClientApp
+npm install -D json-server
+
+# Create mock-api/db.json with sample data
+# (See Mock API section below)
+
+# Daily workflow
+npm run mock-api  # Terminal 1
+npm start         # Terminal 2
+```
+
+### One-Time Setup (After Choosing Option)
 
 ```bash
 # Clone repository
@@ -141,6 +200,123 @@ createProject() {
 }
 ```
 
+### Setting Up Mock API (Option C)
+
+If you chose the mock API option for offline work:
+
+**1. Install json-server:**
+```bash
+cd ClientApp
+npm install -D json-server
+```
+
+**2. Create mock data file:**
+```bash
+mkdir mock-api
+cat > mock-api/db.json << 'EOF'
+{
+  "projects": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name": "GDPR Compliance Audit",
+      "description": "Annual GDPR compliance review",
+      "status": "Active",
+      "targetDate": "2025-12-31T00:00:00Z"
+    },
+    {
+      "id": "7b8c9d10-2345-6789-abcd-ef1234567890",
+      "name": "ISO 27001 Certification",
+      "description": "Initial ISO 27001 certification project",
+      "status": "InProgress",
+      "targetDate": "2025-06-30T00:00:00Z"
+    }
+  ],
+  "documents": [
+    {
+      "id": "a1b2c3d4-5678-90ab-cdef-1234567890ab",
+      "projectId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "fileName": "privacy-policy.pdf",
+      "contentType": "application/pdf",
+      "fileSizeBytes": 524288,
+      "uploadedAt": "2025-11-01T10:30:00Z"
+    }
+  ],
+  "frameworks": [
+    {
+      "id": "f1e2d3c4-b5a6-7890-1234-567890abcdef",
+      "code": "GDPR",
+      "name": "General Data Protection Regulation",
+      "description": "EU data protection regulation",
+      "version": "2016/679"
+    },
+    {
+      "id": "a9b8c7d6-e5f4-3210-9876-543210fedcba",
+      "code": "ISO27001",
+      "name": "ISO/IEC 27001:2022",
+      "description": "Information security management",
+      "version": "2022"
+    }
+  ]
+}
+EOF
+```
+
+**3. Update proxy.conf.js:**
+```javascript
+// ClientApp/proxy.conf.js
+const target = process.env.USE_MOCK_API
+  ? 'http://localhost:3000'  // json-server
+  : 'https://localhost:5001'; // real API
+
+const PROXY_CONFIG = [
+  {
+    context: ["/api"],
+    target: target,
+    secure: false,
+    pathRewrite: process.env.USE_MOCK_API ? { '^/api': '' } : {},
+  }
+];
+
+module.exports = PROXY_CONFIG;
+```
+
+**4. Add npm scripts:**
+```json
+// ClientApp/package.json
+{
+  "scripts": {
+    "start": "ng serve --port 44447",
+    "start:mock": "USE_MOCK_API=true npm start",
+    "mock-api": "json-server --watch mock-api/db.json --port 3000 --routes mock-api/routes.json"
+  }
+}
+```
+
+**5. Run with mock API:**
+```bash
+# Terminal 1: Start mock API
+npm run mock-api
+
+# Terminal 2: Start Angular with mock API
+npm run start:mock
+```
+
+### Which Backend Option Should You Choose?
+
+| Feature | Option A: Full Stack | Option B: Shared API | Option C: Mock API |
+|---------|---------------------|---------------------|-------------------|
+| **Offline work** | ✅ Yes | ❌ No | ✅ Yes |
+| **Setup complexity** | 🟡 Medium | 🟢 Low | 🟢 Low |
+| **.NET SDK required** | ✅ Yes | ❌ No | ❌ No |
+| **Database required** | ✅ Yes | ❌ No | ❌ No |
+| **Real API responses** | ✅ Yes | ✅ Yes | ❌ Mock data |
+| **Debug backend** | ✅ Yes | ❌ No | ❌ No |
+| **Integration testing** | ✅ Full | ✅ Full | ⚠️ Limited |
+| **Team coordination** | 🟢 Low | 🟢 Low | 🟡 Medium |
+| **Best for** | Small teams | Large teams | UI work |
+
+**Recommendation for 2-person team:** Start with **Option A** (Full Stack) for first 2-4 weeks, then decide if you need shared API or mocking.
+
 ---
 
 ## Backend Developer Setup
@@ -237,23 +413,58 @@ Create `.http` files with requests.
 
 ## Working Together
 
-### Development Workflow
+### Development Workflow (Option A: Both Run Full Stack)
 
 **Morning:**
-1. Backend dev: `git pull && dotnet run`
-2. Frontend dev: `git pull && cd ClientApp && npm start`
-3. Both work independently
-4. Frontend dev hits backend dev's local API (or shared dev API)
+1. Backend dev: `git pull && cd src/Web && dotnet run`
+2. Frontend dev: `git pull && cd src/Web && dotnet run` (start API)
+3. Frontend dev: Open new terminal → `cd ClientApp && npm start`
+4. Both work independently
 
 **During Day:**
 - Backend dev: Makes API changes, tests with Swagger
-- Frontend dev: Builds UI, sees changes immediately via proxy
-- Communication: Agree on API contracts before implementing
+- Frontend dev: Builds UI, stops/restarts API when pulling backend changes
+- Communication: Coordinate before pushing breaking API changes
 
 **End of Day:**
-1. Backend dev: Commits API changes, pushes to feature branch
-2. Frontend dev: Commits UI changes, pushes to feature branch
-3. Create PR when feature is complete
+1. Backend dev: Commits API changes + generated TypeScript client
+2. Frontend dev: Pulls changes, may need to restart API
+3. Frontend dev: Commits UI changes
+4. Create PR when feature is complete
+
+### Development Workflow (Option B: Shared Dev API)
+
+**Morning:**
+1. Backend dev: `git pull && cd src/Web && dotnet run`
+2. Frontend dev: `git pull && cd ClientApp && npm start` (no backend needed!)
+3. Backend dev deploys changes to dev API periodically
+
+**During Day:**
+- Backend dev: Works on API, deploys to dev API when ready
+- Frontend dev: Builds UI against stable dev API
+- Communication: Backend dev announces when new API version is deployed
+
+**Coordination:**
+- Backend dev pushes commits → CI/CD auto-deploys to dev API
+- Frontend dev pulls to get new TypeScript client
+- Less coordination needed, more independence
+
+### Development Workflow (Option C: Mock API)
+
+**Morning:**
+1. Backend dev: `git pull && cd src/Web && dotnet run`
+2. Frontend dev: `git pull && cd ClientApp && npm run mock-api && npm start`
+3. Completely independent
+
+**During Day:**
+- Backend dev: Works on API independently
+- Frontend dev: Works on UI with mock data
+- Communication: Agree on API contracts, frontend dev updates mocks
+
+**Integration:**
+- Periodic integration testing with real API
+- Frontend dev switches from mock to real API for testing
+- Higher risk of integration issues
 
 ### API Contract Changes
 
