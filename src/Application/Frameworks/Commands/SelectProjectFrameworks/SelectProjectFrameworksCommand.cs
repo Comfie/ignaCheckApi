@@ -140,7 +140,7 @@ public class SelectProjectFrameworksCommandHandler : IRequestHandler<SelectProje
                 FrameworkId = framework.Id,
                 AssignedDate = DateTime.UtcNow,
                 TargetCompletionDate = request.TargetCompletionDate,
-                Status = ComplianceStatus.NotStarted,
+                Status = ComplianceStatus.NotAssessed,
                 CompliancePercentage = 0,
                 TotalControlsCount = controlCount,
                 NotAssessedControlsCount = controlCount,

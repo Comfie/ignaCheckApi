@@ -31,14 +31,14 @@ public record UpdateAvatarResponse
 public class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, Result<UpdateAvatarResponse>>
 {
     private readonly IUser _currentUser;
-    private readonly IApplicationDbContext _context;
+    private readonly IIdentityService _identityService;
 
     public UpdateAvatarCommandHandler(
         IUser currentUser,
-        IApplicationDbContext context)
+        IIdentityService identityService)
     {
         _currentUser = currentUser;
-        _context = context;
+        _identityService = identityService;
     }
 
     public async Task<Result<UpdateAvatarResponse>> Handle(UpdateAvatarCommand request, CancellationToken cancellationToken)
@@ -49,21 +49,16 @@ public class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, R
             return Result<UpdateAvatarResponse>.Failure(new[] { "User must be authenticated." });
         }
 
-        // Get user from database (need EF tracking)
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _currentUser.Id, cancellationToken);
-        if (user == null)
+        // Update avatar URL using identity service
+        var updateResult = await _identityService.UpdateUserAvatarAsync(_currentUser.Id, request.AvatarUrl);
+        if (!updateResult)
         {
-            return Result<UpdateAvatarResponse>.Failure(new[] { "User not found." });
+            return Result<UpdateAvatarResponse>.Failure(new[] { "Failed to update avatar." });
         }
-
-        // Update avatar URL
-        user.AvatarUrl = request.AvatarUrl;
-
-        await _context.SaveChangesAsync(cancellationToken);
 
         var response = new UpdateAvatarResponse
         {
-            AvatarUrl = user.AvatarUrl ?? string.Empty
+            AvatarUrl = request.AvatarUrl
         };
 
         return Result<UpdateAvatarResponse>.Success(response);

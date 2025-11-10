@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Activities.Queries.GetProjectActivity;
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Projects.Commands.AddProjectMember;
 using IgnaCheck.Application.Projects.Commands.ArchiveProject;
 using IgnaCheck.Application.Projects.Commands.CreateProject;

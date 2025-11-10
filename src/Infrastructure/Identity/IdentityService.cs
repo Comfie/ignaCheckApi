@@ -209,4 +209,99 @@ public class IdentityService : IIdentityService
             await _userManager.UpdateAsync(user);
         }
     }
+
+    // Profile management methods
+
+    public async Task<bool> UpdateUserAvatarAsync(string userId, string avatarUrl)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        user.AvatarUrl = avatarUrl;
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
+    }
+
+    public async Task<bool> UpdateUserProfileAsync(
+        string userId,
+        string? firstName,
+        string? lastName,
+        string? jobTitle,
+        string? department,
+        string? phoneNumber,
+        string? timeZone,
+        string? preferredLanguage)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        // Update fields if provided
+        if (firstName != null)
+        {
+            user.FirstName = firstName;
+        }
+
+        if (lastName != null)
+        {
+            user.LastName = lastName;
+        }
+
+        if (jobTitle != null)
+        {
+            user.JobTitle = jobTitle;
+        }
+
+        if (department != null)
+        {
+            user.Department = department;
+        }
+
+        if (phoneNumber != null)
+        {
+            user.PhoneNumber = phoneNumber;
+            // Reset phone number confirmation if changed
+            if (user.PhoneNumber != phoneNumber)
+            {
+                user.PhoneNumberConfirmed = false;
+            }
+        }
+
+        if (timeZone != null)
+        {
+            user.TimeZone = timeZone;
+        }
+
+        if (preferredLanguage != null)
+        {
+            user.PreferredLanguage = preferredLanguage;
+        }
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
+    }
+
+    public async Task<bool> UpdateNotificationPreferencesAsync(string userId, string notificationPreferences)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return false;
+        }
+
+        user.NotificationPreferences = notificationPreferences;
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
+    }
+
+    public async Task<string?> GetNotificationPreferencesAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        return user?.NotificationPreferences;
+    }
 }

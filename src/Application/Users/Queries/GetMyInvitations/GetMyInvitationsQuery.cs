@@ -66,24 +66,35 @@ public class GetMyInvitationsQueryHandler : IRequestHandler<GetMyInvitationsQuer
                        i.ExpiresDate > DateTime.UtcNow)
             .Include(i => i.Organization)
             .OrderByDescending(i => i.Created)
-            .Select(i => new MyInvitationDto
-            {
-                Token = i.Token,
-                WorkspaceId = i.OrganizationId,
-                WorkspaceName = i.Organization.Name,
-                Role = i.Role,
-                CreatedDate = i.Created,
-                ExpiresDate = i.ExpiresDate,
-                InvitedByUserName = i.InvitedByUserId != null
-                    ? _context.Users
-                        .Where(u => u.Id == i.InvitedByUserId)
-                        .Select(u => u.FirstName + " " + u.LastName)
-                        .FirstOrDefault()
-                    : null,
-                Message = i.Message
-            })
             .ToListAsync(cancellationToken);
 
-        return Result<List<MyInvitationDto>>.Success(invitations);
+        // Map to DTOs and fetch inviter names using IIdentityService
+        var invitationDtos = new List<MyInvitationDto>();
+        foreach (var invitation in invitations)
+        {
+            string? invitedByUserName = null;
+            if (!string.IsNullOrEmpty(invitation.InvitedBy))
+            {
+                var inviterUser = await _identityService.GetUserByIdAsync(invitation.InvitedBy);
+                if (inviterUser is Infrastructure.Identity.ApplicationUser inviterAppUser)
+                {
+                    invitedByUserName = $"{inviterAppUser.FirstName} {inviterAppUser.LastName}".Trim();
+                }
+            }
+
+            invitationDtos.Add(new MyInvitationDto
+            {
+                Token = invitation.Token,
+                WorkspaceId = invitation.OrganizationId,
+                WorkspaceName = invitation.Organization.Name,
+                Role = invitation.Role,
+                CreatedDate = invitation.Created,
+                ExpiresDate = invitation.ExpiresDate,
+                InvitedByUserName = invitedByUserName,
+                Message = invitation.Message
+            });
+        }
+
+        return Result<List<MyInvitationDto>>.Success(invitationDtos);
     }
 }

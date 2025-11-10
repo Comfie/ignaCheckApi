@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Activities.Queries.GetProjectActivity;
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Reports.Queries.GetComplianceDashboard;
 using IgnaCheck.Application.Reports.Queries.GetExecutiveSummary;
 using IgnaCheck.Application.Reports.Queries.GetFrameworkReport;

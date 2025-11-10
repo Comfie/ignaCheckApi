@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Constants;
 using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
 
@@ -127,7 +128,7 @@ public class GetAuditLogsQueryHandler : IRequestHandler<GetAuditLogsQuery, Resul
             return Result<AuditLogsResultDto>.Failure(new[] { "Access denied. You are not a member of this workspace." });
         }
 
-        if (member.Role != Domain.Enums.OrganizationRole.Owner && member.Role != Domain.Enums.OrganizationRole.Admin)
+        if (member.Role != WorkspaceRoles.Owner && member.Role != WorkspaceRoles.Admin)
         {
             return Result<AuditLogsResultDto>.Failure(new[] { "Access denied. Only workspace owners and admins can view audit logs." });
         }
@@ -163,14 +164,14 @@ public class GetAuditLogsQueryHandler : IRequestHandler<GetAuditLogsQuery, Resul
 
         if (request.StartDate.HasValue)
         {
-            query = query.Where(a => a.Timestamp >= request.StartDate.Value);
+            query = query.Where(a => a.OccurredAt >= request.StartDate.Value);
         }
 
         if (request.EndDate.HasValue)
         {
             // Include the entire end date
             var endOfDay = request.EndDate.Value.Date.AddDays(1).AddTicks(-1);
-            query = query.Where(a => a.Timestamp <= endOfDay);
+            query = query.Where(a => a.OccurredAt <= endOfDay);
         }
 
         if (!string.IsNullOrWhiteSpace(request.SearchTerm))
@@ -187,7 +188,7 @@ public class GetAuditLogsQueryHandler : IRequestHandler<GetAuditLogsQuery, Resul
 
         // Apply pagination and ordering
         var logs = await query
-            .OrderByDescending(a => a.Timestamp)
+            .OrderByDescending(a => a.OccurredAt)
             .Skip(request.Offset)
             .Take(limit)
             .Select(a => new AuditLogEntryDto
@@ -201,7 +202,7 @@ public class GetAuditLogsQueryHandler : IRequestHandler<GetAuditLogsQuery, Resul
                 EntityId = a.EntityId,
                 EntityName = a.EntityName,
                 Metadata = a.Metadata,
-                Timestamp = a.Timestamp
+                Timestamp = a.OccurredAt
             })
             .ToListAsync(cancellationToken);
 

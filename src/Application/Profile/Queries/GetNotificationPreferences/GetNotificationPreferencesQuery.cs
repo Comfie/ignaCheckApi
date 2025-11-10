@@ -16,14 +16,14 @@ public record GetNotificationPreferencesQuery : IRequest<Result<NotificationPref
 public class GetNotificationPreferencesQueryHandler : IRequestHandler<GetNotificationPreferencesQuery, Result<NotificationPreferencesDto>>
 {
     private readonly IUser _currentUser;
-    private readonly IApplicationDbContext _context;
+    private readonly IIdentityService _identityService;
 
     public GetNotificationPreferencesQueryHandler(
         IUser currentUser,
-        IApplicationDbContext context)
+        IIdentityService identityService)
     {
         _currentUser = currentUser;
-        _context = context;
+        _identityService = identityService;
     }
 
     public async Task<Result<NotificationPreferencesDto>> Handle(GetNotificationPreferencesQuery request, CancellationToken cancellationToken)
@@ -34,15 +34,9 @@ public class GetNotificationPreferencesQueryHandler : IRequestHandler<GetNotific
             return Result<NotificationPreferencesDto>.Failure(new[] { "User must be authenticated." });
         }
 
-        // Get user from database
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _currentUser.Id, cancellationToken);
-        if (user == null)
-        {
-            return Result<NotificationPreferencesDto>.Failure(new[] { "User not found." });
-        }
-
-        // Parse preferences
-        var preferences = ParsePreferences(user.NotificationPreferences);
+        // Get preferences from identity service
+        var preferencesJson = await _identityService.GetNotificationPreferencesAsync(_currentUser.Id);
+        var preferences = ParsePreferences(preferencesJson);
 
         return Result<NotificationPreferencesDto>.Success(preferences);
     }

@@ -13,15 +13,18 @@ public class NotificationService : INotificationService
 {
     private readonly IApplicationDbContext _context;
     private readonly IEmailService _emailService;
+    private readonly IIdentityService _identityService;
     private readonly ILogger<NotificationService> _logger;
 
     public NotificationService(
         IApplicationDbContext context,
         IEmailService emailService,
+        IIdentityService identityService,
         ILogger<NotificationService> logger)
     {
         _context = context;
         _emailService = emailService;
+        _identityService = identityService;
         _logger = logger;
     }
 
@@ -98,9 +101,9 @@ public class NotificationService : INotificationService
                 if ((deliveryMethod == NotificationDeliveryMethod.Email || deliveryMethod == NotificationDeliveryMethod.Both) &&
                     emailFrequency == EmailFrequency.Realtime)
                 {
-                    // Get user email
-                    var user = await _context.Users.FindAsync(new object[] { userId }, cancellationToken);
-                    if (user != null && !string.IsNullOrWhiteSpace(user.Email))
+                    // Get user email using identity service
+                    var userObj = await _identityService.GetUserByIdAsync(userId);
+                    if (userObj is Infrastructure.Identity.ApplicationUser user && !string.IsNullOrWhiteSpace(user.Email))
                     {
                         try
                         {

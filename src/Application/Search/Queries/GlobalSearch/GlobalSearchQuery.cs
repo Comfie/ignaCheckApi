@@ -42,11 +42,11 @@ public enum SearchResultType
 /// </summary>
 public record GlobalSearchResultDto
 {
-    public List<ProjectSearchResult> Projects { get; init; } = new();
-    public List<DocumentSearchResult> Documents { get; init; } = new();
-    public List<FindingSearchResult> Findings { get; init; } = new();
-    public List<TaskSearchResult> Tasks { get; init; } = new();
-    public int TotalResults { get; init; }
+    public List<ProjectSearchResult> Projects { get; set; } = new();
+    public List<DocumentSearchResult> Documents { get; set; } = new();
+    public List<FindingSearchResult> Findings { get; set; } = new();
+    public List<TaskSearchResult> Tasks { get; set; } = new();
+    public int TotalResults { get; set; }
 }
 
 public record ProjectSearchResult

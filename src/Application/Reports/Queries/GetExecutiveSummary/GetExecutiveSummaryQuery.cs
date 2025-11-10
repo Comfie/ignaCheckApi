@@ -74,7 +74,7 @@ public record TopRiskDto
 {
     public string Title { get; init; } = string.Empty;
     public string FrameworkName { get; init; } = string.Empty;
-    public string ControlReference { get; init; } = string.Empty;
+    public string ControlCode { get; init; } = string.Empty;
     public RiskLevel RiskLevel { get; init; }
     public string? RemediationGuidance { get; init; }
     public string? AssignedTo { get; init; }
@@ -199,7 +199,7 @@ public class GetExecutiveSummaryQueryHandler : IRequestHandler<GetExecutiveSumma
             {
                 Title = f.Title,
                 FrameworkName = f.Control.Framework.Name,
-                ControlReference = f.Control.ControlReference,
+                ControlCode = f.Control.ControlCode,
                 RiskLevel = f.RiskLevel,
                 RemediationGuidance = f.RemediationGuidance,
                 AssignedTo = f.AssignedTo,

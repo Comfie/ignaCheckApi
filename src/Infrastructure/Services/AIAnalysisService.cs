@@ -596,7 +596,7 @@ public class AIAnalysisService : IAIAnalysisService
             return new ControlAnalysisResult
             {
                 ControlId = request.ControlId,
-                Status = ComplianceStatus.NotStarted,
+                Status = ComplianceStatus.NotAssessed,
                 RiskLevel = RiskLevel.High,
                 FindingTitle = $"Analysis Error for {request.ControlCode}",
                 FindingDescription = $"AI returned invalid response format. Error: {ex.Message}",
@@ -617,7 +617,7 @@ public class AIAnalysisService : IAIAnalysisService
             "partiallycompliant" => ComplianceStatus.PartiallyCompliant,
             "noncompliant" => ComplianceStatus.NonCompliant,
             "notapplicable" => ComplianceStatus.NotApplicable,
-            _ => ComplianceStatus.NotStarted
+            _ => ComplianceStatus.NotAssessed
         };
     }
 
@@ -678,7 +678,7 @@ public class AIAnalysisService : IAIAnalysisService
             CompliantCount = results.Count(r => r.Status == ComplianceStatus.Compliant),
             PartiallyCompliantCount = results.Count(r => r.Status == ComplianceStatus.PartiallyCompliant),
             NonCompliantCount = results.Count(r => r.Status == ComplianceStatus.NonCompliant),
-            NotAssessedCount = results.Count(r => r.Status == ComplianceStatus.NotStarted),
+            NotAssessedCount = results.Count(r => r.Status == ComplianceStatus.NotAssessed),
             CriticalFindings = results.Count(r => r.RiskLevel == RiskLevel.Critical),
             HighRiskFindings = results.Count(r => r.RiskLevel == RiskLevel.High),
             MediumRiskFindings = results.Count(r => r.RiskLevel == RiskLevel.Medium),

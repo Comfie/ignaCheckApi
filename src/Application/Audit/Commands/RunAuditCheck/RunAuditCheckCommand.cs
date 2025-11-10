@@ -117,7 +117,7 @@ public class RunAuditCheckCommandHandler : IRequestHandler<RunAuditCheckCommand,
         }
 
         // Check if project has documents
-        var documents = project.Documents.Where(d => !d.IsDeleted).ToList();
+        var documents = project.Documents.ToList();
         if (!documents.Any())
         {
             return Result<AuditCheckResponse>.Failure(new[] { "Project must have at least one document to analyze." });

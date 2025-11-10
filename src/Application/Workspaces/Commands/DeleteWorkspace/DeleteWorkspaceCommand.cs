@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Domain.Constants;
 
 namespace IgnaCheck.Application.Workspaces.Commands.DeleteWorkspace;
 
@@ -81,7 +82,7 @@ public class DeleteWorkspaceCommandHandler : IRequestHandler<DeleteWorkspaceComm
 
         // Verify user is an owner
         var member = organization.Members.FirstOrDefault(m => m.UserId == _currentUser.Id);
-        if (member == null || member.Role != Domain.Enums.OrganizationRole.Owner)
+        if (member == null || member.Role != WorkspaceRoles.Owner)
         {
             return Result.Failure(new[] { "Access denied. Only workspace owners can delete the workspace." });
         }
