@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IgnaCheck.Infrastructure.Data;
 
@@ -39,8 +40,11 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
         // Use PostgreSQL (matching the production configuration in DependencyInjection.cs)
         optionsBuilder.UseNpgsql(connectionString);
 
-        // Create context without ITenantService (pass null)
-        // The global query filter in ApplicationDbContext is designed to handle null tenant service
-        return new ApplicationDbContext(optionsBuilder.Options, tenantService: null);
+        // Create a minimal service provider for design-time scenarios
+        // The DbContext will lazily resolve ITenantService (which won't exist during migrations)
+        var serviceCollection = new ServiceCollection();
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        return new ApplicationDbContext(optionsBuilder.Options, serviceProvider);
     }
 }

@@ -5,18 +5,31 @@ using IgnaCheck.Domain.Entities;
 using IgnaCheck.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IgnaCheck.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 {
-    private readonly ITenantService? _tenantService;
+    private readonly IServiceProvider _serviceProvider;
+    private ITenantService? _tenantService;
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options,
-        ITenantService? tenantService = null) : base(options)
+        IServiceProvider serviceProvider) : base(options)
     {
-        _tenantService = tenantService;
+        _serviceProvider = serviceProvider;
+    }
+
+    private ITenantService? TenantService
+    {
+        get
+        {
+            // Lazy resolution to avoid circular dependency
+            // TenantService -> IApplicationDbContext -> ApplicationDbContext -> ITenantService
+            _tenantService ??= _serviceProvider.GetService<ITenantService>();
+            return _tenantService;
+        }
     }
 
     public DbSet<Organization> Organizations => Set<Organization>();
@@ -78,6 +91,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
 
     private void SetGlobalQuery<T>(ModelBuilder builder) where T : class, ITenantEntity
     {
-        builder.Entity<T>().HasQueryFilter(e => _tenantService == null || _tenantService.GetCurrentTenantId() == null ||  e.OrganizationId == _tenantService.GetCurrentTenantId());
+        builder.Entity<T>().HasQueryFilter(e => TenantService == null || TenantService.GetCurrentTenantId() == null ||  e.OrganizationId == TenantService.GetCurrentTenantId());
     }
 }
