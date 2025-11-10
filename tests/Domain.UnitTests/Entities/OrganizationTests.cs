@@ -15,7 +15,7 @@ public class OrganizationTests
         // Assert
         organization.Name.ShouldBe(string.Empty);
         organization.IsActive.ShouldBe(true);
-        organization.SubscriptionTier.ShouldBe(SubscriptionTier.Free);
+        organization.SubscriptionTier.ShouldBeNull();
         organization.Projects.ShouldNotBeNull();
         organization.Projects.ShouldBeEmpty();
         organization.Members.ShouldNotBeNull();
@@ -33,29 +33,27 @@ public class OrganizationTests
         {
             Name = "Acme Corporation",
             IsActive = true,
-            SubscriptionTier = SubscriptionTier.Professional,
+            SubscriptionTier = "Professional",
             MaxProjects = 50,
             MaxMembers = 25,
-            SubscriptionStartDate = createdDate,
-            SubscriptionEndDate = createdDate.AddYears(1)
+            SubscriptionExpiresAt = createdDate.AddYears(1)
         };
 
         // Assert
         organization.Name.ShouldBe("Acme Corporation");
         organization.IsActive.ShouldBe(true);
-        organization.SubscriptionTier.ShouldBe(SubscriptionTier.Professional);
+        organization.SubscriptionTier.ShouldBe("Professional");
         organization.MaxProjects.ShouldBe(50);
         organization.MaxMembers.ShouldBe(25);
-        organization.SubscriptionStartDate.ShouldBe(createdDate);
-        organization.SubscriptionEndDate.ShouldBe(createdDate.AddYears(1));
+        organization.SubscriptionExpiresAt.ShouldBe(createdDate.AddYears(1));
     }
 
     [Test]
-    [TestCase(SubscriptionTier.Free)]
-    [TestCase(SubscriptionTier.Starter)]
-    [TestCase(SubscriptionTier.Professional)]
-    [TestCase(SubscriptionTier.Enterprise)]
-    public void Organization_Should_Support_All_SubscriptionTier_Values(SubscriptionTier tier)
+    [TestCase("Free")]
+    [TestCase("Starter")]
+    [TestCase("Professional")]
+    [TestCase("Enterprise")]
+    public void Organization_Should_Support_All_SubscriptionTier_Values(string tier)
     {
         // Arrange & Act
         var organization = new Organization { SubscriptionTier = tier };
@@ -111,20 +109,19 @@ public class OrganizationTests
     public void Organization_Should_Track_Subscription_Dates()
     {
         // Arrange
-        var startDate = DateTime.UtcNow;
-        var endDate = startDate.AddMonths(12);
+        var expiryDate = DateTime.UtcNow.AddMonths(12);
 
         // Act
         var organization = new Organization
         {
             Name = "Test Org",
-            SubscriptionStartDate = startDate,
-            SubscriptionEndDate = endDate
+            SubscriptionExpiresAt = expiryDate,
+            TrialEndsAt = DateTime.UtcNow.AddDays(30)
         };
 
         // Assert
-        organization.SubscriptionStartDate.ShouldBe(startDate);
-        organization.SubscriptionEndDate.ShouldBe(endDate);
+        organization.SubscriptionExpiresAt.ShouldBe(expiryDate);
+        organization.TrialEndsAt.ShouldNotBeNull();
     }
 
     [Test]
@@ -136,13 +133,13 @@ public class OrganizationTests
             Name = "Limited Org",
             MaxProjects = 10,
             MaxMembers = 5,
-            MaxStorage = 5368709120 // 5 GB in bytes
+            MaxStorageGb = 5 // 5 GB
         };
 
         // Assert
         organization.MaxProjects.ShouldBe(10);
         organization.MaxMembers.ShouldBe(5);
-        organization.MaxStorage.ShouldBe(5368709120);
+        organization.MaxStorageGb.ShouldBe(5);
     }
 
     [Test]

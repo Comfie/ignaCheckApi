@@ -126,7 +126,7 @@ public class ProjectTests
             Id = Guid.NewGuid(),
             ProjectId = project.Id,
             UserId = userId,
-            Role = ProjectRole.Manager
+            Role = ProjectRole.Contributor
         };
 
         // Act
@@ -135,7 +135,7 @@ public class ProjectTests
         // Assert
         project.ProjectMembers.Count.ShouldBe(1);
         project.ProjectMembers.First().UserId.ShouldBe(userId);
-        project.ProjectMembers.First().Role.ShouldBe(ProjectRole.Manager);
+        project.ProjectMembers.First().Role.ShouldBe(ProjectRole.Contributor);
     }
 
     [Test]

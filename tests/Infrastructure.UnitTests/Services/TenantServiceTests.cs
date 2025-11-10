@@ -1,40 +1,38 @@
 using IgnaCheck.Application.Common.Interfaces;
-using IgnaCheck.Infrastructure.Services;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
+using IgnaCheck.Infrastructure.Identity;
+using IgnaCheck.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace IgnaCheck.Infrastructure.UnitTests.Services;
 
 [TestFixture]
 public class TenantServiceTests
 {
-    private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
-    private Mock<HttpContext> _mockHttpContext;
+    private Mock<IUser> _mockCurrentUser;
+    private Mock<IApplicationDbContext> _mockDbContext;
+    private Mock<DbSet<Organization>> _mockOrganizationsDbSet;
+    private List<Organization> _organizations;
     private TenantService _tenantService;
 
     [SetUp]
     public void SetUp()
     {
-        _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
-        _mockHttpContext = new Mock<HttpContext>();
-        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns(_mockHttpContext.Object);
+        _mockCurrentUser = new Mock<IUser>();
+        _mockDbContext = new Mock<IApplicationDbContext>();
+        _organizations = new List<Organization>();
 
-        _tenantService = new TenantService(_mockHttpContextAccessor.Object);
+        _mockOrganizationsDbSet = CreateMockDbSet(_organizations);
+        _mockDbContext.Setup(x => x.Organizations).Returns(_mockOrganizationsDbSet.Object);
+
+        _tenantService = new TenantService(_mockCurrentUser.Object, _mockDbContext.Object);
     }
 
     [Test]
-    public void GetCurrentTenantId_Should_ReturnOrganizationId_When_ClaimExists()
+    public void GetCurrentTenantId_Should_ReturnOrganizationId_When_UserHasOrganization()
     {
         // Arrange
         var organizationId = Guid.NewGuid();
-        var claims = new List<Claim>
-        {
-            new Claim("organization_id", organizationId.ToString())
-        };
-        var identity = new ClaimsIdentity(claims, "TestAuth");
-        var claimsPrincipal = new ClaimsPrincipal(identity);
-
-        _mockHttpContext.Setup(x => x.User).Returns(claimsPrincipal);
+        _mockCurrentUser.Setup(x => x.OrganizationId).Returns(organizationId);
 
         // Act
         var result = _tenantService.GetCurrentTenantId();
@@ -44,14 +42,10 @@ public class TenantServiceTests
     }
 
     [Test]
-    public void GetCurrentTenantId_Should_ReturnNull_When_ClaimDoesNotExist()
+    public void GetCurrentTenantId_Should_ReturnNull_When_UserHasNoOrganization()
     {
         // Arrange
-        var claims = new List<Claim>();
-        var identity = new ClaimsIdentity(claims, "TestAuth");
-        var claimsPrincipal = new ClaimsPrincipal(identity);
-
-        _mockHttpContext.Setup(x => x.User).Returns(claimsPrincipal);
+        _mockCurrentUser.Setup(x => x.OrganizationId).Returns((Guid?)null);
 
         // Act
         var result = _tenantService.GetCurrentTenantId();
@@ -61,58 +55,66 @@ public class TenantServiceTests
     }
 
     [Test]
-    public void GetCurrentTenantId_Should_ReturnNull_When_HttpContextIsNull()
-    {
-        // Arrange
-        _mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null!);
-        _tenantService = new TenantService(_mockHttpContextAccessor.Object);
-
-        // Act
-        var result = _tenantService.GetCurrentTenantId();
-
-        // Assert
-        result.ShouldBeNull();
-    }
-
-    [Test]
-    public void GetCurrentTenantId_Should_ReturnNull_When_ClaimValueIsInvalid()
-    {
-        // Arrange
-        var claims = new List<Claim>
-        {
-            new Claim("organization_id", "invalid-guid")
-        };
-        var identity = new ClaimsIdentity(claims, "TestAuth");
-        var claimsPrincipal = new ClaimsPrincipal(identity);
-
-        _mockHttpContext.Setup(x => x.User).Returns(claimsPrincipal);
-
-        // Act
-        var result = _tenantService.GetCurrentTenantId();
-
-        // Assert
-        result.ShouldBeNull();
-    }
-
-    [Test]
-    public void GetCurrentOrganizationId_Should_ReturnSameAsGetCurrentTenantId()
+    public async Task GetCurrentTenantAsync_Should_ReturnOrganization_When_TenantIdExists()
     {
         // Arrange
         var organizationId = Guid.NewGuid();
-        var claims = new List<Claim>
+        var organization = new Organization
         {
-            new Claim("organization_id", organizationId.ToString())
+            Id = organizationId,
+            Name = "Test Org",
+            IsActive = true
         };
-        var identity = new ClaimsIdentity(claims, "TestAuth");
-        var claimsPrincipal = new ClaimsPrincipal(identity);
+        _organizations.Add(organization);
 
-        _mockHttpContext.Setup(x => x.User).Returns(claimsPrincipal);
+        _mockCurrentUser.Setup(x => x.OrganizationId).Returns(organizationId);
 
         // Act
-        var tenantId = _tenantService.GetCurrentTenantId();
-        var orgId = _tenantService.GetCurrentOrganizationId();
+        var result = await _tenantService.GetCurrentTenantAsync();
 
         // Assert
-        tenantId.ShouldBe(orgId);
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(organizationId);
+        result.Name.ShouldBe("Test Org");
+    }
+
+    [Test]
+    public async Task GetCurrentTenantAsync_Should_ReturnNull_When_TenantIdIsNull()
+    {
+        // Arrange
+        _mockCurrentUser.Setup(x => x.OrganizationId).Returns((Guid?)null);
+
+        // Act
+        var result = await _tenantService.GetCurrentTenantAsync();
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Test]
+    public void SetCurrentTenantId_Should_OverrideTenantId()
+    {
+        // Arrange
+        var overrideTenantId = Guid.NewGuid();
+
+        // Act
+        _tenantService.SetCurrentTenantId(overrideTenantId);
+        var result = _tenantService.GetCurrentTenantId();
+
+        // Assert
+        result.ShouldBe(overrideTenantId);
+    }
+
+    private Mock<DbSet<T>> CreateMockDbSet<T>(List<T> data) where T : class
+    {
+        var queryable = data.AsQueryable();
+        var mockSet = new Mock<DbSet<T>>();
+
+        mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
+        mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
+        mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
+        mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(queryable.GetEnumerator());
+
+        return mockSet;
     }
 }
