@@ -103,6 +103,11 @@ public class ProjectsController : ApiControllerBase
 
         if (!result.Succeeded)
         {
+            // Return NotFound if the error message indicates the project doesn't exist
+            if (result.Errors.Any(e => e.Contains("not found", StringComparison.OrdinalIgnoreCase)))
+            {
+                return NotFound(result);
+            }
             return BadRequest(result);
         }
 

@@ -15,6 +15,15 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task CreateProject_Should_ReturnSuccess_When_ValidRequest()
     {
         // Arrange
+        var organizationId = Guid.NewGuid();
+        var organization = new Organization
+        {
+            Id = organizationId,
+            Name = "Test Organization",
+            IsActive = true
+        };
+        await AddAsync(organization);
+
         var client = CreateClient();
 
         var command = new CreateProjectCommand
@@ -49,6 +58,15 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task CreateProject_Should_ReturnBadRequest_When_NameIsEmpty()
     {
         // Arrange
+        var organizationId = Guid.NewGuid();
+        var organization = new Organization
+        {
+            Id = organizationId,
+            Name = "Test Organization",
+            IsActive = true
+        };
+        await AddAsync(organization);
+
         var client = CreateClient();
 
         var command = new CreateProjectCommand
@@ -68,6 +86,15 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task CreateProject_Should_ReturnBadRequest_When_NameTooShort()
     {
         // Arrange
+        var organizationId = Guid.NewGuid();
+        var organization = new Organization
+        {
+            Id = organizationId,
+            Name = "Test Organization",
+            IsActive = true
+        };
+        await AddAsync(organization);
+
         var client = CreateClient();
 
         var command = new CreateProjectCommand
@@ -87,6 +114,15 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task GetProjects_Should_ReturnEmptyList_When_NoProjects()
     {
         // Arrange
+        var organizationId = Guid.NewGuid();
+        var organization = new Organization
+        {
+            Id = organizationId,
+            Name = "Test Organization",
+            IsActive = true
+        };
+        await AddAsync(organization);
+
         var client = CreateClient();
 
         // Act
@@ -194,6 +230,15 @@ public class ProjectsControllerTests : BaseIntegrationTest
     public async Task GetProjectDetails_Should_ReturnNotFound_When_ProjectDoesNotExist()
     {
         // Arrange
+        var organizationId = Guid.NewGuid();
+        var organization = new Organization
+        {
+            Id = organizationId,
+            Name = "Test Organization",
+            IsActive = true
+        };
+        await AddAsync(organization);
+
         var client = CreateClient();
         var nonExistentId = Guid.NewGuid();
 
