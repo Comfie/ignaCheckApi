@@ -1,26 +1,29 @@
 ﻿using System.Text;
+using System.Text.Json;
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Constants;
 using IgnaCheck.Infrastructure.AI;
 using IgnaCheck.Infrastructure.Data;
 using IgnaCheck.Infrastructure.Data.Interceptors;
 using IgnaCheck.Infrastructure.Identity;
+using IgnaCheck.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace IgnaCheck.Infrastructure;
 
 public static class DependencyInjection
 {
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("IgnaCheckDb");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         Guard.Against.Null(connectionString, message: "Connection string 'IgnaCheckDb' not found.");
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
@@ -87,7 +90,7 @@ public static class DependencyInjection
                         context.HandleResponse();
                         context.Response.StatusCode = 401;
                         context.Response.ContentType = "application/json";
-                        var result = System.Text.Json.JsonSerializer.Serialize(new
+                        var result = JsonSerializer.Serialize(new
                         {
                             error = "Unauthorized",
                             message = "You are not authorized to access this resource."
@@ -107,11 +110,11 @@ public static class DependencyInjection
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();
         builder.Services.AddScoped<ITenantService, TenantService>();
-        builder.Services.AddTransient<IEmailService, IgnaCheck.Infrastructure.Services.EmailService>();
-        builder.Services.AddScoped<IJwtTokenGenerator, IgnaCheck.Infrastructure.Services.JwtTokenGenerator>();
-        builder.Services.AddScoped<IFileStorageService, IgnaCheck.Infrastructure.Services.LocalFileStorageService>();
-        builder.Services.AddScoped<IDocumentParsingService, IgnaCheck.Infrastructure.Services.DocumentParsingService>();
-        builder.Services.AddScoped<IAIAnalysisService, IgnaCheck.Infrastructure.Services.AIAnalysisService>();
+        builder.Services.AddTransient<IEmailService, EmailService>();
+        builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+        builder.Services.AddScoped<IDocumentParsingService, DocumentParsingService>();
+        builder.Services.AddScoped<IAIAnalysisService, AIAnalysisService>();
 
         builder.Services.AddAuthorization(options =>
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));

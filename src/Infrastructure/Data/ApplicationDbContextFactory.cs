@@ -23,11 +23,10 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
             .SetBasePath(webProjectPath)
             .AddJsonFile("appsettings.json", optional: false)
             .AddJsonFile($"appsettings.{environment}.json", optional: true)
-            .AddJsonFile("appsettings.PostgreSQL.json", optional: true) // PostgreSQL-specific config
             .AddEnvironmentVariables()
             .Build();
 
-        var connectionString = configuration.GetConnectionString("IgnaCheckDb");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
         if (string.IsNullOrEmpty(connectionString))
         {
