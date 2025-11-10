@@ -1100,7 +1100,7 @@ namespace IgnaCheck.Infrastructure.Migrations
                 table: "Organizations",
                 column: "Slug",
                 unique: true,
-                filter: "[Slug] IS NOT NULL");
+                filter: "\"Slug\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProjectFrameworks_FrameworkId",

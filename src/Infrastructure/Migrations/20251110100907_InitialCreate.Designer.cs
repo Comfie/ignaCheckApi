@@ -921,7 +921,7 @@ namespace IgnaCheck.Infrastructure.Migrations
                     b.HasIndex("Slug")
                         .IsUnique()
                         .HasDatabaseName("IX_Organizations_Slug")
-                        .HasFilter("[Slug] IS NOT NULL");
+                        .HasFilter("\"Slug\" IS NOT NULL");
 
                     b.ToTable("Organizations", (string)null);
                 });
