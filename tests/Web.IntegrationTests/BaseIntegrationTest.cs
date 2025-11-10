@@ -1,3 +1,5 @@
+using MediatR;
+
 namespace IgnaCheck.Web.IntegrationTests;
 
 /// <summary>

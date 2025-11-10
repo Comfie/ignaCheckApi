@@ -1,4 +1,5 @@
 using IgnaCheck.Application.Common.Interfaces;
+using IgnaCheck.Application.Common.Models;
 using IgnaCheck.Application.Projects.Commands.CreateProject;
 using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
@@ -65,7 +66,7 @@ public class CreateProjectCommandTests
         };
         _organizations.Add(organization);
 
-        var user = new UserDto
+        var user = new ApplicationUserDto
         {
             Id = userId,
             Email = "test@example.com",
@@ -194,7 +195,7 @@ public class CreateProjectCommandTests
             Name = "Test Org",
             IsActive = true,
             MaxProjects = 5,
-            SubscriptionTier = SubscriptionTier.Starter
+            SubscriptionTier = "Starter"
         };
         _organizations.Add(organization);
 
@@ -236,7 +237,7 @@ public class CreateProjectCommandTests
         };
         _organizations.Add(organization);
 
-        var user = new UserDto
+        var user = new ApplicationUserDto
         {
             Id = userId,
             Email = "test@example.com",
@@ -371,11 +372,3 @@ internal class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
     }
 }
 
-// DTO for testing
-public class UserDto
-{
-    public string Id { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
-}

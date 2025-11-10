@@ -146,7 +146,7 @@ public class ComplianceFindingTests
         {
             Id = Guid.NewGuid(),
             FindingId = finding.Id,
-            Description = "Screenshot of encryption settings"
+            Notes = "Screenshot of encryption settings"
         };
 
         // Act
@@ -154,7 +154,7 @@ public class ComplianceFindingTests
 
         // Assert
         finding.Evidence.Count.ShouldBe(1);
-        finding.Evidence.First().Description.ShouldBe("Screenshot of encryption settings");
+        finding.Evidence.First().Notes.ShouldBe("Screenshot of encryption settings");
     }
 
     [Test]
@@ -210,7 +210,7 @@ public class ComplianceFindingTests
     [TestCase(FindingWorkflowStatus.InProgress)]
     [TestCase(FindingWorkflowStatus.Resolved)]
     [TestCase(FindingWorkflowStatus.Accepted)]
-    [TestCase(FindingWorkflowStatus.Rejected)]
+    [TestCase(FindingWorkflowStatus.FalsePositive)]
     public void ComplianceFinding_Should_Support_All_WorkflowStatus_Values(FindingWorkflowStatus status)
     {
         // Arrange & Act

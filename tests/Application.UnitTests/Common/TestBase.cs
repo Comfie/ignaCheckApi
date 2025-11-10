@@ -6,19 +6,19 @@ namespace IgnaCheck.Application.UnitTests.Common;
 public abstract class TestBase
 {
     protected Mock<IApplicationDbContext> MockDbContext { get; private set; } = null!;
-    protected Mock<ICurrentUserService> MockCurrentUser { get; private set; } = null!;
+    protected Mock<IUser> MockCurrentUser { get; private set; } = null!;
     protected Mock<ITenantService> MockTenantService { get; private set; } = null!;
 
     [SetUp]
     public void BaseSetUp()
     {
         MockDbContext = new Mock<IApplicationDbContext>();
-        MockCurrentUser = new Mock<ICurrentUserService>();
+        MockCurrentUser = new Mock<IUser>();
         MockTenantService = new Mock<ITenantService>();
 
         // Set default values
-        MockCurrentUser.Setup(x => x.UserId).Returns(Guid.NewGuid().ToString());
-        MockTenantService.Setup(x => x.GetCurrentOrganizationId()).Returns(Guid.NewGuid());
+        MockCurrentUser.Setup(x => x.Id).Returns(Guid.NewGuid().ToString());
+        MockTenantService.Setup(x => x.GetCurrentTenantId()).Returns(Guid.NewGuid());
 
         OnSetUp();
     }
