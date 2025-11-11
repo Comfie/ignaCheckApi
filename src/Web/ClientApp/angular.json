@@ -30,9 +30,25 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets/riho/css/vendors/bootstrap.css",
+              "src/assets/riho/css/vendors/feather-icon.css",
+              "src/assets/riho/css/vendors/icofont.css",
+              "src/assets/riho/css/vendors/themify.css",
+              "src/assets/riho/css/vendors/flag-icon.css",
+              "src/assets/riho/css/font-awesome.css",
+              "src/assets/riho/css/style.css",
+              "src/assets/riho/css/color-1.css",
+              "src/assets/riho/css/responsive.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/riho/js/jquery.min.js",
+              "src/assets/riho/js/bootstrap/bootstrap.bundle.min.js",
+              "src/assets/riho/js/icons/feather-icon/feather.min.js",
+              "src/assets/riho/js/icons/feather-icon/feather-icon.js",
+              "src/assets/riho/js/config.js",
+              "src/assets/riho/js/script.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -97,6 +113,9 @@
               "src/assets"
             ],
             "styles": [
+              "src/assets/riho/css/vendors/bootstrap.css",
+              "src/assets/riho/css/vendors/feather-icon.css",
+              "src/assets/riho/css/style.css",
               "src/styles.scss"
             ],
             "scripts": []

@@ -19,15 +19,21 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/dashboard',
+    redirectTo: '/auth/login',
     pathMatch: 'full'
   },
-  // Lazy-loaded feature routes will go here
-  // Features can be loaded as:
-  // 1. Single component: loadComponent
-  // 2. Route children: loadChildren
+  {
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
+  },
+  // Protected routes will go here with authGuard
+  // {
+  //   path: 'dashboard',
+  //   loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+  //   canActivate: [authGuard]
+  // }
   {
     path: '**',
-    redirectTo: '/dashboard'
+    redirectTo: '/auth/login'
   }
 ];
