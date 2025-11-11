@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../../environments/environment';
 
 /**
  * Auth Guard (Functional)
@@ -16,6 +17,12 @@ import { AuthService } from '../services/auth.service';
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+
+  // DEVELOPMENT ONLY: Bypass authentication if flag is set
+  if (environment.bypassAuth) {
+    authService.mockLogin();
+    return true;
+  }
 
   if (authService.isAuthenticated()) {
     return true;

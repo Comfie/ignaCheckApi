@@ -91,4 +91,28 @@ export class AuthService {
     const user = this.getCurrentUser();
     return user ? roles.includes(user.role) : false;
   }
+
+  /**
+   * DEVELOPMENT ONLY: Mock login for testing without backend
+   * Creates a fake user session for UI testing
+   */
+  mockLogin(role: 'Owner' | 'Admin' | 'Contributor' | 'Viewer' = 'Owner'): void {
+    const mockUser: User = {
+      id: 'mock-user-id',
+      email: 'dev@ignacheck.ai',
+      displayName: 'Development User',
+      role: role as any,
+      organizationId: 'mock-org-id',
+      organizationName: 'IgnaCheck Demo Workspace'
+    };
+
+    // Set mock token
+    this.tokenService.saveToken('mock-jwt-token-for-development');
+
+    // Set current user
+    this.currentUserSubject.next(mockUser);
+
+    console.log(`%c🔓 Development Mode: Logged in as ${role}`, 'color: orange; font-weight: bold;');
+    console.log('User:', mockUser);
+  }
 }
