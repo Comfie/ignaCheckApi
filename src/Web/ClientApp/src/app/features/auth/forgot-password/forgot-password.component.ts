@@ -15,7 +15,7 @@ import { environment } from '../../../../environments/environment';
     RouterModule
   ],
   templateUrl: './forgot-password.component.html',
-  styleUrls: ['./forgot-password.component.scss']
+  styleUrl: './forgot-password.component.css'
 })
 export class ForgotPasswordComponent implements OnInit {
   forgotPasswordForm!: FormGroup;

@@ -1,0 +1,6 @@
+/* Header Component Styles */
+/* Using Tailwind CSS for all styling - minimal custom CSS needed */
+
+:host {
+  display: block;
+}

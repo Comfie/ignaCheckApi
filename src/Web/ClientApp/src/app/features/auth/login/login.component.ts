@@ -14,7 +14,7 @@ import { NotificationService } from '../../../core/services/notification.service
     RouterModule
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;

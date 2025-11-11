@@ -21,7 +21,7 @@ interface DashboardStat {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
   currentUser: User | null = null;

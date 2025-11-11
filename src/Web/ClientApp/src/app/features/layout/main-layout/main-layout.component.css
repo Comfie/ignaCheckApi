@@ -1,0 +1,34 @@
+/* Component-specific styles for main layout */
+/* The main Riho styles are loaded globally through angular.json */
+
+/* Ensure proper flex layout */
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-body-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.page-body {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Tap to top button */
+.tap-top {
+  bottom: 70px;
+  position: fixed;
+  right: 30px;
+  z-index: 9;
+  cursor: pointer;
+  display: none;
+}
+
+.tap-top.top {
+  display: block;
+}

@@ -16,6 +16,6 @@ import { FooterComponent } from '../footer/footer.component';
     FooterComponent
   ],
   templateUrl: './main-layout.component.html',
-  styleUrls: ['./main-layout.component.scss']
+  styleUrl: './main-layout.component.css'
 })
 export class MainLayoutComponent {}

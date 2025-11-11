@@ -14,7 +14,7 @@ import { NotificationService } from '../../../core/services/notification.service
     RouterModule
   ],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;

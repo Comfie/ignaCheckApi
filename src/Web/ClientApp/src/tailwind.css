@@ -1,75 +1,11 @@
-/* Tailwind CSS v3 Base Directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind CSS v4 */
+@import "tailwindcss";
 
-/* Custom Theme Variables */
-@layer base {
-  :root {
-    /* Primary Colors */
-    --color-primary-50: #eef2ff;
-    --color-primary-100: #e0e7ff;
-    --color-primary-200: #c7d2fe;
-    --color-primary-300: #a5b4fc;
-    --color-primary-400: #818cf8;
-    --color-primary-500: #6366f1;
-    --color-primary-600: #4f46e5;
-    --color-primary-700: #4338ca;
-    --color-primary-800: #3730a3;
-    --color-primary-900: #312e81;
-    --color-primary-950: #1e1b4b;
-
-    /* Sidebar Colors */
-    --color-sidebar-bg: #1a1d29;
-    --color-sidebar-hover: #252938;
-    --color-sidebar-active: #2d3142;
-    --color-sidebar-text: #a8b3cf;
-    --color-sidebar-text-hover: #ffffff;
-    --color-sidebar-accent: #4f46e5;
-    --color-sidebar-border: rgba(255, 255, 255, 0.06);
-
-    /* Dark Colors */
-    --color-dark-50: #f8fafc;
-    --color-dark-100: #f1f5f9;
-    --color-dark-200: #e2e8f0;
-    --color-dark-300: #cbd5e1;
-    --color-dark-400: #94a3b8;
-    --color-dark-500: #64748b;
-    --color-dark-600: #475569;
-    --color-dark-700: #334155;
-    --color-dark-800: #1e293b;
-    --color-dark-900: #0f172a;
-    --color-dark-950: #020617;
-
-    /* Shadows */
-    --shadow-sidebar: 4px 0 24px rgba(0, 0, 0, 0.3);
-    --shadow-glow: 0 0 12px rgba(79, 70, 229, 0.15);
-  }
-}
-
-/* Custom Animations */
-@layer utilities {
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes slide-in {
-    from {
-      transform: translateX(-10px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.3s ease-out;
-  }
-
-  .animate-slide-in {
-    animation: slide-in 0.2s ease-out;
-  }
+/* Custom Theme */
+@theme {
+  /* You can add custom theme configuration here */
+  /* Example:
+  --color-primary: #3b82f6;
+  --font-family-sans: 'Inter', sans-serif;
+  */
 }

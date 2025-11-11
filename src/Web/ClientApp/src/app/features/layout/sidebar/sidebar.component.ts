@@ -11,7 +11,7 @@ import { UserRole } from '../../../models/enums/user-role.enum';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent implements OnInit {
   menuItems: MenuItem[] = [];

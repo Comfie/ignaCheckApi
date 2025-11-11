@@ -10,7 +10,7 @@ import { User } from '../../../core/models/user.model';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit {
   currentUser: User | null = null;
