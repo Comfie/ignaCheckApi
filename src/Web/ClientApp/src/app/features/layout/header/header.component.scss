@@ -1,30 +1,19 @@
 // Component-specific styles for header
 // The main Riho styles are loaded globally through angular.json
 
-.user-profile-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--theme-default, #0066cc) 0%, #7366ff 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-
-  .avatar-initials {
-    color: white;
-    font-weight: 600;
-    font-size: 16px;
-    text-transform: uppercase;
-  }
-}
-
 .profile-media {
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
     opacity: 0.8;
+  }
+
+  img.b-r-10 {
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
   }
 }
 
@@ -80,6 +69,11 @@
         background-color: #f4f4f4;
         color: var(--theme-default, #0066cc);
       }
+
+      &.btn {
+        margin: 10px 20px;
+        justify-content: center;
+      }
     }
 
     &.divider {
@@ -102,6 +96,7 @@
 
 .badge-danger {
   background-color: #dc3545;
+  color: white;
 }
 
 .badge-warning {
@@ -111,8 +106,10 @@
 
 .badge-info {
   background-color: #17a2b8;
+  color: white;
 }
 
 .badge-secondary {
   background-color: #6c757d;
+  color: white;
 }
