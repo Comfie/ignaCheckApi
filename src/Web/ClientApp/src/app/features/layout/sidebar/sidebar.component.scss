@@ -1,0 +1,25 @@
+// Component-specific styles for sidebar
+// The main Riho styles are loaded globally through angular.json
+
+// Ensure menu transitions
+.sidebar-submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+
+  &.menu-open {
+    max-height: 1000px;
+  }
+}
+
+// Active state styling
+.sidebar-list.active {
+  > a {
+    color: var(--theme-default);
+  }
+}
+
+// Smooth icon transitions
+svg {
+  transition: all 0.3s ease;
+}

@@ -1,0 +1,331 @@
+<div class="container-fluid">
+  <!-- Page Title -->
+  <div class="page-title">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3>Dashboard</h3>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/dashboard"><i data-feather="home"></i></a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- Welcome Card -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="mb-2">{{ getGreeting() }}, {{ currentUser?.displayName }}! 👋</h4>
+              <p class="text-muted mb-0">
+                You're logged in as <span class="badge badge-light-primary">{{ getRoleDisplayName() }}</span>
+              </p>
+              <p class="text-muted mt-2" *ngIf="isOwner()">
+                You have full system access and can manage all workspaces.
+              </p>
+              <p class="text-muted mt-2" *ngIf="isAdmin()">
+                You manage this workspace: <strong>{{ currentUser?.organizationName }}</strong>
+              </p>
+              <p class="text-muted mt-2" *ngIf="isContributor() || isViewer()">
+                Workspace: <strong>{{ currentUser?.organizationName }}</strong>
+              </p>
+            </div>
+            <div class="d-none d-md-block">
+              <img src="assets/riho/images/dashboard/welcome-banner.png" alt="Welcome" style="max-height: 100px;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row">
+    <div class="col-xl-3 col-sm-6" *ngFor="let stat of stats">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="flex-grow-1">
+              <h6 class="text-muted mb-2">{{ stat.title }}</h6>
+              <h3 class="mb-0">{{ stat.value }}</h3>
+              <p class="mb-0 mt-2" *ngIf="stat.trend">
+                <span [class]="'badge badge-light-' + (stat.trend.isPositive ? 'success' : 'danger')">
+                  {{ stat.trend.value }}
+                </span>
+              </p>
+            </div>
+            <div class="stat-icon" [class]="'bg-light-' + stat.color">
+              <svg class="stroke-icon">
+                <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + stat.icon"></use>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header pb-0">
+          <h5>Quick Actions</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-3" *ngFor="let action of quickActions">
+              <a [routerLink]="action.route" class="quick-action-card">
+                <div class="d-flex align-items-center">
+                  <div class="quick-action-icon bg-light-primary">
+                    <i [attr.data-feather]="action.icon"></i>
+                  </div>
+                  <span class="ms-3">{{ action.label }}</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role-Specific Content -->
+  <div class="row">
+    <!-- Owner-Specific Content -->
+    <ng-container *ngIf="isOwner()">
+      <div class="col-xl-8">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h5>Workspace Overview</h5>
+          </div>
+          <div class="card-body">
+            <p class="text-muted">
+              As an Owner, you can view and manage all workspaces in the system.
+              Create new workspaces, assign administrators, and monitor global compliance metrics.
+            </p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Workspace</th>
+                    <th>Admin</th>
+                    <th>Users</th>
+                    <th>Projects</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Acme Corp</strong></td>
+                    <td>John Smith</td>
+                    <td>24</td>
+                    <td>8</td>
+                    <td><span class="badge badge-light-success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>TechStart Inc</strong></td>
+                    <td>Jane Doe</td>
+                    <td>15</td>
+                    <td>5</td>
+                    <td><span class="badge badge-light-success">Active</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h5>System Health</h5>
+          </div>
+          <div class="card-body">
+            <div class="health-metric mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span>API Response Time</span>
+                <span class="text-success">98ms</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-success" style="width: 95%"></div>
+              </div>
+            </div>
+            <div class="health-metric mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span>Storage Usage</span>
+                <span class="text-info">45%</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-info" style="width: 45%"></div>
+              </div>
+            </div>
+            <div class="health-metric">
+              <div class="d-flex justify-content-between mb-1">
+                <span>Active Sessions</span>
+                <span class="text-warning">67</span>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-warning" style="width: 70%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Admin-Specific Content -->
+    <ng-container *ngIf="isAdmin()">
+      <div class="col-xl-8">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h5>Recent Projects</h5>
+          </div>
+          <div class="card-body">
+            <p class="text-muted mb-3">
+              Manage projects, assign team members, and track compliance progress for your workspace.
+            </p>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Project</th>
+                    <th>Framework</th>
+                    <th>Status</th>
+                    <th>Progress</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>ISO 27001 Audit</strong></td>
+                    <td>ISO 27001:2022</td>
+                    <td><span class="badge badge-light-primary">In Progress</span></td>
+                    <td>
+                      <div class="progress" style="height: 8px;">
+                        <div class="progress-bar" style="width: 75%"></div>
+                      </div>
+                    </td>
+                    <td>
+                      <a routerLink="/projects/1" class="btn btn-sm btn-outline-primary">View</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>SOC 2 Type II</strong></td>
+                    <td>SOC 2</td>
+                    <td><span class="badge badge-light-warning">Draft</span></td>
+                    <td>
+                      <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-warning" style="width: 30%"></div>
+                      </div>
+                    </td>
+                    <td>
+                      <a routerLink="/projects/2" class="btn btn-sm btn-outline-primary">View</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h5>Team Activity</h5>
+          </div>
+          <div class="card-body">
+            <div class="activity-item mb-3">
+              <div class="d-flex">
+                <div class="activity-avatar bg-light-primary">JD</div>
+                <div class="ms-3 flex-grow-1">
+                  <h6 class="mb-1">Jane Doe</h6>
+                  <p class="text-muted mb-0 small">Uploaded new document</p>
+                  <span class="text-muted small">2 hours ago</span>
+                </div>
+              </div>
+            </div>
+            <div class="activity-item mb-3">
+              <div class="d-flex">
+                <div class="activity-avatar bg-light-success">MS</div>
+                <div class="ms-3 flex-grow-1">
+                  <h6 class="mb-1">Mike Smith</h6>
+                  <p class="text-muted mb-0 small">Resolved finding #34</p>
+                  <span class="text-muted small">5 hours ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Contributor/Viewer Content -->
+    <ng-container *ngIf="isContributor() || isViewer()">
+      <div class="col-xl-8">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h5>My Projects</h5>
+          </div>
+          <div class="card-body">
+            <p class="text-muted mb-3">
+              Projects you're currently working on or have access to.
+            </p>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="project-card">
+                  <h6>ISO 27001 Compliance</h6>
+                  <p class="text-muted small mb-2">Framework: ISO 27001:2022</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge badge-light-primary">In Progress</span>
+                    <a routerLink="/projects/1" class="btn btn-sm btn-outline-primary">Open</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="project-card">
+                  <h6>GDPR Assessment</h6>
+                  <p class="text-muted small mb-2">Framework: GDPR</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge badge-light-success">Active</span>
+                    <a routerLink="/projects/2" class="btn btn-sm btn-outline-primary">Open</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h5>Recent Activity</h5>
+          </div>
+          <div class="card-body">
+            <div class="activity-list">
+              <div class="activity-item mb-3" *ngFor="let activity of recentActivities">
+                <div class="d-flex align-items-start">
+                  <div class="activity-icon">
+                    <i [attr.data-feather]="activity.icon"></i>
+                  </div>
+                  <div class="ms-3 flex-grow-1">
+                    <p class="mb-0">{{ activity.message }}</p>
+                    <span class="text-muted small">{{ activity.time }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

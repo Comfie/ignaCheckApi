@@ -1,0 +1,118 @@
+// Component-specific styles for header
+// The main Riho styles are loaded globally through angular.json
+
+.user-profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--theme-default, #0066cc) 0%, #7366ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+
+  .avatar-initials {
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+}
+
+.profile-media {
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.onhover-show-div {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 1000;
+  min-width: 200px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+
+  &.notification-dropdown {
+    min-width: 350px;
+  }
+}
+
+.profile-nav {
+  position: relative;
+
+  &.onhover-dropdown:hover .onhover-show-div,
+  .onhover-show-div {
+    display: block;
+  }
+}
+
+.profile-dropdown {
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+
+  li {
+    padding: 0;
+
+    a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: #2b2b2b;
+      text-decoration: none;
+      transition: all 0.2s ease;
+
+      i, svg {
+        margin-right: 10px;
+        width: 18px;
+        height: 18px;
+      }
+
+      &:hover {
+        background-color: #f4f4f4;
+        color: var(--theme-default, #0066cc);
+      }
+    }
+
+    &.divider {
+      height: 1px;
+      background-color: #e0e0e0;
+      margin: 5px 0;
+    }
+  }
+}
+
+.notification-box {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.badge-danger {
+  background-color: #dc3545;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.badge-info {
+  background-color: #17a2b8;
+}
+
+.badge-secondary {
+  background-color: #6c757d;
+}

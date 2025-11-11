@@ -1,0 +1,144 @@
+<div class="page-header">
+  <div class="header-wrapper row m-0">
+    <!-- Search Form (Full Screen) -->
+    <form class="form-inline search-full col" action="#" method="get">
+      <div class="form-group w-100">
+        <div class="Typeahead Typeahead--twitterUsers">
+          <div class="u-posRelative">
+            <input class="demo-input Typeahead-input form-control-plaintext w-100"
+                   type="text"
+                   placeholder="Search IgnaCheck..."
+                   name="q"
+                   title="">
+            <i class="close-search" data-feather="x"></i>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Logo & Sidebar Toggle -->
+    <div class="header-logo-wrapper col-auto p-0">
+      <div class="logo-wrapper">
+        <a routerLink="/dashboard">
+          <img class="img-fluid for-light" src="assets/riho/images/logo/logo_dark.png" alt="IgnaCheck">
+          <img class="img-fluid for-dark" src="assets/riho/images/logo/logo.png" alt="IgnaCheck">
+        </a>
+      </div>
+      <div class="toggle-sidebar">
+        <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
+      </div>
+    </div>
+
+    <!-- Welcome Message -->
+    <div class="left-header col-xxl-5 col-xl-6 col-lg-5 col-md-4 col-sm-3 p-0">
+      <div>
+        <a class="toggle-sidebar" href="javascript:void(0)">
+          <i class="iconly-Category icli"></i>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+          <h4 class="f-w-600">Welcome {{ currentUser?.displayName }}</h4>
+          <img class="mt-0" src="assets/riho/images/hand.gif" alt="hand-gif">
+        </div>
+      </div>
+      <div class="welcome-content d-xl-block d-none">
+        <span class="text-truncate col-12">Manage your compliance projects and audits.</span>
+      </div>
+    </div>
+
+    <!-- Right Header Navigation -->
+    <div class="nav-right col-xxl-7 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto">
+      <ul class="nav-menus">
+        <!-- Search Bar -->
+        <li class="d-md-block d-none">
+          <div class="form search-form mb-0">
+            <div class="input-group">
+              <span class="input-icon">
+                <svg>
+                  <use href="assets/riho/svg/icon-sprite.svg#search-header"></use>
+                </svg>
+                <input class="w-100" type="search" placeholder="Search...">
+              </span>
+            </div>
+          </div>
+        </li>
+
+        <!-- Dark Mode Toggle -->
+        <li>
+          <div class="mode">
+            <i class="moon" data-feather="moon"></i>
+          </div>
+        </li>
+
+        <!-- Notifications Dropdown -->
+        <li class="onhover-dropdown notification-down">
+          <div class="notification-box" (click)="toggleNotifications()">
+            <svg>
+              <use href="assets/riho/svg/icon-sprite.svg#notification-header"></use>
+            </svg>
+            <span class="badge rounded-pill badge-secondary">0</span>
+          </div>
+          <div class="onhover-show-div notification-dropdown" *ngIf="showNotifications">
+            <div class="card mb-0">
+              <div class="card-header">
+                <div class="common-space">
+                  <h4 class="text-start f-w-600">Notifications</h4>
+                  <div><span>0 New</span></div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="notitications-bar">
+                  <p class="text-center text-muted py-4">No new notifications</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- User Profile Dropdown -->
+        <li class="profile-nav onhover-dropdown pe-0 py-0">
+          <div class="media profile-media" (click)="toggleUserMenu()">
+            <div class="user-profile-avatar">
+              <div class="avatar-initials">{{ getUserInitials() }}</div>
+            </div>
+            <div class="media-body">
+              <span>{{ currentUser?.displayName }}</span>
+              <p class="mb-0 font-roboto">
+                <span [class]="'badge ' + getRoleBadgeClass()">
+                  {{ currentUser?.role }}
+                </span>
+                <i class="middle fa fa-angle-down"></i>
+              </p>
+            </div>
+          </div>
+          <ul class="profile-dropdown onhover-show-div" *ngIf="showUserMenu">
+            <li (click)="navigateToProfile()">
+              <a href="javascript:void(0)">
+                <i data-feather="user"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li (click)="navigateToSettings()">
+              <a href="javascript:void(0)">
+                <i data-feather="settings"></i>
+                <span>Settings</span>
+              </a>
+            </li>
+            <li>
+              <a [routerLink]="['/settings/notifications']" (click)="closeDropdowns()">
+                <i data-feather="bell"></i>
+                <span>Notifications</span>
+              </a>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a href="javascript:void(0)" (click)="onLogout()">
+                <i data-feather="log-out"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
