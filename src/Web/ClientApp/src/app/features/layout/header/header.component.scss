@@ -1,5 +1,6 @@
-// Component-specific styles for header
-// The main Riho styles are loaded globally through angular.json
+// Header Component Styles
+// Using Tailwind CSS for all styling - minimal custom SCSS needed
 
-// Remove component-specific hover behavior - let the global Riho CSS handle it
-// Only add minimal overrides if absolutely necessary
+:host {
+  display: block;
+}

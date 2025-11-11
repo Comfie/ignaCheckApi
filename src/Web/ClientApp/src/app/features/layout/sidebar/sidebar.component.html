@@ -1,96 +1,156 @@
-<div class="sidebar-wrapper" data-layout="stroke-svg">
-  <div class="logo-wrapper">
-    <a routerLink="/dashboard">
-      <img class="img-fluid for-light" src="assets/riho/images/logo/logo_dark.png" alt="IgnaCheck Logo">
-      <img class="img-fluid for-dark" src="assets/riho/images/logo/logo.png" alt="IgnaCheck Logo">
-    </a>
-    <div class="back-btn"><i class="fa fa-angle-left"></i></div>
-    <div class="toggle-sidebar">
-      <i class="status_toggle middle sidebar-toggle" data-feather="grid"></i>
-    </div>
-  </div>
-  <div class="logo-icon-wrapper">
-    <a routerLink="/dashboard">
-      <img class="img-fluid" src="assets/riho/images/logo/logo-icon.png" alt="IgnaCheck">
+<!-- Modern Sidebar with Tailwind CSS -->
+<aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gradient-to-b from-sidebar-bg to-dark-900 border-r border-sidebar-border shadow-sidebar transition-transform duration-300 ease-smooth">
+
+  <!-- Logo Section -->
+  <div class="flex items-center justify-center h-20 px-6 border-b border-sidebar-border bg-black/15">
+    <a routerLink="/dashboard" class="flex items-center space-x-3 group">
+      <img
+        src="assets/riho/images/logo/logo.png"
+        alt="IgnaCheck Logo"
+        class="h-8 w-auto brightness-110 group-hover:brightness-125 transition-all duration-300 group-hover:scale-105"
+      >
     </a>
   </div>
-  <nav class="sidebar-main">
-    <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
-    <div id="sidebar-menu">
-      <ul class="sidebar-links" id="simple-bar">
-        <li class="back-btn">
-          <a routerLink="/dashboard">
-            <img class="img-fluid" src="assets/riho/images/logo/logo-icon.png" alt="IgnaCheck">
-          </a>
-          <div class="mobile-back text-end">
-            <span>Back</span>
-            <i class="fa fa-angle-right ps-2" aria-hidden="true"></i>
-          </div>
+
+  <!-- Navigation Menu -->
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 scrollbar-thin scrollbar-thumb-sidebar-text/20 scrollbar-track-transparent">
+    <ul class="space-y-1">
+
+      <!-- Menu Items Loop -->
+      <ng-container *ngFor="let item of menuItems">
+
+        <!-- Section Divider / Title -->
+        <li *ngIf="isDivider(item)" class="px-4 pt-6 pb-2">
+          <h6 class="text-xs font-bold uppercase tracking-widest text-sidebar-text/50">&nbsp;</h6>
         </li>
 
-        <!-- Sidebar Menu Items -->
-        <ng-container *ngFor="let item of menuItems">
-          <!-- Divider -->
-          <li *ngIf="isDivider(item)" class="sidebar-main-title">
-            <div><h6>&nbsp;</h6></div>
-          </li>
+        <!-- Menu Item with Children (Dropdown) -->
+        <li *ngIf="!isDivider(item) && hasChildren(item)" class="relative">
+          <button
+            (click)="toggleMenu(item.label)"
+            [class.bg-sidebar-active]="isActive(item)"
+            class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-lg text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-hover transition-all duration-200 ease-smooth hover:translate-x-0.5 group"
+          >
+            <!-- Active Indicator -->
+            <span
+              *ngIf="isActive(item)"
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/5 bg-primary-600 rounded-r shadow-glow"
+            ></span>
 
-          <!-- Menu Item with Children (Dropdown) -->
-          <li *ngIf="!isDivider(item) && hasChildren(item)"
-              class="sidebar-list"
-              [class.active]="isActive(item)">
-            <i class="fa fa-thumb-tack"></i>
-            <a class="sidebar-link sidebar-title"
-               href="javascript:void(0)"
-               (click)="toggleMenu(item.label)">
-              <svg class="stroke-icon" *ngIf="item.iconStroke">
-                <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + item.iconStroke"></use>
-              </svg>
-              <svg class="fill-icon" *ngIf="item.iconFill">
-                <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + item.iconFill"></use>
-              </svg>
-              <span>{{ item.label }}</span>
-              <span *ngIf="item.badge" [class]="'badge badge-' + item.badge.class">
-                {{ item.badge.text }}
-              </span>
-            </a>
-            <ul class="sidebar-submenu" [class.menu-open]="isExpanded(item.label) || isActive(item)">
-              <li *ngFor="let child of item.children">
-                <a [routerLink]="child.route"
-                   routerLinkActive="active"
-                   [routerLinkActiveOptions]="{exact: false}">
-                  {{ child.label }}
-                  <span *ngIf="child.badge" [class]="'badge badge-' + child.badge.class">
-                    {{ child.badge.text }}
-                  </span>
-                </a>
-              </li>
-            </ul>
-          </li>
+            <!-- Icon -->
+            <svg
+              *ngIf="item.iconStroke"
+              class="w-5 h-5 flex-shrink-0 transition-all duration-200 group-hover:scale-110"
+              [class.stroke-primary-500]="isActive(item)"
+              [class.stroke-current]="!isActive(item)"
+            >
+              <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + item.iconStroke"></use>
+            </svg>
 
-          <!-- Simple Menu Item (No Children) -->
-          <li *ngIf="!isDivider(item) && !hasChildren(item)"
-              class="sidebar-list"
-              [class.active]="isActive(item)">
-            <i class="fa fa-thumb-tack"></i>
-            <a class="sidebar-link sidebar-title link-nav"
-               [routerLink]="item.route"
-               routerLinkActive="active">
-              <svg class="stroke-icon" *ngIf="item.iconStroke">
-                <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + item.iconStroke"></use>
-              </svg>
-              <svg class="fill-icon" *ngIf="item.iconFill">
-                <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + item.iconFill"></use>
-              </svg>
-              <span>{{ item.label }}</span>
-              <span *ngIf="item.badge" [class]="'badge badge-' + item.badge.class">
-                {{ item.badge.text }}
-              </span>
-            </a>
-          </li>
-        </ng-container>
-      </ul>
-    </div>
-    <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
+            <!-- Label -->
+            <span
+              class="flex-1 text-left text-base font-medium"
+              [class.text-sidebar-text-hover]="isActive(item)"
+              [class.font-semibold]="isActive(item)"
+            >
+              {{ item.label }}
+            </span>
+
+            <!-- Badge -->
+            <span
+              *ngIf="item.badge"
+              [class]="'px-2.5 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(item.badge.class)"
+            >
+              {{ item.badge.text }}
+            </span>
+
+            <!-- Chevron -->
+            <svg
+              class="w-4 h-4 transition-transform duration-200"
+              [class.rotate-180]="isExpanded(item.label) || isActive(item)"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+
+          <!-- Submenu -->
+          <ul
+            *ngIf="isExpanded(item.label) || isActive(item)"
+            class="ml-4 mt-1 space-y-0.5 pl-4 border-l-2 border-sidebar-border overflow-hidden animate-fade-in"
+          >
+            <li *ngFor="let child of item.children">
+              <a
+                [routerLink]="child.route"
+                routerLinkActive="bg-primary-500/12 text-primary-500 font-semibold border-l-2 border-primary-500"
+                [routerLinkActiveOptions]="{exact: false}"
+                class="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium text-sidebar-text/85 hover:bg-white/5 hover:text-sidebar-text-hover hover:pl-6 transition-all duration-200 relative group"
+              >
+                <!-- Dot Indicator -->
+                <span class="w-1 h-1 rounded-full bg-sidebar-text/40 group-hover:bg-primary-500 group-hover:shadow-glow transition-all duration-200"></span>
+
+                {{ child.label }}
+
+                <!-- Badge -->
+                <span
+                  *ngIf="child.badge"
+                  [class]="'ml-auto px-2 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(child.badge.class)"
+                >
+                  {{ child.badge.text }}
+                </span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Simple Menu Item (No Children) -->
+        <li *ngIf="!isDivider(item) && !hasChildren(item)" class="relative">
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="bg-sidebar-active text-sidebar-text-hover font-semibold"
+            [routerLinkActiveOptions]="{exact: false}"
+            class="flex items-center gap-3.5 px-4 py-3.5 rounded-lg text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-hover transition-all duration-200 ease-smooth hover:translate-x-0.5 group"
+          >
+            <!-- Active Indicator -->
+            <span
+              routerLinkActive="opacity-100"
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/5 bg-primary-600 rounded-r shadow-glow opacity-0 transition-opacity duration-200"
+            ></span>
+
+            <!-- Icon -->
+            <svg
+              *ngIf="item.iconStroke"
+              class="w-5 h-5 flex-shrink-0 stroke-current transition-all duration-200 group-hover:scale-110"
+              routerLinkActive="stroke-primary-500"
+            >
+              <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + item.iconStroke"></use>
+            </svg>
+
+            <!-- Label -->
+            <span class="flex-1 text-base font-medium">
+              {{ item.label }}
+            </span>
+
+            <!-- Badge -->
+            <span
+              *ngIf="item.badge"
+              [class]="'px-2.5 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(item.badge.class)"
+            >
+              {{ item.badge.text }}
+            </span>
+          </a>
+        </li>
+
+      </ng-container>
+    </ul>
   </nav>
-</div>
+
+  <!-- Footer / Version Info (Optional) -->
+  <div class="border-t border-sidebar-border bg-black/15 px-4 py-3">
+    <p class="text-xs text-sidebar-text/50 text-center">
+      v1.0.0 • IgnaCheck
+    </p>
+  </div>
+
+</aside>

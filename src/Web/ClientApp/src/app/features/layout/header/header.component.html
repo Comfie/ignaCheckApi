@@ -1,134 +1,146 @@
-<div class="page-header">
-  <div class="header-wrapper row m-0">
-    <!-- Search Form (Full Screen) -->
-    <form class="form-inline search-full col" action="#" method="get">
-      <div class="form-group w-100">
-        <div class="Typeahead Typeahead--twitterUsers">
-          <div class="u-posRelative">
-            <input class="demo-input Typeahead-input form-control-plaintext w-100"
-                   type="text"
-                   placeholder="Search IgnaCheck..."
-                   name="q"
-                   title="">
-            <i class="close-search" data-feather="x"></i>
+<!-- Modern Header with Tailwind CSS -->
+<header class="sticky top-0 z-30 bg-white border-b border-gray-200 shadow-sm">
+  <div class="flex items-center justify-between h-16 px-6">
+
+    <!-- Left Section: Welcome Message -->
+    <div class="flex items-center gap-4">
+      <div class="hidden lg:block">
+        <div class="flex items-center gap-2">
+          <h1 class="text-xl font-semibold text-gray-800">
+            Welcome {{ currentUser?.displayName }}
+          </h1>
+          <img src="assets/riho/images/hand.gif" alt="wave" class="w-6 h-6">
+        </div>
+        <p class="text-sm text-gray-500 mt-0.5">
+          Manage your compliance projects and audits.
+        </p>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        type="button"
+        class="lg:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Right Section: Actions -->
+    <div class="flex items-center gap-3">
+
+      <!-- Search Bar (Desktop) -->
+      <div class="hidden md:flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-150 transition-colors">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input
+          type="search"
+          placeholder="Search..."
+          class="bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400 w-48"
+        >
+      </div>
+
+      <!-- Dark Mode Toggle -->
+      <button
+        type="button"
+        class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+        title="Toggle dark mode"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+
+      <!-- Notifications -->
+      <div class="relative group">
+        <button
+          type="button"
+          class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+        </button>
+
+        <!-- Notifications Dropdown -->
+        <div class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+          <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+              <span class="text-xs text-gray-500">0 New</span>
+            </div>
+          </div>
+          <div class="p-4">
+            <p class="text-sm text-gray-500 text-center py-4">No new notifications</p>
           </div>
         </div>
       </div>
-    </form>
 
-    <!-- Logo & Sidebar Toggle -->
-    <div class="header-logo-wrapper col-auto p-0">
-      <div class="logo-wrapper">
-        <a routerLink="/dashboard">
-          <img class="img-fluid for-light" src="assets/riho/images/logo/logo_dark.png" alt="IgnaCheck">
-          <img class="img-fluid for-dark" src="assets/riho/images/logo/logo.png" alt="IgnaCheck">
-        </a>
-      </div>
-      <div class="toggle-sidebar">
-        <i class="status_toggle middle sidebar-toggle" data-feather="align-center"></i>
-      </div>
-    </div>
-
-    <!-- Welcome Message -->
-    <div class="left-header col-xxl-5 col-xl-6 col-lg-5 col-md-4 col-sm-3 p-0">
-      <div>
-        <a class="toggle-sidebar" href="javascript:void(0)">
-          <i class="iconly-Category icli"></i>
-        </a>
-        <div class="d-flex align-items-center gap-2">
-          <h4 class="f-w-600">Welcome {{ currentUser?.displayName }}</h4>
-          <img class="mt-0" src="assets/riho/images/hand.gif" alt="hand-gif">
-        </div>
-      </div>
-      <div class="welcome-content d-xl-block d-none">
-        <span class="text-truncate col-12">Manage your compliance projects and audits.</span>
-      </div>
-    </div>
-
-    <!-- Right Header Navigation -->
-    <div class="nav-right col-xxl-7 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto">
-      <ul class="nav-menus">
-        <!-- Search Bar -->
-        <li class="d-md-block d-none">
-          <div class="form search-form mb-0">
-            <div class="input-group">
-              <span class="input-icon">
-                <svg>
-                  <use href="assets/riho/svg/icon-sprite.svg#search-header"></use>
-                </svg>
-                <input class="w-100" type="search" placeholder="Search...">
+      <!-- User Profile -->
+      <div class="relative group">
+        <button
+          type="button"
+          class="flex items-center gap-3 p-2 pr-3 hover:bg-gray-100 rounded-lg transition-colors"
+        >
+          <img
+            src="assets/riho/images/dashboard/profile.png"
+            alt="Profile"
+            class="w-9 h-9 rounded-lg object-cover"
+          >
+          <div class="hidden xl:block text-left">
+            <div class="text-sm font-medium text-gray-900">
+              {{ currentUser?.displayName }}
+            </div>
+            <div class="text-xs">
+              <span [class]="'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ' + getRoleBadgeClasses()">
+                {{ currentUser?.role }}
               </span>
             </div>
           </div>
-        </li>
+          <svg class="hidden xl:block w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
 
-        <!-- Dark Mode Toggle -->
-        <li>
-          <div class="mode">
-            <i class="moon" data-feather="moon"></i>
+        <!-- Profile Dropdown -->
+        <div class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+          <div class="p-2">
+            <a
+              routerLink="/settings/profile"
+              class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              <span>My Profile</span>
+            </a>
+            <a
+              routerLink="/settings"
+              class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span>Settings</span>
+            </a>
           </div>
-        </li>
-
-        <!-- Notifications Dropdown -->
-        <li class="onhover-dropdown notification-down">
-          <div class="notification-box">
-            <svg>
-              <use href="assets/riho/svg/icon-sprite.svg#notification-header"></use>
-            </svg>
-            <span class="badge rounded-pill badge-secondary">0</span>
+          <div class="border-t border-gray-200 p-2">
+            <button
+              (click)="onLogout()"
+              class="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-md transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+              </svg>
+              Log Out
+            </button>
           </div>
-          <div class="onhover-show-div notification-dropdown">
-            <div class="card mb-0">
-              <div class="card-header">
-                <div class="common-space">
-                  <h4 class="text-start f-w-600">Notifications</h4>
-                  <div><span>0 New</span></div>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="notitications-bar">
-                  <p class="text-center text-muted py-4">No new notifications</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
-
-        <!-- User Profile Dropdown -->
-        <li class="profile-nav onhover-dropdown pe-0 py-0">
-          <div class="media profile-media">
-            <img class="b-r-10" src="assets/riho/images/dashboard/profile.png" alt="profile">
-            <div class="media-body d-xxl-block d-none box-col-none">
-              <div class="d-flex align-items-center gap-2">
-                <span>{{ currentUser?.displayName }}</span>
-                <i class="middle fa fa-angle-down"></i>
-              </div>
-              <p class="mb-0 font-roboto">
-                <span [class]="'badge ' + getRoleBadgeClass()">{{ currentUser?.role }}</span>
-              </p>
-            </div>
-          </div>
-          <ul class="profile-dropdown onhover-show-div">
-            <li>
-              <a routerLink="/settings/profile">
-                <i data-feather="user"></i>
-                <span>My Profile</span>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/settings">
-                <i data-feather="settings"></i>
-                <span>Settings</span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)" (click)="onLogout()" class="btn btn-pill btn-outline-primary btn-sm">
-                Log Out
-              </a>
-            </li>
-          </ul>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</header>

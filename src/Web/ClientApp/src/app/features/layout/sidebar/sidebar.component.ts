@@ -78,4 +78,16 @@ export class SidebarComponent implements OnInit {
   hasChildren(item: MenuItem): boolean {
     return !!(item.children && item.children.length > 0);
   }
+
+  getBadgeClasses(badgeClass: string): string {
+    const classMap: Record<string, string> = {
+      'danger': 'bg-red-500/15 text-red-300 border border-red-500/30',
+      'warning': 'bg-yellow-500/15 text-yellow-300 border border-yellow-500/30',
+      'info': 'bg-blue-500/15 text-blue-300 border border-blue-500/30',
+      'secondary': 'bg-gray-500/15 text-gray-300 border border-gray-500/30',
+      'success': 'bg-green-500/15 text-green-300 border border-green-500/30',
+      'primary': 'bg-primary-500/15 text-primary-300 border border-primary-500/30',
+    };
+    return classMap[badgeClass] || classMap['secondary'];
+  }
 }

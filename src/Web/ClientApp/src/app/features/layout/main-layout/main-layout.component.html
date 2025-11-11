@@ -1,24 +1,32 @@
-<!-- Tap on Top (Scroll to top button) -->
-<div class="tap-top"><i data-feather="chevrons-up"></i></div>
+<!-- Modern Layout with Tailwind CSS -->
+<div class="min-h-screen bg-gray-50">
 
-<!-- Page Wrapper -->
-<div class="page-wrapper compact-wrapper" id="pageWrapper">
-  <!-- Page Header (Top Navigation) -->
-  <app-header></app-header>
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
 
-  <!-- Page Body Start -->
-  <div class="page-body-wrapper">
-    <!-- Page Sidebar -->
-    <app-sidebar></app-sidebar>
+  <!-- Main Content Area -->
+  <div class="ml-64 transition-all duration-300 ease-smooth">
 
-    <!-- Page Body -->
-    <div class="page-body">
-      <!-- Main Content Area -->
+    <!-- Header -->
+    <app-header></app-header>
+
+    <!-- Page Content -->
+    <main class="min-h-[calc(100vh-4rem)] p-6">
       <router-outlet></router-outlet>
-    </div>
+    </main>
 
     <!-- Footer -->
     <app-footer></app-footer>
   </div>
-  <!-- Page Body End -->
+
+  <!-- Scroll to Top Button -->
+  <button
+    type="button"
+    class="fixed bottom-6 right-6 z-50 p-3 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 hover:shadow-xl transition-all duration-200 opacity-0 invisible hover:scale-110"
+    id="scrollToTop"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+    </svg>
+  </button>
 </div>
