@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:5001/api'  // Local development API
+  apiUrl: 'https://localhost:5001/api',  // Local development API
+  bypassAuth: true  // Set to true to bypass authentication for testing (DEVELOPMENT ONLY)
 };
 
 /*
