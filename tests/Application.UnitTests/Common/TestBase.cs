@@ -1,3 +1,5 @@
+using IgnaCheck.Application.Common.Interfaces;
+
 namespace IgnaCheck.Application.UnitTests.Common;
 
 /// <summary>

@@ -93,7 +93,7 @@ public class OrganizationTests
             Id = Guid.NewGuid(),
             OrganizationId = organization.Id,
             UserId = userId,
-            Role = OrganizationRole.Member
+            Role = nameof(OrganizationRole.Member)
         };
 
         // Act
@@ -102,7 +102,7 @@ public class OrganizationTests
         // Assert
         organization.Members.Count.ShouldBe(1);
         organization.Members.First().UserId.ShouldBe(userId);
-        organization.Members.First().Role.ShouldBe(OrganizationRole.Member);
+        organization.Members.First().Role.ShouldBe(nameof(OrganizationRole.Member));
     }
 
     [Test]
