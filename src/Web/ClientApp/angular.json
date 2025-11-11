@@ -75,7 +75,6 @@
               "buildTarget": "IgnaCheck.Web:build:production"
             },
             "development": {
-              "proxyConfig": "proxy.conf.js",
               "buildTarget": "IgnaCheck.Web:build:development"
             }
           },
