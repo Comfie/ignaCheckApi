@@ -40,7 +40,7 @@
               "src/assets/riho/css/style.css",
               "src/assets/riho/css/color-1.css",
               "src/assets/riho/css/responsive.css",
-              "src/styles.scss"
+              "src/styles.css"
             ],
             "scripts": [
               "src/assets/riho/js/jquery.min.js",
@@ -118,7 +118,7 @@
               "src/assets/riho/css/vendors/bootstrap.css",
               "src/assets/riho/css/vendors/feather-icon.css",
               "src/assets/riho/css/style.css",
-              "src/styles.scss"
+              "src/styles.css"
             ],
             "scripts": []
           }

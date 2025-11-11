@@ -33,6 +33,7 @@
     "@angular-devkit/build-angular": "^20.3.9",
     "@angular/cli": "^20.3.9",
     "@angular/compiler-cli": "^20.3.10",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/jasmine": "~4.3.1",
     "@types/jasminewd2": "~2.0.10",
     "@types/node": "^18.16.3",
