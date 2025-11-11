@@ -4,6 +4,7 @@ using IgnaCheck.Application.Projects.Commands.CreateProject;
 using IgnaCheck.Domain.Entities;
 using IgnaCheck.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace IgnaCheck.Application.UnitTests.Projects.Commands;
 
@@ -261,8 +262,8 @@ public class CreateProjectCommandTests
 
         // Assert
         result.Succeeded.ShouldBeTrue();
-        result.Data.Name.ShouldBe("SOC 2 Audit");
-        result.Data.Description.ShouldBe("Test Description");
+        result.Data?.Name.ShouldBe("SOC 2 Audit");
+        result.Data?.Description.ShouldBe("Test Description");
     }
 
     private Mock<DbSet<T>> CreateMockDbSet<T>(List<T> data) where T : class
@@ -307,7 +308,7 @@ internal class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
         return new TestAsyncEnumerable<TElement>(expression);
     }
 
-    public object Execute(System.Linq.Expressions.Expression expression)
+    public object? Execute(System.Linq.Expressions.Expression expression)
     {
         return _inner.Execute(expression);
     }

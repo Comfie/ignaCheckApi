@@ -1,7 +1,9 @@
+using System.Linq.Expressions;
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Infrastructure.Identity;
 using IgnaCheck.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace IgnaCheck.Infrastructure.UnitTests.Services;
 

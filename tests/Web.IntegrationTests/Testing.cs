@@ -209,6 +209,7 @@ public class TestUser : IUser
     private static Guid? _currentOrganizationId;
 
     public string? Id => "test-user-id";
+    public List<string>? Roles { get; }
     public string? Email => "test@test.com";
     public Guid? OrganizationId => _currentOrganizationId;
     public string? OrganizationRole => "Admin";
