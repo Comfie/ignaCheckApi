@@ -1,7 +1,7 @@
 import { UserRole } from '../../models/enums/user-role.enum';
 
 export interface MenuItem {
-  label: string;
+  label?: string;
   icon?: string;
   iconStroke?: string;
   iconFill?: string;
