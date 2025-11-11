@@ -97,16 +97,14 @@
         <!-- User Profile Dropdown -->
         <li class="profile-nav onhover-dropdown pe-0 py-0">
           <div class="media profile-media" (click)="toggleUserMenu()">
-            <div class="user-profile-avatar">
-              <div class="avatar-initials">{{ getUserInitials() }}</div>
-            </div>
-            <div class="media-body">
-              <span>{{ currentUser?.displayName }}</span>
-              <p class="mb-0 font-roboto">
-                <span [class]="'badge ' + getRoleBadgeClass()">
-                  {{ currentUser?.role }}
-                </span>
+            <img class="b-r-10" src="assets/riho/images/dashboard/profile.png" alt="profile">
+            <div class="media-body d-xxl-block d-none box-col-none">
+              <div class="d-flex align-items-center gap-2">
+                <span>{{ currentUser?.displayName }}</span>
                 <i class="middle fa fa-angle-down"></i>
+              </div>
+              <p class="mb-0 font-roboto">
+                <span [class]="'badge ' + getRoleBadgeClass()">{{ currentUser?.role }}</span>
               </p>
             </div>
           </div>
@@ -124,16 +122,8 @@
               </a>
             </li>
             <li>
-              <a [routerLink]="['/settings/notifications']" (click)="closeDropdowns()">
-                <i data-feather="bell"></i>
-                <span>Notifications</span>
-              </a>
-            </li>
-            <li class="divider"></li>
-            <li>
-              <a href="javascript:void(0)" (click)="onLogout()">
-                <i data-feather="log-out"></i>
-                <span>Logout</span>
+              <a href="javascript:void(0)" (click)="onLogout()" class="btn btn-pill btn-outline-primary btn-sm">
+                Log Out
               </a>
             </li>
           </ul>
