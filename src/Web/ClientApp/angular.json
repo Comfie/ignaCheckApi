@@ -30,6 +30,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/tailwind.css",
               "src/assets/riho/css/vendors/bootstrap.css",
               "src/assets/riho/css/vendors/feather-icon.css",
               "src/assets/riho/css/vendors/icofont.css",
@@ -113,6 +114,7 @@
               "src/assets"
             ],
             "styles": [
+              "src/tailwind.css",
               "src/assets/riho/css/vendors/bootstrap.css",
               "src/assets/riho/css/vendors/feather-icon.css",
               "src/assets/riho/css/style.css",
