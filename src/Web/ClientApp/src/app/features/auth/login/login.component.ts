@@ -61,7 +61,13 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     const { email, password } = this.loginForm.value;
 
-    this.authService.login(email, password).subscribe({
+    // Create LoginRequest object as expected by AuthService
+    const loginRequest = {
+      email: email!,
+      password: password!
+    };
+
+    this.authService.login(loginRequest).subscribe({
       next: () => {
         this.notificationService.success('Login successful!');
         this.router.navigate(['/dashboard']);
