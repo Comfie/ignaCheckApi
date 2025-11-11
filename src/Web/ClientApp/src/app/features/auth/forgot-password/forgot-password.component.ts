@@ -1,36 +1,77 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../../../core/services/notification.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
-    <div class="container-fluid p-0">
-      <div class="row m-0">
-        <div class="col-12 p-0">
-          <div class="login-card login-dark">
-            <div>
-              <div>
-                <a class="logo" routerLink="/">
-                  <img class="img-fluid for-dark" src="assets/riho/images/logo/logo.png" alt="IgnaCheck Logo">
-                </a>
-              </div>
-              <div class="login-main">
-                <h4>Forgot Password</h4>
-                <p>Coming soon...</p>
-                <p class="mt-4 mb-0">
-                  Remember your password?
-                  <a class="ms-2" routerLink="/auth/login">Sign in</a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: []
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+  templateUrl: './forgot-password.component.html',
+  styleUrls: ['./forgot-password.component.scss']
 })
-export class ForgotPasswordComponent {}
+export class ForgotPasswordComponent implements OnInit {
+  forgotPasswordForm!: FormGroup;
+  isLoading = false;
+  emailSent = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private notificationService: NotificationService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  private initializeForm(): void {
+    this.forgotPasswordForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
+    });
+  }
+
+  get email() {
+    return this.forgotPasswordForm.get('email');
+  }
+
+  onSubmit(): void {
+    if (this.forgotPasswordForm.invalid) {
+      this.forgotPasswordForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+    const { email } = this.forgotPasswordForm.value;
+
+    // Call forgot password API
+    this.http.post(`${environment.apiUrl}/authentication/forgot-password`, { email }).subscribe({
+      next: () => {
+        this.emailSent = true;
+        this.isLoading = false;
+        this.notificationService.success('Password reset instructions have been sent to your email.');
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.notificationService.error(error.message || 'Failed to send reset email. Please try again.');
+      }
+    });
+  }
+
+  onBackToLogin(): void {
+    this.router.navigate(['/auth/login']);
+  }
+
+  onResendEmail(): void {
+    this.emailSent = false;
+    this.onSubmit();
+  }
+}

@@ -1,36 +1,142 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, RouterModule],
-  template: `
-    <div class="container-fluid p-0">
-      <div class="row m-0">
-        <div class="col-12 p-0">
-          <div class="login-card login-dark">
-            <div>
-              <div>
-                <a class="logo" routerLink="/">
-                  <img class="img-fluid for-dark" src="assets/riho/images/logo/logo.png" alt="IgnaCheck Logo">
-                </a>
-              </div>
-              <div class="login-main">
-                <h4>Register</h4>
-                <p>Coming soon...</p>
-                <p class="mt-4 mb-0">
-                  Already have an account?
-                  <a class="ms-2" routerLink="/auth/login">Sign in</a>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: []
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {}
+export class RegisterComponent implements OnInit {
+  registerForm!: FormGroup;
+  isLoading = false;
+  showPassword = false;
+  showConfirmPassword = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private notificationService: NotificationService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  private initializeForm(): void {
+    this.registerForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8), this.passwordStrengthValidator]],
+      confirmPassword: ['', [Validators.required]],
+      agreeToTerms: [false, [Validators.requiredTrue]]
+    }, {
+      validators: this.passwordMatchValidator
+    });
+  }
+
+  // Custom validator for password strength
+  private passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value) {
+      return null;
+    }
+
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasLowerCase = /[a-z]/.test(value);
+    const hasNumeric = /[0-9]/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+
+    const passwordValid = hasUpperCase && hasLowerCase && hasNumeric && hasSpecialChar;
+
+    return !passwordValid ? { weakPassword: true } : null;
+  }
+
+  // Custom validator to check if passwords match
+  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  get firstName() {
+    return this.registerForm.get('firstName');
+  }
+
+  get lastName() {
+    return this.registerForm.get('lastName');
+  }
+
+  get email() {
+    return this.registerForm.get('email');
+  }
+
+  get password() {
+    return this.registerForm.get('password');
+  }
+
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
+
+  get agreeToTerms() {
+    return this.registerForm.get('agreeToTerms');
+  }
+
+  onSubmit(): void {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+    const { firstName, lastName, email, password } = this.registerForm.value;
+
+    // Create display name from first and last name
+    const displayName = `${firstName} ${lastName}`.trim();
+
+    const registerRequest = {
+      email: email!,
+      password: password!,
+      displayName: displayName
+    };
+
+    this.authService.register(registerRequest).subscribe({
+      next: () => {
+        this.notificationService.success('Registration successful! Please check your email to verify your account.');
+        this.router.navigate(['/auth/login']);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.notificationService.error(error.message || 'Registration failed. Please try again.');
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+}
