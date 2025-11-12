@@ -1,91 +1,72 @@
+<!-- Premium Dashboard with Modern Design -->
 <div class="container mx-auto max-w-7xl">
-  <!-- Page Title -->
-  <div class="mb-6">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-        <nav class="flex mt-2" aria-label="Breadcrumb">
-          <ol class="inline-flex items-center space-x-1 md:space-x-3">
-            <li class="inline-flex items-center">
-              <a routerLink="/dashboard" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                </svg>
-                Dashboard
-              </a>
-            </li>
-          </ol>
-        </nav>
-      </div>
-    </div>
-  </div>
 
-  <!-- Welcome Card -->
-  <div class="mb-6">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {{ getGreeting() }}, {{ currentUser?.displayName }}! 👋
-          </h2>
-          <p class="text-gray-600 dark:text-gray-400">
-            You're logged in as
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-              {{ getRoleDisplayName() }}
-            </span>
-          </p>
-          <p class="text-gray-600 dark:text-gray-400 mt-2" *ngIf="isOwner()">
-            You have full system access and can manage all workspaces.
-          </p>
-          <p class="text-gray-600 dark:text-gray-400 mt-2" *ngIf="isAdmin()">
-            You manage this workspace: <strong>{{ currentUser?.organizationName }}</strong>
-          </p>
-          <p class="text-gray-600 dark:text-gray-400 mt-2" *ngIf="isContributor() || isViewer()">
-            Workspace: <strong>{{ currentUser?.organizationName }}</strong>
-          </p>
-        </div>
-      </div>
-    </div>
+  <!-- Welcome Section -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      {{ getGreeting() }}, {{ currentUser?.displayName }}! 👋
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400">
+      Here's what's happening with your compliance projects today.
+    </p>
   </div>
 
   <!-- Stats Cards -->
-  <div class="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2 lg:grid-cols-4">
-    <div *ngFor="let stat of stats" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-      <div class="flex items-center justify-between">
-        <div class="flex-grow">
-          <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{{ stat.title }}</p>
-          <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</h3>
-          <p class="mt-2" *ngIf="stat.trend">
-            <span
-              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-              [class.bg-green-100]="stat.trend.isPositive"
-              [class.text-green-800]="stat.trend.isPositive"
-              [class.bg-red-100]="!stat.trend.isPositive"
-              [class.text-red-800]="!stat.trend.isPositive"
-            >
-              {{ stat.trend.value }}
-            </span>
-          </p>
-        </div>
-        <div
-          class="flex items-center justify-center w-12 h-12 rounded-lg"
-          [class.bg-blue-100]="stat.color === 'primary'"
-          [class.bg-green-100]="stat.color === 'success'"
-          [class.bg-yellow-100]="stat.color === 'warning'"
-          [class.bg-red-100]="stat.color === 'danger'"
-        >
-          <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-          </svg>
+  <div class="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
+    <div
+      *ngFor="let stat of stats"
+      class="relative group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700"
+    >
+      <!-- Card Content -->
+      <div class="p-6">
+        <div class="flex items-center justify-between">
+          <!-- Left: Stats -->
+          <div class="flex-1">
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+              {{ stat.title }}
+            </p>
+            <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+              {{ stat.value }}
+            </h3>
+
+            <!-- Trend -->
+            <div *ngIf="stat.trend" class="flex items-center gap-1">
+              <fa-icon
+                [icon]="stat.trend.isPositive ? faArrowUp : faArrowDown"
+                [ngClass]="{
+                  'text-green-600 dark:text-green-400': stat.trend.isPositive,
+                  'text-red-600 dark:text-red-400': !stat.trend.isPositive
+                }"
+                class="text-xs"
+              ></fa-icon>
+              <span
+                [ngClass]="{
+                  'text-green-600 dark:text-green-400': stat.trend.isPositive,
+                  'text-red-600 dark:text-red-400': !stat.trend.isPositive
+                }"
+                class="text-xs font-medium"
+              >
+                {{ stat.trend.value }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Right: Icon -->
+          <div [ngClass]="stat.bgColor" class="flex items-center justify-center w-14 h-14 rounded-xl transition-transform duration-300 group-hover:scale-110">
+            <fa-icon [icon]="stat.icon" [ngClass]="stat.color" class="text-2xl"></fa-icon>
+          </div>
         </div>
       </div>
+
+      <!-- Bottom gradient accent -->
+      <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
     </div>
   </div>
 
   <!-- Quick Actions -->
-  <div class="mb-6">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
-      <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+  <div class="mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h3>
       </div>
       <div class="p-6">
@@ -93,59 +74,139 @@
           <a
             *ngFor="let action of quickActions"
             [routerLink]="action.route"
-            class="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+            class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 group border border-transparent hover:border-gray-300 dark:hover:border-gray-600"
           >
-            <div class="flex items-center justify-center w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg mr-3">
-              <svg class="w-6 h-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-              </svg>
+            <div
+              [ngClass]="{
+                'bg-blue-100 dark:bg-blue-900/30': action.color === 'blue',
+                'bg-green-100 dark:bg-green-900/30': action.color === 'green',
+                'bg-purple-100 dark:bg-purple-900/30': action.color === 'purple',
+                'bg-orange-100 dark:bg-orange-900/30': action.color === 'orange'
+              }"
+              class="flex items-center justify-center w-12 h-12 rounded-lg transition-transform duration-200 group-hover:scale-110"
+            >
+              <fa-icon
+                [icon]="action.icon"
+                [ngClass]="{
+                  'text-blue-600 dark:text-blue-400': action.color === 'blue',
+                  'text-green-600 dark:text-green-400': action.color === 'green',
+                  'text-purple-600 dark:text-purple-400': action.color === 'purple',
+                  'text-orange-600 dark:text-orange-400': action.color === 'orange'
+                }"
+                class="text-lg"
+              ></fa-icon>
             </div>
-            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ action.label }}</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+              {{ action.label }}
+            </span>
           </a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Content Section -->
-  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-    <!-- Main Content (8/12) -->
+  <!-- Content Grid -->
+  <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+
+    <!-- Recent Activity (Left 2/3) -->
     <div class="lg:col-span-2">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
-        <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Activity</h3>
         </div>
         <div class="p-6">
-          <p class="text-gray-600 dark:text-gray-400 text-center py-8">
-            Welcome to your dashboard. More content coming soon.
-          </p>
+          <div *ngIf="recentActivities.length > 0; else noActivity" class="space-y-4">
+            <!-- Activity Timeline -->
+            <div
+              *ngFor="let activity of recentActivities; let last = last"
+              class="relative flex items-start gap-4 pb-4"
+              [class.border-b]="!last"
+              [class.border-gray-200]="!last"
+              [class.dark:border-gray-700]="!last"
+            >
+              <!-- Icon -->
+              <div
+                [ngClass]="{
+                  'bg-blue-100 dark:bg-blue-900/30': activity.color === 'blue',
+                  'bg-green-100 dark:bg-green-900/30': activity.color === 'green',
+                  'bg-purple-100 dark:bg-purple-900/30': activity.color === 'purple',
+                  'bg-orange-100 dark:bg-orange-900/30': activity.color === 'orange'
+                }"
+                class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-lg"
+              >
+                <fa-icon
+                  [icon]="activity.icon"
+                  [ngClass]="{
+                    'text-blue-600 dark:text-blue-400': activity.color === 'blue',
+                    'text-green-600 dark:text-green-400': activity.color === 'green',
+                    'text-purple-600 dark:text-purple-400': activity.color === 'purple',
+                    'text-orange-600 dark:text-orange-400': activity.color === 'orange'
+                  }"
+                  class="text-sm"
+                ></fa-icon>
+              </div>
+
+              <!-- Content -->
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900 dark:text-white">
+                  {{ activity.message }}
+                </p>
+                <div class="flex items-center gap-2 mt-1">
+                  <fa-icon [icon]="faClock" class="text-xs text-gray-400 dark:text-gray-500"></fa-icon>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                    {{ activity.time }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noActivity>
+            <div class="text-center py-12">
+              <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
+                <fa-icon [icon]="faClipboardCheck" class="text-2xl text-gray-400 dark:text-gray-500"></fa-icon>
+              </div>
+              <p class="text-gray-600 dark:text-gray-400">No recent activity to display</p>
+              <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Activities will appear here as you work</p>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>
 
-    <!-- Sidebar Content (4/12) -->
+    <!-- Quick Stats Sidebar (Right 1/3) -->
     <div>
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
-        <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Quick Stats</h3>
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-20">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Overview</h3>
         </div>
         <div class="p-6">
           <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-600 dark:text-gray-400">Active Projects</span>
-              <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ stats[0].value || '0' }}</span>
+            <div *ngFor="let stat of stats" class="flex items-center justify-between group">
+              <div class="flex items-center gap-3">
+                <div [ngClass]="stat.bgColor" class="flex items-center justify-center w-10 h-10 rounded-lg transition-transform duration-200 group-hover:scale-110">
+                  <fa-icon [icon]="stat.icon" [ngClass]="stat.color" class="text-sm"></fa-icon>
+                </div>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ stat.title }}</span>
+              </div>
+              <span class="text-sm font-bold text-gray-900 dark:text-white">{{ stat.value }}</span>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-600 dark:text-gray-400">Pending Tasks</span>
-              <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ stats[1].value || '0' }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-600 dark:text-gray-400">Completed</span>
-              <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ stats[2].value || '0' }}</span>
+          </div>
+
+          <!-- Progress Ring or Chart (Placeholder) -->
+          <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div class="text-center">
+              <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-3">
+                <span class="text-2xl font-bold text-white">87%</span>
+              </div>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">Compliance Score</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">+5% from last month</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
+
 </div>

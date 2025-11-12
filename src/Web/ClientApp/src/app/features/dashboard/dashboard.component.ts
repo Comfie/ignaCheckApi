@@ -1,6 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faBuilding,
+  faUsers,
+  faFolderOpen,
+  faChartLine,
+  faClipboardCheck,
+  faFileAlt,
+  faLightbulb,
+  faPlus,
+  faUserPlus,
+  faUpload,
+  faFileText,
+  faFolder,
+  faCheckSquare,
+  faBarChart,
+  faClock,
+  faArrowUp,
+  faArrowDown
+} from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../core/services/auth.service';
 import { UserRole } from '../../models/enums/user-role.enum';
 import { User } from '../../core/models/user.model';
@@ -8,27 +28,53 @@ import { User } from '../../core/models/user.model';
 interface DashboardStat {
   title: string;
   value: string | number;
-  icon: string;
+  icon: any;
   color: string;
+  bgColor: string;
   trend?: {
     value: string;
     isPositive: boolean;
   };
 }
 
+interface QuickAction {
+  label: string;
+  route: string;
+  icon: any;
+  color: string;
+}
+
+interface RecentActivity {
+  type: string;
+  message: string;
+  time: string;
+  icon: any;
+  color: string;
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+  // FontAwesome Icons
+  faBuilding = faBuilding;
+  faUsers = faUsers;
+  faFolderOpen = faFolderOpen;
+  faChartLine = faChartLine;
+  faArrowUp = faArrowUp;
+  faArrowDown = faArrowDown;
+  faClock = faClock;
+  faClipboardCheck = faClipboardCheck;
+
   currentUser: User | null = null;
   userRole: UserRole = UserRole.Viewer;
   stats: DashboardStat[] = [];
-  recentActivities: any[] = [];
-  quickActions: any[] = [];
+  recentActivities: RecentActivity[] = [];
+  quickActions: QuickAction[] = [];
 
   constructor(private authService: AuthService) {}
 
@@ -65,37 +111,41 @@ export class DashboardComponent implements OnInit {
       {
         title: 'Total Workspaces',
         value: 12,
-        icon: 'stroke-project',
-        color: 'primary',
+        icon: faBuilding,
+        color: 'text-blue-600 dark:text-blue-400',
+        bgColor: 'bg-blue-100 dark:bg-blue-900/30',
         trend: { value: '+3 this month', isPositive: true }
       },
       {
         title: 'Total Users',
         value: 156,
-        icon: 'stroke-user',
-        color: 'success',
+        icon: faUsers,
+        color: 'text-green-600 dark:text-green-400',
+        bgColor: 'bg-green-100 dark:bg-green-900/30',
         trend: { value: '+12 this week', isPositive: true }
       },
       {
         title: 'Active Projects',
         value: 47,
-        icon: 'stroke-board',
-        color: 'warning'
+        icon: faFolderOpen,
+        color: 'text-purple-600 dark:text-purple-400',
+        bgColor: 'bg-purple-100 dark:bg-purple-900/30'
       },
       {
         title: 'Compliance Score',
         value: '87%',
-        icon: 'stroke-charts',
-        color: 'info',
+        icon: faChartLine,
+        color: 'text-orange-600 dark:text-orange-400',
+        bgColor: 'bg-orange-100 dark:bg-orange-900/30',
         trend: { value: '+5%', isPositive: true }
       }
     ];
 
     this.quickActions = [
-      { label: 'Create Workspace', route: '/workspaces/create', icon: 'plus' },
-      { label: 'Manage Users', route: '/users', icon: 'users' },
-      { label: 'View Reports', route: '/reports', icon: 'bar-chart' },
-      { label: 'System Settings', route: '/settings/workspace', icon: 'settings' }
+      { label: 'Create Workspace', route: '/workspaces/create', icon: faPlus, color: 'blue' },
+      { label: 'Manage Users', route: '/users', icon: faUsers, color: 'green' },
+      { label: 'View Reports', route: '/reports', icon: faBarChart, color: 'purple' },
+      { label: 'System Settings', route: '/settings/workspace', icon: faClipboardCheck, color: 'orange' }
     ];
   }
 
@@ -105,35 +155,39 @@ export class DashboardComponent implements OnInit {
       {
         title: 'Active Projects',
         value: 8,
-        icon: 'stroke-project',
-        color: 'primary'
+        icon: faFolderOpen,
+        color: 'text-blue-600 dark:text-blue-400',
+        bgColor: 'bg-blue-100 dark:bg-blue-900/30'
       },
       {
         title: 'Team Members',
         value: 24,
-        icon: 'stroke-user',
-        color: 'success'
+        icon: faUsers,
+        color: 'text-green-600 dark:text-green-400',
+        bgColor: 'bg-green-100 dark:bg-green-900/30'
       },
       {
         title: 'Open Findings',
         value: 34,
-        icon: 'stroke-learning',
-        color: 'danger',
+        icon: faLightbulb,
+        color: 'text-red-600 dark:text-red-400',
+        bgColor: 'bg-red-100 dark:bg-red-900/30',
         trend: { value: '-8 this week', isPositive: true }
       },
       {
         title: 'Documents',
         value: 142,
-        icon: 'stroke-file',
-        color: 'info'
+        icon: faFileAlt,
+        color: 'text-purple-600 dark:text-purple-400',
+        bgColor: 'bg-purple-100 dark:bg-purple-900/30'
       }
     ];
 
     this.quickActions = [
-      { label: 'Create Project', route: '/projects/create', icon: 'plus' },
-      { label: 'Invite Users', route: '/users/invitations', icon: 'user-plus' },
-      { label: 'Upload Documents', route: '/documents/upload', icon: 'upload' },
-      { label: 'Compliance Report', route: '/reports/compliance', icon: 'file-text' }
+      { label: 'Create Project', route: '/projects/create', icon: faPlus, color: 'blue' },
+      { label: 'Invite Users', route: '/users/invitations', icon: faUserPlus, color: 'green' },
+      { label: 'Upload Documents', route: '/documents/upload', icon: faUpload, color: 'purple' },
+      { label: 'Compliance Report', route: '/reports/compliance', icon: faFileText, color: 'orange' }
     ];
   }
 
@@ -143,34 +197,38 @@ export class DashboardComponent implements OnInit {
       {
         title: 'My Projects',
         value: 3,
-        icon: 'stroke-project',
-        color: 'primary'
+        icon: faFolderOpen,
+        color: 'text-blue-600 dark:text-blue-400',
+        bgColor: 'bg-blue-100 dark:bg-blue-900/30'
       },
       {
         title: 'Assigned Tasks',
         value: 12,
-        icon: 'stroke-board',
-        color: 'warning'
+        icon: faCheckSquare,
+        color: 'text-orange-600 dark:text-orange-400',
+        bgColor: 'bg-orange-100 dark:bg-orange-900/30'
       },
       {
         title: 'My Findings',
         value: 8,
-        icon: 'stroke-learning',
-        color: 'info'
+        icon: faLightbulb,
+        color: 'text-purple-600 dark:text-purple-400',
+        bgColor: 'bg-purple-100 dark:bg-purple-900/30'
       },
       {
         title: 'Documents',
         value: 28,
-        icon: 'stroke-file',
-        color: 'success'
+        icon: faFileAlt,
+        color: 'text-green-600 dark:text-green-400',
+        bgColor: 'bg-green-100 dark:bg-green-900/30'
       }
     ];
 
     this.quickActions = [
-      { label: 'View Projects', route: '/projects', icon: 'folder' },
-      { label: 'My Tasks', route: '/tasks', icon: 'check-square' },
-      { label: 'Upload Document', route: '/documents/upload', icon: 'upload' },
-      { label: 'View Reports', route: '/reports', icon: 'bar-chart' }
+      { label: 'View Projects', route: '/projects', icon: faFolder, color: 'blue' },
+      { label: 'My Tasks', route: '/tasks', icon: faCheckSquare, color: 'orange' },
+      { label: 'Upload Document', route: '/documents/upload', icon: faUpload, color: 'purple' },
+      { label: 'View Reports', route: '/reports', icon: faBarChart, color: 'green' }
     ];
 
     // Load recent activities (mock data)
@@ -179,19 +237,36 @@ export class DashboardComponent implements OnInit {
         type: 'document',
         message: 'New document uploaded: Security Policy.pdf',
         time: '2 hours ago',
-        icon: 'file-text'
+        icon: faFileText,
+        color: 'blue'
       },
       {
         type: 'finding',
         message: 'Finding #45 assigned to you',
         time: '5 hours ago',
-        icon: 'alert-circle'
+        icon: faLightbulb,
+        color: 'orange'
       },
       {
         type: 'comment',
         message: 'New comment on ISO 27001 Project',
         time: '1 day ago',
-        icon: 'message-square'
+        icon: faClipboardCheck,
+        color: 'green'
+      },
+      {
+        type: 'user',
+        message: 'Sarah Johnson joined the workspace',
+        time: '2 days ago',
+        icon: faUserPlus,
+        color: 'purple'
+      },
+      {
+        type: 'project',
+        message: 'Project "GDPR Compliance" completed',
+        time: '3 days ago',
+        icon: faCheckSquare,
+        color: 'green'
       }
     ];
   }
