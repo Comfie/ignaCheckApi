@@ -17,9 +17,7 @@ import {
   faBuilding,
   faLightbulb,
   faBook,
-  faBars,
-  faChevronLeft,
-  faChevronRight
+  faBars
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -50,8 +48,6 @@ export class SidebarComponent implements OnInit {
   faLightbulb = faLightbulb;
   faBook = faBook;
   faBars = faBars;
-  faChevronLeft = faChevronLeft;
-  faChevronRight = faChevronRight;
 
   menuItems: MenuItem[] = [];
   activeRoute: string = '';
@@ -135,10 +131,6 @@ export class SidebarComponent implements OnInit {
 
   hasChildren(item: MenuItem): boolean {
     return !!(item.children && item.children.length > 0);
-  }
-
-  toggleSidebar(): void {
-    this.sidebarService.toggle();
   }
 
   getIconForItem(item: MenuItem): any {

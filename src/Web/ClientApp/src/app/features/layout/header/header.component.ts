@@ -10,7 +10,8 @@ import {
   faUser,
   faCog,
   faSignOutAlt,
-  faBars
+  faBars,
+  faChevronLeft
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -35,6 +36,7 @@ export class HeaderComponent implements OnInit {
   faCog = faCog;
   faSignOutAlt = faSignOutAlt;
   faBars = faBars;
+  faChevronLeft = faChevronLeft;
 
   currentUser: User | null = null;
   showUserMenu = false;
@@ -72,6 +74,10 @@ export class HeaderComponent implements OnInit {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  toggleSidebar(): void {
+    this.sidebarService.toggle();
   }
 
   toggleUserMenu(): void {

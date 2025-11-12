@@ -1,14 +1,35 @@
 <!-- Premium Header with Smooth Animations -->
 <header
-  [class.ml-64]="!isSidebarCollapsed"
-  [class.ml-20]="isSidebarCollapsed"
-  class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300"
+  class="sticky top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-200"
 >
   <div class="flex items-center justify-between h-16 px-4 lg:px-6">
 
-    <!-- Left Section: Welcome Message -->
+    <!-- Left Section: Logo, Toggle, and Welcome Message -->
     <div class="flex items-center gap-4">
-      <div class="hidden lg:block">
+
+      <!-- Logo -->
+      <a routerLink="/dashboard" class="flex items-center gap-2 group">
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+          <span class="text-white font-bold text-xl">I</span>
+        </div>
+        <div *ngIf="!isSidebarCollapsed" class="hidden md:flex flex-col">
+          <span class="text-gray-900 dark:text-white font-bold text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">IgnaCheck</span>
+          <span class="text-gray-500 dark:text-gray-400 text-xs">Compliance</span>
+        </div>
+      </a>
+
+      <!-- Sidebar Toggle Button -->
+      <button
+        type="button"
+        (click)="toggleSidebar()"
+        class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
+        [attr.aria-label]="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      >
+        <fa-icon [icon]="isSidebarCollapsed ? faBars : faChevronLeft" class="text-lg"></fa-icon>
+      </button>
+
+      <!-- Welcome Message (Desktop) -->
+      <div class="hidden lg:block border-l border-gray-200 dark:border-gray-700 pl-4">
         <div class="flex items-center gap-2">
           <h1 class="text-xl font-semibold text-gray-800 dark:text-white transition-colors duration-200">
             Welcome, {{ currentUser?.displayName }}
@@ -19,15 +40,6 @@
           Manage your compliance projects and audits
         </p>
       </div>
-
-      <!-- Mobile Menu Button -->
-      <button
-        type="button"
-        class="lg:hidden p-2.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 hover:scale-105"
-        aria-label="Toggle menu"
-      >
-        <fa-icon [icon]="faBars" class="text-lg"></fa-icon>
-      </button>
     </div>
 
     <!-- Right Section: Actions -->

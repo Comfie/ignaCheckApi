@@ -2,51 +2,10 @@
 <aside
   [class.w-64]="!isCollapsed"
   [class.w-20]="isCollapsed"
-  class="fixed left-0 top-0 z-40 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-lg transition-all duration-300"
+  class="fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-lg transition-all duration-300"
 >
-  <!-- Logo Section -->
-  <div class="flex items-center justify-between h-20 px-4 border-b border-gray-200 dark:border-gray-800">
-    <a *ngIf="!isCollapsed" routerLink="/dashboard" class="flex items-center gap-2 group">
-      <!-- Logo Icon -->
-      <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-        <span class="text-white font-bold text-xl">I</span>
-      </div>
-      <!-- Logo Text -->
-      <div class="flex flex-col">
-        <span class="text-gray-900 dark:text-white font-bold text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">IgnaCheck</span>
-        <span class="text-gray-500 dark:text-gray-400 text-xs">Compliance</span>
-      </div>
-    </a>
-
-    <!-- Collapsed Logo -->
-    <div *ngIf="isCollapsed" class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg mx-auto">
-      <span class="text-white font-bold text-xl">I</span>
-    </div>
-
-    <!-- Collapse Toggle Button -->
-    <button
-      *ngIf="!isCollapsed"
-      (click)="toggleSidebar()"
-      class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
-      [attr.aria-label]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-    >
-      <fa-icon [icon]="faChevronLeft" class="text-sm"></fa-icon>
-    </button>
-  </div>
-
-  <!-- Expand Button (when collapsed) -->
-  <div *ngIf="isCollapsed" class="flex justify-center py-2 border-b border-gray-200 dark:border-gray-800">
-    <button
-      (click)="toggleSidebar()"
-      class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
-      aria-label="Expand sidebar"
-    >
-      <fa-icon [icon]="faChevronRight" class="text-sm"></fa-icon>
-    </button>
-  </div>
-
   <!-- Navigation Menu -->
-  <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 h-[calc(100vh-9rem)]">
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 h-full">
     <ul class="space-y-1">
       <!-- Menu Items Loop -->
       <ng-container *ngFor="let item of menuItems">
