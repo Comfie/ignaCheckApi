@@ -1,19 +1,25 @@
-<!-- Modern Sidebar with Tailwind CSS -->
-<aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gradient-to-b from-sidebar-bg to-dark-900 border-r border-sidebar-border shadow-sidebar transition-transform duration-300 ease-smooth">
+<!-- Premium Sidebar with Dark Mode Support -->
+<aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gradient-to-b from-gray-900 to-gray-950 dark:from-gray-950 dark:to-black border-r border-gray-800 dark:border-gray-900 shadow-2xl transition-all duration-300">
 
   <!-- Logo Section -->
-  <div class="flex items-center justify-center h-20 px-6 border-b border-sidebar-border bg-black/15">
+  <div class="flex items-center justify-center h-20 px-6 border-b border-gray-800 dark:border-gray-900 bg-gray-900/50 dark:bg-black/30">
     <a routerLink="/dashboard" class="flex items-center space-x-3 group">
-      <img
-        src="assets/riho/images/logo/logo.png"
-        alt="IgnaCheck Logo"
-        class="h-8 w-auto brightness-110 group-hover:brightness-125 transition-all duration-300 group-hover:scale-105"
-      >
+      <div class="flex items-center gap-2">
+        <!-- Logo Icon -->
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+          <span class="text-white font-bold text-xl">I</span>
+        </div>
+        <!-- Logo Text -->
+        <div class="flex flex-col">
+          <span class="text-white font-bold text-lg leading-tight group-hover:text-blue-400 transition-colors duration-200">IgnaCheck</span>
+          <span class="text-gray-400 text-xs">Compliance Suite</span>
+        </div>
+      </div>
     </a>
   </div>
 
   <!-- Navigation Menu -->
-  <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 scrollbar-thin scrollbar-thumb-sidebar-text/20 scrollbar-track-transparent">
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 scrollbar-thin">
     <ul class="space-y-1">
 
       <!-- Menu Items Loop -->
@@ -21,36 +27,35 @@
 
         <!-- Section Divider / Title -->
         <li *ngIf="isDivider(item)" class="px-4 pt-6 pb-2">
-          <h6 class="text-xs font-bold uppercase tracking-widest text-sidebar-text/50">&nbsp;</h6>
+          <h6 class="text-xs font-bold uppercase tracking-widest text-gray-500">Menu</h6>
         </li>
 
         <!-- Menu Item with Children (Dropdown) -->
         <li *ngIf="!isDivider(item) && hasChildren(item)" class="relative">
           <button
             (click)="toggleMenu(item.label!)"
-            [class.bg-sidebar-active]="isActive(item)"
-            class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-lg text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-hover transition-all duration-200 ease-smooth hover:translate-x-0.5 group"
+            [class.bg-gray-800]="isActive(item)"
+            [class.dark:bg-gray-900]="isActive(item)"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 dark:hover:bg-gray-900 hover:text-white transition-all duration-200 hover:translate-x-1 group"
           >
             <!-- Active Indicator -->
             <span
               *ngIf="isActive(item)"
-              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/5 bg-primary-600 rounded-r shadow-glow"
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r shadow-lg shadow-blue-500/50"
             ></span>
 
             <!-- Icon -->
-            <svg
-              *ngIf="item.iconStroke"
-              class="w-5 h-5 flex-shrink-0 transition-all duration-200 group-hover:scale-110"
-              [class.stroke-primary-500]="isActive(item)"
-              [class.stroke-current]="!isActive(item)"
-            >
-              <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + item.iconStroke"></use>
-            </svg>
+            <fa-icon
+              [icon]="getIconForRoute(item.route)"
+              class="text-lg flex-shrink-0 transition-all duration-200 group-hover:scale-110"
+              [class.text-blue-400]="isActive(item)"
+              [class.group-hover:text-blue-400]="!isActive(item)"
+            ></fa-icon>
 
             <!-- Label -->
             <span
-              class="flex-1 text-left text-base font-medium"
-              [class.text-sidebar-text-hover]="isActive(item)"
+              class="flex-1 text-left text-sm font-medium"
+              [class.text-white]="isActive(item)"
               [class.font-semibold]="isActive(item)"
             >
               {{ item.label }}
@@ -59,36 +64,39 @@
             <!-- Badge -->
             <span
               *ngIf="item.badge"
-              [class]="'px-2.5 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(item.badge.class)"
+              [class]="'px-2 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(item.badge.class)"
             >
               {{ item.badge.text }}
             </span>
 
             <!-- Chevron -->
-            <svg
-              class="w-4 h-4 transition-transform duration-200"
+            <fa-icon
+              [icon]="faChevronDown"
+              class="text-sm transition-transform duration-200"
               [class.rotate-180]="isExpanded(item.label!) || isActive(item)"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
+            ></fa-icon>
           </button>
 
           <!-- Submenu -->
           <ul
             *ngIf="isExpanded(item.label!) || isActive(item)"
-            class="ml-4 mt-1 space-y-0.5 pl-4 border-l-2 border-sidebar-border overflow-hidden animate-fade-in"
+            class="ml-4 mt-1 space-y-0.5 pl-6 border-l-2 border-gray-800 dark:border-gray-900 overflow-hidden animate-fade-in"
           >
             <li *ngFor="let child of item.children">
               <a
                 [routerLink]="child.route"
-                routerLinkActive="bg-primary-500/12 text-primary-500 font-semibold border-l-2 border-primary-500"
+                routerLinkActive="bg-blue-500/10 text-blue-400 font-semibold pl-5"
                 [routerLinkActiveOptions]="{exact: false}"
-                class="flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium text-sidebar-text/85 hover:bg-white/5 hover:text-sidebar-text-hover hover:pl-6 transition-all duration-200 relative group"
+                class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-400 hover:bg-gray-800 dark:hover:bg-gray-900 hover:text-gray-200 hover:pl-5 transition-all duration-200 relative group"
               >
                 <!-- Dot Indicator -->
-                <span class="w-1 h-1 rounded-full bg-sidebar-text/40 group-hover:bg-primary-500 group-hover:shadow-glow transition-all duration-200"></span>
+                <fa-icon
+                  [icon]="faCircle"
+                  class="text-[6px] transition-all duration-200"
+                  [class.text-blue-400]="isActive(child)"
+                  [class.text-gray-600]="!isActive(child)"
+                  [class.group-hover:text-blue-400]="!isActive(child)"
+                ></fa-icon>
 
                 {{ child.label }}
 
@@ -108,34 +116,33 @@
         <li *ngIf="!isDivider(item) && !hasChildren(item)" class="relative">
           <a
             [routerLink]="item.route"
-            routerLinkActive="bg-sidebar-active text-sidebar-text-hover font-semibold"
+            routerLinkActive="bg-gray-800 dark:bg-gray-900 text-white font-semibold"
             [routerLinkActiveOptions]="{exact: false}"
-            class="flex items-center gap-3.5 px-4 py-3.5 rounded-lg text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-hover transition-all duration-200 ease-smooth hover:translate-x-0.5 group"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 dark:hover:bg-gray-900 hover:text-white transition-all duration-200 hover:translate-x-1 group"
           >
             <!-- Active Indicator -->
             <span
               routerLinkActive="opacity-100"
-              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3/5 bg-primary-600 rounded-r shadow-glow opacity-0 transition-opacity duration-200"
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r shadow-lg shadow-blue-500/50 opacity-0 transition-opacity duration-200"
             ></span>
 
             <!-- Icon -->
-            <svg
-              *ngIf="item.iconStroke"
-              class="w-5 h-5 flex-shrink-0 stroke-current transition-all duration-200 group-hover:scale-110"
-              routerLinkActive="stroke-primary-500"
-            >
-              <use [attr.href]="'assets/riho/svg/icon-sprite.svg#' + item.iconStroke"></use>
-            </svg>
+            <fa-icon
+              [icon]="getIconForRoute(item.route)"
+              class="text-lg flex-shrink-0 transition-all duration-200 group-hover:scale-110"
+              routerLinkActive="text-blue-400"
+              [class.group-hover:text-blue-400]="!isActive(item)"
+            ></fa-icon>
 
             <!-- Label -->
-            <span class="flex-1 text-base font-medium">
+            <span class="flex-1 text-sm font-medium">
               {{ item.label }}
             </span>
 
             <!-- Badge -->
             <span
               *ngIf="item.badge"
-              [class]="'px-2.5 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(item.badge.class)"
+              [class]="'px-2 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(item.badge.class)"
             >
               {{ item.badge.text }}
             </span>
@@ -146,11 +153,13 @@
     </ul>
   </nav>
 
-  <!-- Footer / Version Info (Optional) -->
-  <div class="border-t border-sidebar-border bg-black/15 px-4 py-3">
-    <p class="text-xs text-sidebar-text/50 text-center">
-      v1.0.0 • IgnaCheck
-    </p>
+  <!-- Footer / Version Info -->
+  <div class="border-t border-gray-800 dark:border-gray-900 bg-gray-900/50 dark:bg-black/30 px-4 py-4">
+    <div class="flex items-center justify-center gap-2 text-xs text-gray-500">
+      <span>v1.0.0</span>
+      <span>•</span>
+      <span>IgnaCheck</span>
+    </div>
   </div>
 
 </aside>
