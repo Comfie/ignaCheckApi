@@ -1,30 +1,57 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faBell,
+  faSearch,
+  faMoon,
+  faSun,
+  faUser,
+  faCog,
+  faSignOutAlt,
+  faBars
+} from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit {
+  // FontAwesome Icons
+  faBell = faBell;
+  faSearch = faSearch;
+  faMoon = faMoon;
+  faSun = faSun;
+  faUser = faUser;
+  faCog = faCog;
+  faSignOutAlt = faSignOutAlt;
+  faBars = faBars;
+
   currentUser: User | null = null;
   showUserMenu = false;
   showNotifications = false;
+  isDarkMode = false;
 
   constructor(
     private authService: AuthService,
     private notificationService: NotificationService,
+    private themeService: ThemeService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     this.loadCurrentUser();
+    this.themeService.theme$.subscribe(isDark => {
+      this.isDarkMode = isDark;
+    });
   }
 
   private loadCurrentUser(): void {
@@ -32,10 +59,13 @@ export class HeaderComponent implements OnInit {
       this.currentUser = user;
     });
 
-    // Initialize if not loaded
     if (!this.currentUser) {
       this.currentUser = this.authService.getCurrentUser();
     }
+  }
+
+  toggleTheme(): void {
+    this.themeService.toggleTheme();
   }
 
   toggleUserMenu(): void {
@@ -106,14 +136,14 @@ export class HeaderComponent implements OnInit {
     const role = this.currentUser?.role;
     switch (role) {
       case 'Owner':
-        return 'bg-red-100 text-red-700';
+        return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
       case 'Admin':
-        return 'bg-yellow-100 text-yellow-700';
+        return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
       case 'Contributor':
-        return 'bg-blue-100 text-blue-700';
+        return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
       case 'Viewer':
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300';
     }
   }
 }
