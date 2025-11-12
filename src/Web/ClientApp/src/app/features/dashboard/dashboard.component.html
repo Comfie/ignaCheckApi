@@ -4,7 +4,7 @@
   <!-- Welcome Section -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-      {{ getGreeting() }}, {{ currentUser?.displayName }}! 👋
+      {{ getGreeting() }}, {{ currentUser?.displayName }}!
     </h1>
     <p class="text-gray-600 dark:text-gray-400">
       Here's what's happening with your compliance projects today.
@@ -15,7 +15,7 @@
   <div class="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
     <div
       *ngFor="let stat of stats"
-      class="relative group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700"
+      class="relative group bg-white dark:bg-[#262932] rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-white/10"
     >
       <!-- Card Content -->
       <div class="p-6">
@@ -65,8 +65,8 @@
 
   <!-- Quick Actions -->
   <div class="mb-8">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="bg-white dark:bg-[#262932] rounded-xl shadow-sm border border-gray-200 dark:border-white/10">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-white/10">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Quick Actions</h3>
       </div>
       <div class="p-6">
@@ -74,7 +74,7 @@
           <a
             *ngFor="let action of quickActions"
             [routerLink]="action.route"
-            class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 group border border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+            class="flex items-center gap-3 p-4 bg-[#F5F6F9] dark:bg-[#1d1e26] rounded-xl hover:bg-[#EEF1F6] dark:hover:bg-[#22242B] transition-all duration-200 group border border-transparent hover:border-gray-300 dark:hover:border-gray-600"
           >
             <div
               [ngClass]="{
@@ -110,8 +110,8 @@
 
     <!-- Recent Activity (Left 2/3) -->
     <div class="lg:col-span-2">
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="bg-white dark:bg-[#262932] rounded-xl shadow-sm border border-gray-200 dark:border-white/10">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-white/10">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Activity</h3>
         </div>
         <div class="p-6">
@@ -176,8 +176,8 @@
 
     <!-- Quick Stats Sidebar (Right 1/3) -->
     <div>
-      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 sticky top-20">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+      <div class="bg-white dark:bg-[#262932] rounded-xl shadow-sm border border-gray-200 dark:border-white/10 sticky top-20">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-white/10">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Overview</h3>
         </div>
         <div class="p-6">
@@ -194,7 +194,7 @@
           </div>
 
           <!-- Progress Ring or Chart (Placeholder) -->
-          <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div class="mt-6 pt-6 border-t border-gray-200 dark:border-white/10">
             <div class="text-center">
               <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-3">
                 <span class="text-2xl font-bold text-white">87%</span>

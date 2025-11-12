@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faHome,
@@ -30,7 +31,22 @@ import { UserRole } from '../../../models/enums/user-role.enum';
   standalone: true,
   imports: [CommonModule, RouterModule, FontAwesomeModule],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrl: './sidebar.component.css',
+  animations: [
+    trigger('slideDown', [
+      state('void', style({
+        height: '0',
+        opacity: '0',
+        overflow: 'hidden'
+      })),
+      state('*', style({
+        height: '*',
+        opacity: '1',
+        overflow: 'hidden'
+      })),
+      transition('void <=> *', animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ]
 })
 export class SidebarComponent implements OnInit {
   // FontAwesome Icons
@@ -115,8 +131,11 @@ export class SidebarComponent implements OnInit {
 
   toggleMenu(label: string): void {
     if (this.expandedMenus.has(label)) {
+      // If clicking on already expanded menu, just close it
       this.expandedMenus.delete(label);
     } else {
+      // Close all other menus and open this one (accordion behavior)
+      this.expandedMenus.clear();
       this.expandedMenus.add(label);
     }
   }
@@ -156,12 +175,12 @@ export class SidebarComponent implements OnInit {
 
   getBadgeClasses(badgeClass: string): string {
     const classMap: Record<string, string> = {
-      'danger': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800',
-      'warning': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800',
-      'info': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
-      'secondary': 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600',
-      'success': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800',
-      'primary': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
+      'danger': 'bg-secondary text-white border border-secondary-600',
+      'warning': 'bg-secondary-400 text-white border border-secondary-500',
+      'info': 'bg-white/20 text-white dark:bg-blue-900/30 dark:text-blue-300 border border-white/30 dark:border-blue-800',
+      'secondary': 'bg-white/20 text-white dark:bg-gray-700 dark:text-gray-300 border border-white/30 dark:border-gray-600',
+      'success': 'bg-white/20 text-white dark:bg-green-900/30 dark:text-green-300 border border-white/30 dark:border-green-800',
+      'primary': 'bg-white/20 text-white dark:bg-blue-900/30 dark:text-blue-300 border border-white/30 dark:border-blue-800',
     };
     return classMap[badgeClass] || classMap['secondary'];
   }

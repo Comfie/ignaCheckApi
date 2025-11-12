@@ -2,7 +2,7 @@
 <aside
   [class.w-64]="!isCollapsed"
   [class.w-20]="isCollapsed"
-  class="fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-lg transition-all duration-300"
+  class="fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] bg-[#006666] dark:bg-[#22242B] border-r border-[#005252] dark:border-white/10 shadow-lg transition-all duration-300"
 >
   <!-- Navigation Menu -->
   <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 h-full">
@@ -12,8 +12,8 @@
 
         <!-- Section Divider / Title -->
         <li *ngIf="isDivider(item)" class="px-4 pt-6 pb-2">
-          <h6 *ngIf="!isCollapsed" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Menu</h6>
-          <hr *ngIf="isCollapsed" class="border-gray-300 dark:border-gray-700">
+          <h6 *ngIf="!isCollapsed" class="text-xs font-bold uppercase tracking-widest text-white/80 dark:text-white/60">Menu</h6>
+          <hr *ngIf="isCollapsed" class="border-white/20 dark:border-white/10">
         </li>
 
         <!-- Menu Item with Children (Dropdown) -->
@@ -22,32 +22,32 @@
             type="button"
             (click)="toggleMenu(item.label!)"
             [ngClass]="{
-              'bg-blue-50 text-blue-600': isActive(item) && !isDarkMode,
-              'dark:bg-blue-900/20 dark:text-blue-400': isActive(item)
+              'bg-white/20': isActive(item) && !isDarkMode,
+              'dark:bg-[rgba(0,102,102,0.2)]': isActive(item) && isDarkMode
             }"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all duration-200 group"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 dark:text-white/60 hover:bg-white/10 dark:hover:bg-white/10 hover:text-white dark:hover:text-white transition-all duration-200 group"
             [attr.title]="isCollapsed ? (item.label || '') : ''"
           >
             <!-- Active Indicator -->
             <span
               *ngIf="isActive(item)"
-              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r"
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-secondary to-secondary-600 rounded-r"
             ></span>
 
             <!-- Icon -->
             <fa-icon
               [icon]="getIconForItem(item)"
               [ngClass]="{
-                'text-blue-600': isActive(item) && !isDarkMode,
-                'dark:text-blue-400': isActive(item)
+                'text-white': isActive(item) && !isDarkMode,
+                'dark:text-primary': isActive(item) && isDarkMode
               }"
-              class="text-lg flex-shrink-0 transition-all duration-200 group-hover:scale-110"
+              class="text-lg flex-shrink-0 transition-all duration-200 group-hover:scale-110 text-white/80 dark:text-white/60"
             ></fa-icon>
 
             <!-- Label -->
             <span
               *ngIf="!isCollapsed"
-              class="flex-1 text-left text-sm font-medium"
+              class="flex-1 text-left text-sm font-medium text-white/80 dark:text-white/60"
               [class.font-semibold]="isActive(item)"
             >
               {{ item.label }}
@@ -66,7 +66,7 @@
             <fa-icon
               *ngIf="!isCollapsed"
               [icon]="faChevronDown"
-              class="text-sm transition-transform duration-200"
+              class="text-sm transition-transform duration-200 text-white/80 dark:text-white/60"
               [class.rotate-180]="isExpanded(item.label!) || isActive(item)"
             ></fa-icon>
           </button>
@@ -74,26 +74,27 @@
           <!-- Submenu -->
           <ul
             *ngIf="!isCollapsed && (isExpanded(item.label!) || isActive(item))"
-            class="ml-4 mt-1 space-y-0.5 pl-6 border-l-2 border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in"
+            @slideDown
+            class="ml-4 mt-1 space-y-0.5 pl-6 border-l-2 border-white/20 dark:border-white/10"
           >
             <li *ngFor="let child of item.children">
               <a
                 [routerLink]="child.route"
-                routerLinkActive="bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 font-semibold"
+                routerLinkActive="bg-white/20 dark:bg-[rgba(0,102,102,0.2)] text-white dark:text-primary font-semibold"
                 [routerLinkActiveOptions]="{exact: false}"
-                class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200 transition-all duration-200 relative group"
+                class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-white/70 dark:text-white/60 hover:bg-white/10 dark:hover:bg-white/10 hover:text-white dark:hover:text-white transition-all duration-200 relative group"
               >
                 <!-- Dot Indicator -->
                 <fa-icon
                   [icon]="faCircle"
                   [ngClass]="{
-                    'text-blue-500': isActive(child),
-                    'dark:text-blue-400': isActive(child)
+                    'text-secondary': isActive(child) && !isDarkMode,
+                    'dark:text-primary': isActive(child) && isDarkMode
                   }"
-                  class="text-[6px] transition-all duration-200"
+                  class="text-[6px] transition-all duration-200 text-white/70 dark:text-white/60"
                 ></fa-icon>
 
-                {{ child.label }}
+                <span class="text-white/70 dark:text-white/60">{{ child.label }}</span>
 
                 <!-- Badge -->
                 <span
@@ -112,26 +113,26 @@
         <li *ngIf="!isDivider(item) && !hasChildren(item)" class="relative">
           <a
             [routerLink]="item.route"
-            routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-semibold"
+            routerLinkActive="bg-white/20 dark:bg-[rgba(0,102,102,0.2)] text-white dark:text-primary font-semibold"
             [routerLinkActiveOptions]="{exact: false}"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all duration-200 group"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 dark:text-white/60 hover:bg-white/10 dark:hover:bg-white/10 hover:text-white dark:hover:text-white transition-all duration-200 group"
             [title]="isCollapsed ? item.label : ''"
           >
             <!-- Active Indicator -->
             <span
               routerLinkActive="opacity-100"
-              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r opacity-0 transition-opacity duration-200"
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-secondary to-secondary-600 rounded-r opacity-0 transition-opacity duration-200"
             ></span>
 
             <!-- Icon -->
             <fa-icon
               [icon]="getIconForItem(item)"
-              class="text-lg flex-shrink-0 transition-all duration-200 group-hover:scale-110"
-              routerLinkActive="text-blue-600 dark:text-blue-400"
+              class="text-lg flex-shrink-0 transition-all duration-200 group-hover:scale-110 text-white/80 dark:text-white/60"
+              routerLinkActive="text-white dark:text-primary"
             ></fa-icon>
 
             <!-- Label -->
-            <span *ngIf="!isCollapsed" class="flex-1 text-sm font-medium">
+            <span *ngIf="!isCollapsed" class="flex-1 text-sm font-medium text-white/80 dark:text-white/60">
               {{ item.label }}
             </span>
 
@@ -151,14 +152,14 @@
   </nav>
 
   <!-- Footer / Version Info -->
-  <div class="border-t border-gray-200 dark:border-gray-800 px-4 py-4">
-    <div *ngIf="!isCollapsed" class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+  <div class="border-t border-white/20 dark:border-white/10 px-4 py-4">
+    <div *ngIf="!isCollapsed" class="flex items-center justify-center gap-2 text-xs text-white/70 dark:text-white/60">
       <span>v1.0.0</span>
       <span>•</span>
       <span>IgnaCheck</span>
     </div>
     <div *ngIf="isCollapsed" class="flex justify-center">
-      <span class="text-xs text-gray-500 dark:text-gray-400">v1.0</span>
+      <span class="text-xs text-white/70 dark:text-white/60">v1.0</span>
     </div>
   </div>
 

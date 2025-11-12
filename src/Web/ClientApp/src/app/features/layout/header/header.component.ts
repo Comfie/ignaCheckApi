@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -49,7 +49,8 @@ export class HeaderComponent implements OnInit {
     private notificationService: NotificationService,
     private themeService: ThemeService,
     private sidebarService: SidebarService,
-    private router: Router
+    private router: Router,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -97,6 +98,14 @@ export class HeaderComponent implements OnInit {
   closeDropdowns(): void {
     this.showUserMenu = false;
     this.showNotifications = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const clickedInside = this.elementRef.nativeElement.contains(event.target);
+    if (!clickedInside) {
+      this.closeDropdowns();
+    }
   }
 
   onLogout(): void {
@@ -148,9 +157,9 @@ export class HeaderComponent implements OnInit {
     const role = this.currentUser?.role;
     switch (role) {
       case 'Owner':
-        return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+        return 'bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300';
       case 'Admin':
-        return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
+        return 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300';
       case 'Contributor':
         return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
       case 'Viewer':
