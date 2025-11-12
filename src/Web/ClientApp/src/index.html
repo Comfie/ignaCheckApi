@@ -6,6 +6,25 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Theme Initialization Script - Runs BEFORE Angular to prevent FOUC -->
+  <script>
+    (function() {
+      // Check localStorage for saved theme preference
+      const savedTheme = localStorage.getItem('app-theme');
+
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
+        // No saved preference, check system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark');
+        }
+      }
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>
