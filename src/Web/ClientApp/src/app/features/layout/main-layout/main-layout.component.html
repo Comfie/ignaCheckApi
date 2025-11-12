@@ -8,14 +8,14 @@
   <div
     [class.ml-64]="!isSidebarCollapsed"
     [class.ml-20]="isSidebarCollapsed"
-    class="pt-16 transition-all duration-300"
+    class="transition-all duration-300"
   >
 
     <!-- Header -->
     <app-header></app-header>
 
     <!-- Page Content -->
-    <main class="min-h-[calc(100vh-8rem)] p-6">
+    <main class="min-h-[calc(100vh-4rem)] p-6">
       <router-outlet></router-outlet>
     </main>
 
