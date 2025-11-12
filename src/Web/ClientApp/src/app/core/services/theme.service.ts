@@ -113,27 +113,13 @@ export class ThemeService {
     const body = document.body;
     const appRoot = document.querySelector('app-root');
 
-    // First, log current state
-    console.log('  → Before: HTML has dark class?', root.classList.contains('dark'));
-
-    if (dark) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-
-    // Log after state
-    console.log('  → After: HTML has dark class?', root.classList.contains('dark'));
-    console.log('  → HTML classList:', Array.from(root.classList));
+    root.classList.toggle('dark', dark);
 
     // Cleanup: never leave 'dark' lingering on body/app-root
     body.classList.remove('dark');
     if (appRoot) {
       appRoot.classList.remove('dark');
     }
-
-    // Force a reflow to ensure changes are applied
-    void root.offsetHeight;
   }
 
   /**
