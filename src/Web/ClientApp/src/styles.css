@@ -1,6 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 
+/* Tailwind v4 Dark Mode Configuration */
+@theme {
+  --color-*: initial;
+  --dark-mode: selector;
+}
+
 /* Theme Transition - Only apply during theme toggle */
 html.theming,
 html.theming *,
