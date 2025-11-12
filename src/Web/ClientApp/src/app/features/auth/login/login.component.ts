@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEnvelope, faLock, faEye, faEyeSlash, faSpinner, faShieldAlt, faUserGroup, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
@@ -11,12 +13,24 @@ import { NotificationService } from '../../../core/services/notification.service
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    FontAwesomeModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
+  // FontAwesome Icons
+  faEnvelope = faEnvelope;
+  faLock = faLock;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
+  faSpinner = faSpinner;
+  faShieldAlt = faShieldAlt;
+  faUserGroup = faUserGroup;
+  faComment = faComment;
+  faShare = faShare;
+
   loginForm!: FormGroup;
   isLoading = false;
   showPassword = false;

@@ -3,6 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faLock,
+  faEye,
+  faEyeSlash,
+  faSpinner,
+  faShieldAlt,
+  faArrowLeft,
+  faKey
+} from '@fortawesome/free-solid-svg-icons';
 import { NotificationService } from '../../../core/services/notification.service';
 import { environment } from '../../../../environments/environment';
 
@@ -12,12 +22,22 @@ import { environment } from '../../../../environments/environment';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    FontAwesomeModule
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordComponent implements OnInit {
+  // FontAwesome Icons
+  faLock = faLock;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
+  faSpinner = faSpinner;
+  faShieldAlt = faShieldAlt;
+  faArrowLeft = faArrowLeft;
+  faKey = faKey;
+
   resetPasswordForm!: FormGroup;
   isLoading = false;
   showPassword = false;

@@ -3,6 +3,15 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faEnvelope,
+  faSpinner,
+  faArrowLeft,
+  faCheckCircle,
+  faEnvelopeOpenText,
+  faShieldAlt
+} from '@fortawesome/free-solid-svg-icons';
 import { NotificationService } from '../../../core/services/notification.service';
 import { environment } from '../../../../environments/environment';
 
@@ -12,12 +21,21 @@ import { environment } from '../../../../environments/environment';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    FontAwesomeModule
   ],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.css'
 })
 export class ForgotPasswordComponent implements OnInit {
+  // FontAwesome Icons
+  faEnvelope = faEnvelope;
+  faSpinner = faSpinner;
+  faArrowLeft = faArrowLeft;
+  faCheckCircle = faCheckCircle;
+  faEnvelopeOpenText = faEnvelopeOpenText;
+  faShieldAlt = faShieldAlt;
+
   forgotPasswordForm!: FormGroup;
   isLoading = false;
   emailSent = false;
