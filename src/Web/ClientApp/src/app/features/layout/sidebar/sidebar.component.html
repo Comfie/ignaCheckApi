@@ -27,7 +27,7 @@
         <!-- Menu Item with Children (Dropdown) -->
         <li *ngIf="!isDivider(item) && hasChildren(item)" class="relative">
           <button
-            (click)="toggleMenu(item.label)"
+            (click)="toggleMenu(item.label!)"
             [class.bg-sidebar-active]="isActive(item)"
             class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-lg text-sidebar-text hover:bg-sidebar-hover hover:text-sidebar-text-hover transition-all duration-200 ease-smooth hover:translate-x-0.5 group"
           >
@@ -67,7 +67,7 @@
             <!-- Chevron -->
             <svg
               class="w-4 h-4 transition-transform duration-200"
-              [class.rotate-180]="isExpanded(item.label) || isActive(item)"
+              [class.rotate-180]="isExpanded(item.label!) || isActive(item)"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -77,7 +77,7 @@
 
           <!-- Submenu -->
           <ul
-            *ngIf="isExpanded(item.label) || isActive(item)"
+            *ngIf="isExpanded(item.label!) || isActive(item)"
             class="ml-4 mt-1 space-y-0.5 pl-4 border-l-2 border-sidebar-border overflow-hidden animate-fade-in"
           >
             <li *ngFor="let child of item.children">
