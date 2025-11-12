@@ -15,6 +15,7 @@ import {
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { SidebarService } from '../../../core/services/sidebar.service';
 import { User } from '../../../core/models/user.model';
 
 @Component({
@@ -39,11 +40,13 @@ export class HeaderComponent implements OnInit {
   showUserMenu = false;
   showNotifications = false;
   isDarkMode = false;
+  isSidebarCollapsed = false;
 
   constructor(
     private authService: AuthService,
     private notificationService: NotificationService,
     private themeService: ThemeService,
+    private sidebarService: SidebarService,
     private router: Router
   ) {}
 
@@ -51,6 +54,9 @@ export class HeaderComponent implements OnInit {
     this.loadCurrentUser();
     this.themeService.theme$.subscribe(isDark => {
       this.isDarkMode = isDark;
+    });
+    this.sidebarService.collapsed$.subscribe(collapsed => {
+      this.isSidebarCollapsed = collapsed;
     });
   }
 
