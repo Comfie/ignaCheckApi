@@ -1,0 +1,23 @@
+/* Footer Component Styles */
+
+:host {
+  display: block;
+  margin-top: auto;
+}
+
+/* Heart beat animation */
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+fa-icon.animate-pulse {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
