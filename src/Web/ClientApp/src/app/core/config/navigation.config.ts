@@ -56,6 +56,32 @@ export class NavigationConfig {
         route: '/dashboard'
       },
 
+      // System Management - SuperAdmin Only
+      {
+        label: 'System Management',
+        iconStroke: 'stroke-setting',
+        iconFill: 'fill-setting',
+        children: [
+          {
+            label: 'All Workspaces',
+            route: '/system/workspaces'
+          },
+          {
+            label: 'System Users',
+            route: '/system/users'
+          },
+          {
+            label: 'System Health',
+            route: '/system/health'
+          },
+          {
+            label: 'Activity Logs',
+            route: '/system/logs'
+          }
+        ],
+        roles: [UserRole.SuperAdmin]
+      },
+
       // Workspaces - Owner Only
       {
         label: 'Workspaces',
@@ -190,12 +216,16 @@ export class NavigationConfig {
    */
   static getDashboardRoute(userRole: UserRole): string {
     switch (userRole) {
+      case UserRole.SuperAdmin:
+        return '/dashboard/super-admin';
       case UserRole.Owner:
-        return '/dashboard/owner';
+        return '/dashboard/workspace-owner';
       case UserRole.Admin:
-        return '/dashboard/admin';
+        return '/dashboard/workspace-owner'; // Admin uses same dashboard as Owner
       case UserRole.Contributor:
+        return '/dashboard/contributor';
       case UserRole.Viewer:
+        return '/dashboard/viewer';
       default:
         return '/dashboard';
     }

@@ -1,0 +1,20 @@
+/* Viewer Dashboard Styles */
+
+/* Custom animations for smooth transitions */
+:host {
+  display: block;
+}
+
+/* Enhance hover effects */
+.hover\:scale-\[1\.02\]:hover {
+  transform: scale(1.02);
+}
+
+.hover\:scale-\[0\.98\]:active {
+  transform: scale(0.98);
+}
+
+/* Read-only cursor for project cards */
+.cursor-pointer {
+  cursor: pointer;
+}
