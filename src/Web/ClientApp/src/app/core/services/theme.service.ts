@@ -5,28 +5,36 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ThemeService {
-  private readonly THEME_KEY = 'app-theme';
+  private readonly THEME_KEY = 'theme';
   private isDarkMode$ = new BehaviorSubject<boolean>(false);
+  private mql: MediaQueryList | null = null;
 
   constructor() {
-    this.initializeTheme();
+    // Don't initialize in constructor - wait for explicit init() call
   }
 
   /**
-   * Initialize theme from localStorage or system preference
+   * Initialize theme - MUST be called from AppComponent
    */
-  private initializeTheme(): void {
-    const savedTheme = localStorage.getItem(this.THEME_KEY);
+  init(): void {
+    console.log('🚀 ThemeService.init() called');
+    const saved = localStorage.getItem(this.THEME_KEY) as 'light' | 'dark' | 'system' | null;
 
-    if (savedTheme) {
-      this.isDarkMode$.next(savedTheme === 'dark');
+    if (saved === 'system') {
+      this.attachSystemListener();
+      this.applySystem();
+    } else if (saved === 'dark' || saved === 'light') {
+      this.detachSystemListener();
+      // Apply without animation on init
+      const isDark = saved === 'dark';
+      this.applyDark(isDark);
+      this.isDarkMode$.next(isDark);
     } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.isDarkMode$.next(prefersDark);
+      // Default to system preference if no saved theme
+      this.attachSystemListener();
+      this.applySystem();
+      localStorage.setItem(this.THEME_KEY, 'system');
     }
-
-    this.applyTheme(this.isDarkMode$.value);
   }
 
   /**
@@ -44,32 +52,120 @@ export class ThemeService {
   }
 
   /**
+   * Get current theme state
+   */
+  get current(): 'light' | 'dark' {
+    const isDark = document.documentElement.classList.contains('dark');
+    return isDark ? 'dark' : 'light';
+  }
+
+  /**
+   * Get saved theme mode from localStorage
+   */
+  getSavedMode(): 'light' | 'dark' | 'system' {
+    const saved = localStorage.getItem(this.THEME_KEY) as 'light' | 'dark' | 'system' | null;
+    return saved ?? 'system';
+  }
+
+  /**
    * Toggle between light and dark mode
    */
-  toggleTheme(): void {
-    const newTheme = !this.isDarkMode$.value;
-    this.isDarkMode$.next(newTheme);
-    this.applyTheme(newTheme);
-    localStorage.setItem(this.THEME_KEY, newTheme ? 'dark' : 'light');
+  toggle(): void {
+    console.log('🎨 ThemeService.toggle() called, current:', this.current);
+    const current = this.current;
+    this.setTheme(current === 'dark' ? 'light' : 'dark');
   }
 
   /**
    * Set specific theme
    */
-  setTheme(isDark: boolean): void {
-    this.isDarkMode$.next(isDark);
-    this.applyTheme(isDark);
-    localStorage.setItem(this.THEME_KEY, isDark ? 'dark' : 'light');
+  setTheme(mode: 'light' | 'dark' | 'system'): void {
+    console.log('🎨 ThemeService.setTheme() called with:', mode);
+
+    const root = document.documentElement;
+    // Add short-lived theming class to scope transitions during toggle
+    root.classList.add('theming');
+    window.setTimeout(() => root.classList.remove('theming'), 250);
+
+    if (mode === 'dark') {
+      this.detachSystemListener();
+      this.applyDark(true);
+      this.isDarkMode$.next(true);
+      localStorage.setItem(this.THEME_KEY, 'dark');
+    } else if (mode === 'light') {
+      this.detachSystemListener();
+      this.applyDark(false);
+      this.isDarkMode$.next(false);
+      localStorage.setItem(this.THEME_KEY, 'light');
+    } else {
+      this.attachSystemListener();
+      this.applySystem();
+      localStorage.setItem(this.THEME_KEY, 'system');
+    }
   }
 
   /**
-   * Apply theme to document
+   * Apply dark mode to document
    */
-  private applyTheme(isDark: boolean): void {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  private applyDark(dark: boolean): void {
+    console.log('🎨 ApplyDark called with:', dark);
+    const root = document.documentElement;
+    const body = document.body;
+    const appRoot = document.querySelector('app-root');
+
+    root.classList.toggle('dark', dark);
+
+    // Cleanup: never leave 'dark' lingering on body/app-root
+    body.classList.remove('dark');
+    if (appRoot) {
+      appRoot.classList.remove('dark');
     }
+  }
+
+  /**
+   * Apply system theme preference
+   */
+  private applySystem(): void {
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    console.log('🎨 ApplySystem called, prefersDark:', prefersDark);
+    this.applyDark(prefersDark);
+    this.isDarkMode$.next(prefersDark);
+  }
+
+  /**
+   * Attach system theme change listener
+   */
+  private attachSystemListener(): void {
+    if (!window.matchMedia) return;
+
+    // Detach any previous handler
+    this.detachSystemListener();
+
+    this.mql = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = () => this.applySystem();
+
+    this.mql.addEventListener?.('change', handler as EventListener);
+    // Fallback for older Safari
+    // @ts-ignore
+    this.mql.addListener?.(handler);
+
+    (this as any)._systemHandler = handler;
+  }
+
+  /**
+   * Detach system theme change listener
+   */
+  private detachSystemListener(): void {
+    if (!this.mql) return;
+
+    const handler = (this as any)._systemHandler as (() => void) | undefined;
+    if (handler) {
+      this.mql.removeEventListener?.('change', handler as EventListener);
+      // @ts-ignore
+      this.mql.removeListener?.(handler);
+    }
+
+    this.mql = null;
+    delete (this as any)._systemHandler;
   }
 }

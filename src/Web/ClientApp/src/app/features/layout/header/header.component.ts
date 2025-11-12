@@ -73,7 +73,7 @@ export class HeaderComponent implements OnInit {
   }
 
   toggleTheme(): void {
-    this.themeService.toggleTheme();
+    this.themeService.toggle();
   }
 
   toggleSidebar(): void {

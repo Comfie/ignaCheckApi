@@ -1,6 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 
+/* Theme Transition - Only apply during theme toggle */
+html.theming,
+html.theming *,
+html.theming *::before,
+html.theming *::after {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease !important;
+  transition-delay: 0s !important;
+}
+
 /* Custom Scrollbar */
 .scrollbar-thin::-webkit-scrollbar {
   width: 6px;

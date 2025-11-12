@@ -10,23 +10,20 @@
   <!-- Theme Initialization Script - Runs BEFORE Angular to prevent FOUC -->
   <script>
     (function() {
-      // Check localStorage for saved theme preference
-      const savedTheme = localStorage.getItem('app-theme');
+      const theme = localStorage.getItem('theme');
+      const browserDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-      if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else if (savedTheme === 'light') {
-        document.documentElement.classList.remove('dark');
-      } else {
-        // No saved preference, check system preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      if (theme !== null) {
+        if (theme === 'dark') {
           document.documentElement.classList.add('dark');
         }
+      } else if (browserDark) {
+        document.documentElement.classList.add('dark');
       }
     })();
   </script>
 </head>
-<body>
+<body class="bg-white dark:bg-gray-950 transition-colors duration-200">
   <app-root></app-root>
 </body>
 </html>
