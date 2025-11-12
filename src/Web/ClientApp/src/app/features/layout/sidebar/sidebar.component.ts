@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -13,10 +13,17 @@ import {
   faCog,
   faQuestionCircle,
   faChevronDown,
-  faCircle
+  faCircle,
+  faBuilding,
+  faLightbulb,
+  faBook,
+  faBars,
+  faChevronLeft,
+  faChevronRight
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../../core/services/auth.service';
 import { ThemeService } from '../../../core/services/theme.service';
+import { SidebarService } from '../../../core/services/sidebar.service';
 import { NavigationConfig, MenuItem } from '../../../core/config/navigation.config';
 import { UserRole } from '../../../models/enums/user-role.enum';
 
@@ -39,16 +46,23 @@ export class SidebarComponent implements OnInit {
   faQuestionCircle = faQuestionCircle;
   faChevronDown = faChevronDown;
   faCircle = faCircle;
+  faBuilding = faBuilding;
+  faLightbulb = faLightbulb;
+  faBook = faBook;
+  faBars = faBars;
+  faChevronLeft = faChevronLeft;
+  faChevronRight = faChevronRight;
 
   menuItems: MenuItem[] = [];
   activeRoute: string = '';
   expandedMenus: Set<string> = new Set();
   isDarkMode = false;
-  isSidebarCollapsed = false;
+  isCollapsed = false;
 
   constructor(
     private authService: AuthService,
     private themeService: ThemeService,
+    private sidebarService: SidebarService,
     private router: Router
   ) {}
 
@@ -60,6 +74,16 @@ export class SidebarComponent implements OnInit {
     this.themeService.theme$.subscribe(isDark => {
       this.isDarkMode = isDark;
     });
+
+    // Subscribe to sidebar state
+    this.sidebarService.collapsed$.subscribe(collapsed => {
+      this.isCollapsed = collapsed;
+    });
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // Close dropdowns when clicking outside
   }
 
   private loadMenu(): void {
@@ -114,32 +138,38 @@ export class SidebarComponent implements OnInit {
   }
 
   toggleSidebar(): void {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    this.sidebarService.toggle();
   }
 
-  getIconForRoute(route?: string): any {
-    if (!route) return this.faCircle;
+  getIconForItem(item: MenuItem): any {
+    // Use label-based icon mapping since routes might be in children
+    const label = item.label?.toLowerCase() || '';
 
-    if (route.includes('dashboard')) return this.faHome;
-    if (route.includes('analytics')) return this.faChartLine;
-    if (route.includes('users') || route.includes('team')) return this.faUsers;
-    if (route.includes('projects')) return this.faFolderOpen;
-    if (route.includes('audits') || route.includes('compliance')) return this.faClipboardCheck;
-    if (route.includes('reports')) return this.faFileAlt;
-    if (route.includes('settings')) return this.faCog;
-    if (route.includes('help')) return this.faQuestionCircle;
+    if (label.includes('dashboard')) return this.faHome;
+    if (label.includes('workspace')) return this.faBuilding;
+    if (label.includes('project')) return this.faFolderOpen;
+    if (label.includes('document')) return this.faFileAlt;
+    if (label.includes('finding')) return this.faLightbulb;
+    if (label.includes('framework')) return this.faBook;
+    if (label.includes('user') || label.includes('team')) return this.faUsers;
+    if (label.includes('report') || label.includes('analytic')) return this.faChartLine;
+    if (label.includes('setting')) return this.faCog;
+    if (label.includes('help')) return this.faQuestionCircle;
+
+    // Default icon for items with children
+    if (this.hasChildren(item)) return this.faFolderOpen;
 
     return this.faCircle;
   }
 
   getBadgeClasses(badgeClass: string): string {
     const classMap: Record<string, string> = {
-      'danger': 'bg-red-500/20 text-red-400 dark:bg-red-500/30 dark:text-red-300 border border-red-500/40',
-      'warning': 'bg-yellow-500/20 text-yellow-400 dark:bg-yellow-500/30 dark:text-yellow-300 border border-yellow-500/40',
-      'info': 'bg-blue-500/20 text-blue-400 dark:bg-blue-500/30 dark:text-blue-300 border border-blue-500/40',
-      'secondary': 'bg-gray-500/20 text-gray-400 dark:bg-gray-500/30 dark:text-gray-300 border border-gray-500/40',
-      'success': 'bg-green-500/20 text-green-400 dark:bg-green-500/30 dark:text-green-300 border border-green-500/40',
-      'primary': 'bg-indigo-500/20 text-indigo-400 dark:bg-indigo-500/30 dark:text-indigo-300 border border-indigo-500/40',
+      'danger': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800',
+      'warning': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800',
+      'info': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800',
+      'secondary': 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600',
+      'success': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800',
+      'primary': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
     };
     return classMap[badgeClass] || classMap['secondary'];
   }

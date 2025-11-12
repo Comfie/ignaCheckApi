@@ -1,61 +1,94 @@
-<!-- Premium Sidebar with Dark Mode Support -->
-<aside class="fixed left-0 top-0 z-40 h-screen w-64 bg-gradient-to-b from-gray-900 to-gray-950 dark:from-gray-950 dark:to-black border-r border-gray-800 dark:border-gray-900 shadow-2xl transition-all duration-300">
-
+<!-- Premium Sidebar with Theme Support and Collapse -->
+<aside
+  [class.w-64]="!isCollapsed"
+  [class.w-20]="isCollapsed"
+  class="fixed left-0 top-0 z-40 h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-lg transition-all duration-300"
+>
   <!-- Logo Section -->
-  <div class="flex items-center justify-center h-20 px-6 border-b border-gray-800 dark:border-gray-900 bg-gray-900/50 dark:bg-black/30">
-    <a routerLink="/dashboard" class="flex items-center space-x-3 group">
-      <div class="flex items-center gap-2">
-        <!-- Logo Icon -->
-        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-          <span class="text-white font-bold text-xl">I</span>
-        </div>
-        <!-- Logo Text -->
-        <div class="flex flex-col">
-          <span class="text-white font-bold text-lg leading-tight group-hover:text-blue-400 transition-colors duration-200">IgnaCheck</span>
-          <span class="text-gray-400 text-xs">Compliance Suite</span>
-        </div>
+  <div class="flex items-center justify-between h-20 px-4 border-b border-gray-200 dark:border-gray-800">
+    <a *ngIf="!isCollapsed" routerLink="/dashboard" class="flex items-center gap-2 group">
+      <!-- Logo Icon -->
+      <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
+        <span class="text-white font-bold text-xl">I</span>
+      </div>
+      <!-- Logo Text -->
+      <div class="flex flex-col">
+        <span class="text-gray-900 dark:text-white font-bold text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">IgnaCheck</span>
+        <span class="text-gray-500 dark:text-gray-400 text-xs">Compliance</span>
       </div>
     </a>
+
+    <!-- Collapsed Logo -->
+    <div *ngIf="isCollapsed" class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg mx-auto">
+      <span class="text-white font-bold text-xl">I</span>
+    </div>
+
+    <!-- Collapse Toggle Button -->
+    <button
+      *ngIf="!isCollapsed"
+      (click)="toggleSidebar()"
+      class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
+      [attr.aria-label]="isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+    >
+      <fa-icon [icon]="faChevronLeft" class="text-sm"></fa-icon>
+    </button>
+  </div>
+
+  <!-- Expand Button (when collapsed) -->
+  <div *ngIf="isCollapsed" class="flex justify-center py-2 border-b border-gray-200 dark:border-gray-800">
+    <button
+      (click)="toggleSidebar()"
+      class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
+      aria-label="Expand sidebar"
+    >
+      <fa-icon [icon]="faChevronRight" class="text-sm"></fa-icon>
+    </button>
   </div>
 
   <!-- Navigation Menu -->
-  <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 scrollbar-thin">
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden px-3 py-4 h-[calc(100vh-9rem)]">
     <ul class="space-y-1">
-
       <!-- Menu Items Loop -->
       <ng-container *ngFor="let item of menuItems">
 
         <!-- Section Divider / Title -->
         <li *ngIf="isDivider(item)" class="px-4 pt-6 pb-2">
-          <h6 class="text-xs font-bold uppercase tracking-widest text-gray-500">Menu</h6>
+          <h6 *ngIf="!isCollapsed" class="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Menu</h6>
+          <hr *ngIf="isCollapsed" class="border-gray-300 dark:border-gray-700">
         </li>
 
         <!-- Menu Item with Children (Dropdown) -->
         <li *ngIf="!isDivider(item) && hasChildren(item)" class="relative">
           <button
+            type="button"
             (click)="toggleMenu(item.label!)"
-            [class.bg-gray-800]="isActive(item)"
-            [class.dark:bg-gray-900]="isActive(item)"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 dark:hover:bg-gray-900 hover:text-white transition-all duration-200 hover:translate-x-1 group"
+            [ngClass]="{
+              'bg-blue-50 text-blue-600': isActive(item) && !isDarkMode,
+              'dark:bg-blue-900/20 dark:text-blue-400': isActive(item)
+            }"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all duration-200 group"
+            [attr.title]="isCollapsed ? (item.label || '') : ''"
           >
             <!-- Active Indicator -->
             <span
               *ngIf="isActive(item)"
-              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r shadow-lg shadow-blue-500/50"
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r"
             ></span>
 
             <!-- Icon -->
             <fa-icon
-              [icon]="getIconForRoute(item.route)"
+              [icon]="getIconForItem(item)"
+              [ngClass]="{
+                'text-blue-600': isActive(item) && !isDarkMode,
+                'dark:text-blue-400': isActive(item)
+              }"
               class="text-lg flex-shrink-0 transition-all duration-200 group-hover:scale-110"
-              [class.text-blue-400]="isActive(item)"
-              [class.group-hover:text-blue-400]="!isActive(item)"
             ></fa-icon>
 
             <!-- Label -->
             <span
+              *ngIf="!isCollapsed"
               class="flex-1 text-left text-sm font-medium"
-              [class.text-white]="isActive(item)"
               [class.font-semibold]="isActive(item)"
             >
               {{ item.label }}
@@ -63,14 +96,16 @@
 
             <!-- Badge -->
             <span
-              *ngIf="item.badge"
-              [class]="'px-2 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(item.badge.class)"
+              *ngIf="item.badge && !isCollapsed"
+              class="px-2 py-0.5 text-xs font-semibold rounded-full"
+              [ngClass]="getBadgeClasses(item.badge.class)"
             >
               {{ item.badge.text }}
             </span>
 
             <!-- Chevron -->
             <fa-icon
+              *ngIf="!isCollapsed"
               [icon]="faChevronDown"
               class="text-sm transition-transform duration-200"
               [class.rotate-180]="isExpanded(item.label!) || isActive(item)"
@@ -79,23 +114,24 @@
 
           <!-- Submenu -->
           <ul
-            *ngIf="isExpanded(item.label!) || isActive(item)"
-            class="ml-4 mt-1 space-y-0.5 pl-6 border-l-2 border-gray-800 dark:border-gray-900 overflow-hidden animate-fade-in"
+            *ngIf="!isCollapsed && (isExpanded(item.label!) || isActive(item))"
+            class="ml-4 mt-1 space-y-0.5 pl-6 border-l-2 border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in"
           >
             <li *ngFor="let child of item.children">
               <a
                 [routerLink]="child.route"
-                routerLinkActive="bg-blue-500/10 text-blue-400 font-semibold pl-5"
+                routerLinkActive="bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400 font-semibold"
                 [routerLinkActiveOptions]="{exact: false}"
-                class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-400 hover:bg-gray-800 dark:hover:bg-gray-900 hover:text-gray-200 hover:pl-5 transition-all duration-200 relative group"
+                class="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200 transition-all duration-200 relative group"
               >
                 <!-- Dot Indicator -->
                 <fa-icon
                   [icon]="faCircle"
+                  [ngClass]="{
+                    'text-blue-500': isActive(child),
+                    'dark:text-blue-400': isActive(child)
+                  }"
                   class="text-[6px] transition-all duration-200"
-                  [class.text-blue-400]="isActive(child)"
-                  [class.text-gray-600]="!isActive(child)"
-                  [class.group-hover:text-blue-400]="!isActive(child)"
                 ></fa-icon>
 
                 {{ child.label }}
@@ -103,7 +139,8 @@
                 <!-- Badge -->
                 <span
                   *ngIf="child.badge"
-                  [class]="'ml-auto px-2 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(child.badge.class)"
+                  class="ml-auto px-2 py-0.5 text-xs font-semibold rounded-full"
+                  [ngClass]="getBadgeClasses(child.badge.class)"
                 >
                   {{ child.badge.text }}
                 </span>
@@ -116,33 +153,34 @@
         <li *ngIf="!isDivider(item) && !hasChildren(item)" class="relative">
           <a
             [routerLink]="item.route"
-            routerLinkActive="bg-gray-800 dark:bg-gray-900 text-white font-semibold"
+            routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-semibold"
             [routerLinkActiveOptions]="{exact: false}"
-            class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 dark:hover:bg-gray-900 hover:text-white transition-all duration-200 hover:translate-x-1 group"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all duration-200 group"
+            [title]="isCollapsed ? item.label : ''"
           >
             <!-- Active Indicator -->
             <span
               routerLinkActive="opacity-100"
-              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r shadow-lg shadow-blue-500/50 opacity-0 transition-opacity duration-200"
+              class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-r opacity-0 transition-opacity duration-200"
             ></span>
 
             <!-- Icon -->
             <fa-icon
-              [icon]="getIconForRoute(item.route)"
+              [icon]="getIconForItem(item)"
               class="text-lg flex-shrink-0 transition-all duration-200 group-hover:scale-110"
-              routerLinkActive="text-blue-400"
-              [class.group-hover:text-blue-400]="!isActive(item)"
+              routerLinkActive="text-blue-600 dark:text-blue-400"
             ></fa-icon>
 
             <!-- Label -->
-            <span class="flex-1 text-sm font-medium">
+            <span *ngIf="!isCollapsed" class="flex-1 text-sm font-medium">
               {{ item.label }}
             </span>
 
             <!-- Badge -->
             <span
-              *ngIf="item.badge"
-              [class]="'px-2 py-0.5 text-xs font-semibold rounded-full ' + getBadgeClasses(item.badge.class)"
+              *ngIf="item.badge && !isCollapsed"
+              class="px-2 py-0.5 text-xs font-semibold rounded-full"
+              [ngClass]="getBadgeClasses(item.badge.class)"
             >
               {{ item.badge.text }}
             </span>
@@ -154,11 +192,14 @@
   </nav>
 
   <!-- Footer / Version Info -->
-  <div class="border-t border-gray-800 dark:border-gray-900 bg-gray-900/50 dark:bg-black/30 px-4 py-4">
-    <div class="flex items-center justify-center gap-2 text-xs text-gray-500">
+  <div class="border-t border-gray-200 dark:border-gray-800 px-4 py-4">
+    <div *ngIf="!isCollapsed" class="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
       <span>v1.0.0</span>
       <span>•</span>
       <span>IgnaCheck</span>
+    </div>
+    <div *ngIf="isCollapsed" class="flex justify-center">
+      <span class="text-xs text-gray-500 dark:text-gray-400">v1.0</span>
     </div>
   </div>
 

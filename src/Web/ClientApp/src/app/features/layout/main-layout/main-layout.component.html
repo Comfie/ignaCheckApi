@@ -1,11 +1,15 @@
-<!-- Modern Layout with Tailwind CSS -->
-<div class="min-h-screen bg-gray-50">
+<!-- Modern Layout with Theme Support -->
+<div class="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200">
 
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
 
   <!-- Main Content Area -->
-  <div class="ml-64 transition-all duration-300 ease-smooth">
+  <div
+    [class.ml-64]="!isSidebarCollapsed"
+    [class.ml-20]="isSidebarCollapsed"
+    class="transition-all duration-300"
+  >
 
     <!-- Header -->
     <app-header></app-header>
@@ -19,14 +23,4 @@
     <app-footer></app-footer>
   </div>
 
-  <!-- Scroll to Top Button -->
-  <button
-    type="button"
-    class="fixed bottom-6 right-6 z-50 p-3 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 hover:shadow-xl transition-all duration-200 opacity-0 invisible hover:scale-110"
-    id="scrollToTop"
-  >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-    </svg>
-  </button>
 </div>
