@@ -9,7 +9,7 @@ namespace IgnaCheck.Web.IntegrationTests.Controllers;
 [TestFixture]
 public class ProjectsControllerTests : BaseIntegrationTest
 {
-    private const string ApiUrl = "/api/projects";
+    private const string ApiUrl = "/api/v1/projects";
 
     [Test]
     public async Task CreateProject_Should_ReturnSuccess_When_ValidRequest()

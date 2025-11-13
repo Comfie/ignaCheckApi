@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using Asp.Versioning;
+using Azure.Identity;
 using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Infrastructure.Data;
 using IgnaCheck.Web.Services;
@@ -19,6 +20,18 @@ public static class DependencyInjection
             .AddDbContextCheck<ApplicationDbContext>();
 
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+        // Add API Versioning
+        builder.Services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+        }).AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        });
 
         // Add Controllers
         builder.Services.AddControllers()

@@ -16,9 +16,9 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface IAdministrationClient {
-    administration_GetAuditLogs(activityType: ActivityType | null | undefined, userId: string | null | undefined, entityType: string | null | undefined, entityId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, searchTerm: string | null | undefined, limit: number | undefined, offset: number | undefined): Observable<ResultOfAuditLogsResultDto>;
-    administration_ExportAuditLogs(activityType: ActivityType | null | undefined, userId: string | null | undefined, entityType: string | null | undefined, entityId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, searchTerm: string | null | undefined): Observable<FileResponse>;
-    administration_DeleteWorkspace(command: DeleteWorkspaceCommand): Observable<Result>;
+    administration_GetAuditLogs(activityType: ActivityType | null | undefined, userId: string | null | undefined, entityType: string | null | undefined, entityId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, searchTerm: string | null | undefined, limit: number | undefined, offset: number | undefined, api_version: string | null | undefined): Observable<ResultOfAuditLogsResultDto>;
+    administration_ExportAuditLogs(activityType: ActivityType | null | undefined, userId: string | null | undefined, entityType: string | null | undefined, entityId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, searchTerm: string | null | undefined, api_version: string | null | undefined): Observable<FileResponse>;
+    administration_DeleteWorkspace(api_version: string | null | undefined, command: DeleteWorkspaceCommand): Observable<Result>;
 }
 
 @Injectable({
@@ -34,7 +34,7 @@ export class AdministrationClient implements IAdministrationClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    administration_GetAuditLogs(activityType: ActivityType | null | undefined, userId: string | null | undefined, entityType: string | null | undefined, entityId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, searchTerm: string | null | undefined, limit: number | undefined, offset: number | undefined): Observable<ResultOfAuditLogsResultDto> {
+    administration_GetAuditLogs(activityType: ActivityType | null | undefined, userId: string | null | undefined, entityType: string | null | undefined, entityId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, searchTerm: string | null | undefined, limit: number | undefined, offset: number | undefined, api_version: string | null | undefined): Observable<ResultOfAuditLogsResultDto> {
         let url_ = this.baseUrl + "/api/Administration/audit-logs?";
         if (activityType !== undefined && activityType !== null)
             url_ += "activityType=" + encodeURIComponent("" + activityType) + "&";
@@ -58,6 +58,8 @@ export class AdministrationClient implements IAdministrationClient {
             throw new Error("The parameter 'offset' cannot be null.");
         else if (offset !== undefined)
             url_ += "offset=" + encodeURIComponent("" + offset) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -125,7 +127,7 @@ export class AdministrationClient implements IAdministrationClient {
         return _observableOf(null as any);
     }
 
-    administration_ExportAuditLogs(activityType: ActivityType | null | undefined, userId: string | null | undefined, entityType: string | null | undefined, entityId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, searchTerm: string | null | undefined): Observable<FileResponse> {
+    administration_ExportAuditLogs(activityType: ActivityType | null | undefined, userId: string | null | undefined, entityType: string | null | undefined, entityId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, searchTerm: string | null | undefined, api_version: string | null | undefined): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Administration/audit-logs/export?";
         if (activityType !== undefined && activityType !== null)
             url_ += "activityType=" + encodeURIComponent("" + activityType) + "&";
@@ -141,6 +143,8 @@ export class AdministrationClient implements IAdministrationClient {
             url_ += "endDate=" + encodeURIComponent(endDate ? "" + endDate.toISOString() : "") + "&";
         if (searchTerm !== undefined && searchTerm !== null)
             url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -212,8 +216,10 @@ export class AdministrationClient implements IAdministrationClient {
         return _observableOf(null as any);
     }
 
-    administration_DeleteWorkspace(command: DeleteWorkspaceCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Administration/workspace";
+    administration_DeleteWorkspace(api_version: string | null | undefined, command: DeleteWorkspaceCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/Administration/workspace?";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -287,7 +293,7 @@ export class AdministrationClient implements IAdministrationClient {
 }
 
 export interface IAuditClient {
-    audit_RunAuditCheck(projectId: string, frameworkId: string, request: RunAuditCheckRequest | undefined): Observable<ResultOfAuditCheckResponse>;
+    audit_RunAuditCheck(projectId: string, frameworkId: string, api_version: string | null | undefined, request: RunAuditCheckRequest | undefined): Observable<ResultOfAuditCheckResponse>;
 }
 
 @Injectable({
@@ -303,14 +309,16 @@ export class AuditClient implements IAuditClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    audit_RunAuditCheck(projectId: string, frameworkId: string, request: RunAuditCheckRequest | undefined): Observable<ResultOfAuditCheckResponse> {
-        let url_ = this.baseUrl + "/api/Audit/projects/{projectId}/frameworks/{frameworkId}/run";
+    audit_RunAuditCheck(projectId: string, frameworkId: string, api_version: string | null | undefined, request: RunAuditCheckRequest | undefined): Observable<ResultOfAuditCheckResponse> {
+        let url_ = this.baseUrl + "/api/Audit/projects/{projectId}/frameworks/{frameworkId}/run?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
         if (frameworkId === undefined || frameworkId === null)
             throw new Error("The parameter 'frameworkId' must be defined.");
         url_ = url_.replace("{frameworkId}", encodeURIComponent("" + frameworkId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(request);
@@ -391,11 +399,11 @@ export class AuditClient implements IAuditClient {
 }
 
 export interface IAuthenticationClient {
-    authentication_Register(version: string, command: RegisterCommand): Observable<ResultOfString>;
-    authentication_Login(version: string, command: LoginCommand): Observable<ResultOfLoginResponse>;
-    authentication_VerifyEmail(version: string, command: VerifyEmailCommand): Observable<Result>;
-    authentication_RequestPasswordReset(version: string, command: RequestPasswordResetCommand): Observable<Result>;
-    authentication_ResetPassword(version: string, command: ResetPasswordCommand): Observable<Result>;
+    authentication_Register(command: RegisterCommand): Observable<ResultOfString>;
+    authentication_Login(command: LoginCommand): Observable<ResultOfLoginResponse>;
+    authentication_VerifyEmail(command: VerifyEmailCommand): Observable<Result>;
+    authentication_RequestPasswordReset(command: RequestPasswordResetCommand): Observable<Result>;
+    authentication_ResetPassword(command: ResetPasswordCommand): Observable<Result>;
 }
 
 @Injectable({
@@ -411,11 +419,8 @@ export class AuthenticationClient implements IAuthenticationClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    authentication_Register(version: string, command: RegisterCommand): Observable<ResultOfString> {
-        let url_ = this.baseUrl + "/api/v{version}/Authentication/register";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    authentication_Register(command: RegisterCommand): Observable<ResultOfString> {
+        let url_ = this.baseUrl + "/api/v1/Authentication/register";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -473,11 +478,8 @@ export class AuthenticationClient implements IAuthenticationClient {
         return _observableOf(null as any);
     }
 
-    authentication_Login(version: string, command: LoginCommand): Observable<ResultOfLoginResponse> {
-        let url_ = this.baseUrl + "/api/v{version}/Authentication/login";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    authentication_Login(command: LoginCommand): Observable<ResultOfLoginResponse> {
+        let url_ = this.baseUrl + "/api/v1/Authentication/login";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -535,11 +537,8 @@ export class AuthenticationClient implements IAuthenticationClient {
         return _observableOf(null as any);
     }
 
-    authentication_VerifyEmail(version: string, command: VerifyEmailCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/v{version}/Authentication/verify-email";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    authentication_VerifyEmail(command: VerifyEmailCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/v1/Authentication/verify-email";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -597,11 +596,8 @@ export class AuthenticationClient implements IAuthenticationClient {
         return _observableOf(null as any);
     }
 
-    authentication_RequestPasswordReset(version: string, command: RequestPasswordResetCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/v{version}/Authentication/request-password-reset";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    authentication_RequestPasswordReset(command: RequestPasswordResetCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/v1/Authentication/request-password-reset";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -652,11 +648,8 @@ export class AuthenticationClient implements IAuthenticationClient {
         return _observableOf(null as any);
     }
 
-    authentication_ResetPassword(version: string, command: ResetPasswordCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/v{version}/Authentication/reset-password";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    authentication_ResetPassword(command: ResetPasswordCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/v1/Authentication/reset-password";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -716,10 +709,10 @@ export class AuthenticationClient implements IAuthenticationClient {
 }
 
 export interface IDocumentsClient {
-    documents_GetDocuments(projectId: string, category: DocumentCategory | null | undefined, searchTerm: string | null | undefined): Observable<ResultOfListOfDocumentDto>;
-    documents_UploadDocument(projectId: string, file: FileParameter | null | undefined, category: string | null | undefined, description: string | null | undefined, tags: string | null | undefined): Observable<ResultOfUploadDocumentResponse>;
-    documents_DownloadDocument(projectId: string, id: string): Observable<FileResponse>;
-    documents_DeleteDocument(projectId: string, id: string): Observable<Result>;
+    documents_GetDocuments(projectId: string, category: DocumentCategory | null | undefined, searchTerm: string | null | undefined, api_version: string | null | undefined): Observable<ResultOfListOfDocumentDto>;
+    documents_UploadDocument(projectId: string, api_version: string | null | undefined, file: FileParameter | null | undefined, category: string | null | undefined, description: string | null | undefined, tags: string | null | undefined): Observable<ResultOfUploadDocumentResponse>;
+    documents_DownloadDocument(projectId: string, id: string, api_version: string | null | undefined): Observable<FileResponse>;
+    documents_DeleteDocument(projectId: string, id: string, api_version: string | null | undefined): Observable<Result>;
 }
 
 @Injectable({
@@ -735,7 +728,7 @@ export class DocumentsClient implements IDocumentsClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    documents_GetDocuments(projectId: string, category: DocumentCategory | null | undefined, searchTerm: string | null | undefined): Observable<ResultOfListOfDocumentDto> {
+    documents_GetDocuments(projectId: string, category: DocumentCategory | null | undefined, searchTerm: string | null | undefined, api_version: string | null | undefined): Observable<ResultOfListOfDocumentDto> {
         let url_ = this.baseUrl + "/api/projects/{projectId}/Documents?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
@@ -744,6 +737,8 @@ export class DocumentsClient implements IDocumentsClient {
             url_ += "category=" + encodeURIComponent("" + category) + "&";
         if (searchTerm !== undefined && searchTerm !== null)
             url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -804,11 +799,13 @@ export class DocumentsClient implements IDocumentsClient {
         return _observableOf(null as any);
     }
 
-    documents_UploadDocument(projectId: string, file: FileParameter | null | undefined, category: string | null | undefined, description: string | null | undefined, tags: string | null | undefined): Observable<ResultOfUploadDocumentResponse> {
-        let url_ = this.baseUrl + "/api/projects/{projectId}/Documents";
+    documents_UploadDocument(projectId: string, api_version: string | null | undefined, file: FileParameter | null | undefined, category: string | null | undefined, description: string | null | undefined, tags: string | null | undefined): Observable<ResultOfUploadDocumentResponse> {
+        let url_ = this.baseUrl + "/api/projects/{projectId}/Documents?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
@@ -887,14 +884,16 @@ export class DocumentsClient implements IDocumentsClient {
         return _observableOf(null as any);
     }
 
-    documents_DownloadDocument(projectId: string, id: string): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/projects/{projectId}/Documents/{id}/download";
+    documents_DownloadDocument(projectId: string, id: string, api_version: string | null | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/projects/{projectId}/Documents/{id}/download?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -966,14 +965,16 @@ export class DocumentsClient implements IDocumentsClient {
         return _observableOf(null as any);
     }
 
-    documents_DeleteDocument(projectId: string, id: string): Observable<Result> {
-        let url_ = this.baseUrl + "/api/projects/{projectId}/Documents/{id}";
+    documents_DeleteDocument(projectId: string, id: string, api_version: string | null | undefined): Observable<Result> {
+        let url_ = this.baseUrl + "/api/projects/{projectId}/Documents/{id}?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1043,11 +1044,11 @@ export class DocumentsClient implements IDocumentsClient {
 }
 
 export interface IFindingsClient {
-    findings_GetProjectFindings(projectId: string, frameworkId: string | null | undefined, status: ComplianceStatus | null | undefined, workflowStatus: FindingWorkflowStatus | null | undefined, riskLevel: RiskLevel | null | undefined, assignedTo: string | null | undefined, searchTerm: string | null | undefined, sortBy: string | undefined, sortDirection: string | undefined): Observable<ResultOfListOfFindingDto>;
-    findings_GetFindingDetails(id: string): Observable<ResultOfFindingDetailsDto>;
-    findings_UpdateFindingStatus(id: string, command: UpdateFindingStatusCommand): Observable<Result>;
-    findings_AssignFinding(id: string, command: AssignFindingCommand): Observable<Result>;
-    findings_AddComment(id: string, command: AddFindingCommentCommand): Observable<ResultOfGuid>;
+    findings_GetProjectFindings(projectId: string, frameworkId: string | null | undefined, status: ComplianceStatus | null | undefined, workflowStatus: FindingWorkflowStatus | null | undefined, riskLevel: RiskLevel | null | undefined, assignedTo: string | null | undefined, searchTerm: string | null | undefined, sortBy: string | undefined, sortDirection: string | undefined, api_version: string | null | undefined): Observable<ResultOfListOfFindingDto>;
+    findings_GetFindingDetails(id: string, api_version: string | null | undefined): Observable<ResultOfFindingDetailsDto>;
+    findings_UpdateFindingStatus(id: string, api_version: string | null | undefined, command: UpdateFindingStatusCommand): Observable<Result>;
+    findings_AssignFinding(id: string, api_version: string | null | undefined, command: AssignFindingCommand): Observable<Result>;
+    findings_AddComment(id: string, api_version: string | null | undefined, command: AddFindingCommentCommand): Observable<ResultOfGuid>;
 }
 
 @Injectable({
@@ -1063,7 +1064,7 @@ export class FindingsClient implements IFindingsClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    findings_GetProjectFindings(projectId: string, frameworkId: string | null | undefined, status: ComplianceStatus | null | undefined, workflowStatus: FindingWorkflowStatus | null | undefined, riskLevel: RiskLevel | null | undefined, assignedTo: string | null | undefined, searchTerm: string | null | undefined, sortBy: string | undefined, sortDirection: string | undefined): Observable<ResultOfListOfFindingDto> {
+    findings_GetProjectFindings(projectId: string, frameworkId: string | null | undefined, status: ComplianceStatus | null | undefined, workflowStatus: FindingWorkflowStatus | null | undefined, riskLevel: RiskLevel | null | undefined, assignedTo: string | null | undefined, searchTerm: string | null | undefined, sortBy: string | undefined, sortDirection: string | undefined, api_version: string | null | undefined): Observable<ResultOfListOfFindingDto> {
         let url_ = this.baseUrl + "/api/Findings/project/{projectId}?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
@@ -1088,6 +1089,8 @@ export class FindingsClient implements IFindingsClient {
             throw new Error("The parameter 'sortDirection' cannot be null.");
         else if (sortDirection !== undefined)
             url_ += "sortDirection=" + encodeURIComponent("" + sortDirection) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1148,11 +1151,13 @@ export class FindingsClient implements IFindingsClient {
         return _observableOf(null as any);
     }
 
-    findings_GetFindingDetails(id: string): Observable<ResultOfFindingDetailsDto> {
-        let url_ = this.baseUrl + "/api/Findings/{id}";
+    findings_GetFindingDetails(id: string, api_version: string | null | undefined): Observable<ResultOfFindingDetailsDto> {
+        let url_ = this.baseUrl + "/api/Findings/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1220,11 +1225,13 @@ export class FindingsClient implements IFindingsClient {
         return _observableOf(null as any);
     }
 
-    findings_UpdateFindingStatus(id: string, command: UpdateFindingStatusCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Findings/{id}/status";
+    findings_UpdateFindingStatus(id: string, api_version: string | null | undefined, command: UpdateFindingStatusCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/Findings/{id}/status?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -1296,11 +1303,13 @@ export class FindingsClient implements IFindingsClient {
         return _observableOf(null as any);
     }
 
-    findings_AssignFinding(id: string, command: AssignFindingCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Findings/{id}/assign";
+    findings_AssignFinding(id: string, api_version: string | null | undefined, command: AssignFindingCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/Findings/{id}/assign?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -1372,11 +1381,13 @@ export class FindingsClient implements IFindingsClient {
         return _observableOf(null as any);
     }
 
-    findings_AddComment(id: string, command: AddFindingCommentCommand): Observable<ResultOfGuid> {
-        let url_ = this.baseUrl + "/api/Findings/{id}/comments";
+    findings_AddComment(id: string, api_version: string | null | undefined, command: AddFindingCommentCommand): Observable<ResultOfGuid> {
+        let url_ = this.baseUrl + "/api/Findings/{id}/comments?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -1450,10 +1461,10 @@ export class FindingsClient implements IFindingsClient {
 }
 
 export interface IFrameworksClient {
-    frameworks_GetFrameworks(category: FrameworkCategory | null | undefined, activeOnly: boolean | undefined, includeControlCount: boolean | undefined): Observable<ResultOfListOfFrameworkDto>;
-    frameworks_GetFrameworkDetails(id: string, includeControls: boolean | undefined): Observable<ResultOfFrameworkDetailsDto>;
-    frameworks_SelectProjectFrameworks(projectId: string, request: SelectProjectFrameworksRequest): Observable<Result>;
-    frameworks_RemoveProjectFramework(projectId: string, frameworkId: string): Observable<Result>;
+    frameworks_GetFrameworks(category: FrameworkCategory | null | undefined, activeOnly: boolean | undefined, includeControlCount: boolean | undefined, api_version: string | null | undefined): Observable<ResultOfListOfFrameworkDto>;
+    frameworks_GetFrameworkDetails(id: string, includeControls: boolean | undefined, api_version: string | null | undefined): Observable<ResultOfFrameworkDetailsDto>;
+    frameworks_SelectProjectFrameworks(projectId: string, api_version: string | null | undefined, request: SelectProjectFrameworksRequest): Observable<Result>;
+    frameworks_RemoveProjectFramework(projectId: string, frameworkId: string, api_version: string | null | undefined): Observable<Result>;
 }
 
 @Injectable({
@@ -1469,7 +1480,7 @@ export class FrameworksClient implements IFrameworksClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    frameworks_GetFrameworks(category: FrameworkCategory | null | undefined, activeOnly: boolean | undefined, includeControlCount: boolean | undefined): Observable<ResultOfListOfFrameworkDto> {
+    frameworks_GetFrameworks(category: FrameworkCategory | null | undefined, activeOnly: boolean | undefined, includeControlCount: boolean | undefined, api_version: string | null | undefined): Observable<ResultOfListOfFrameworkDto> {
         let url_ = this.baseUrl + "/api/Frameworks?";
         if (category !== undefined && category !== null)
             url_ += "category=" + encodeURIComponent("" + category) + "&";
@@ -1481,6 +1492,8 @@ export class FrameworksClient implements IFrameworksClient {
             throw new Error("The parameter 'includeControlCount' cannot be null.");
         else if (includeControlCount !== undefined)
             url_ += "includeControlCount=" + encodeURIComponent("" + includeControlCount) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1534,7 +1547,7 @@ export class FrameworksClient implements IFrameworksClient {
         return _observableOf(null as any);
     }
 
-    frameworks_GetFrameworkDetails(id: string, includeControls: boolean | undefined): Observable<ResultOfFrameworkDetailsDto> {
+    frameworks_GetFrameworkDetails(id: string, includeControls: boolean | undefined, api_version: string | null | undefined): Observable<ResultOfFrameworkDetailsDto> {
         let url_ = this.baseUrl + "/api/Frameworks/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1543,6 +1556,8 @@ export class FrameworksClient implements IFrameworksClient {
             throw new Error("The parameter 'includeControls' cannot be null.");
         else if (includeControls !== undefined)
             url_ += "includeControls=" + encodeURIComponent("" + includeControls) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1603,11 +1618,13 @@ export class FrameworksClient implements IFrameworksClient {
         return _observableOf(null as any);
     }
 
-    frameworks_SelectProjectFrameworks(projectId: string, request: SelectProjectFrameworksRequest): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Frameworks/projects/{projectId}/frameworks";
+    frameworks_SelectProjectFrameworks(projectId: string, api_version: string | null | undefined, request: SelectProjectFrameworksRequest): Observable<Result> {
+        let url_ = this.baseUrl + "/api/Frameworks/projects/{projectId}/frameworks?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(request);
@@ -1679,14 +1696,16 @@ export class FrameworksClient implements IFrameworksClient {
         return _observableOf(null as any);
     }
 
-    frameworks_RemoveProjectFramework(projectId: string, frameworkId: string): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Frameworks/projects/{projectId}/frameworks/{frameworkId}";
+    frameworks_RemoveProjectFramework(projectId: string, frameworkId: string, api_version: string | null | undefined): Observable<Result> {
+        let url_ = this.baseUrl + "/api/Frameworks/projects/{projectId}/frameworks/{frameworkId}?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
         if (frameworkId === undefined || frameworkId === null)
             throw new Error("The parameter 'frameworkId' must be defined.");
         url_ = url_.replace("{frameworkId}", encodeURIComponent("" + frameworkId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1763,10 +1782,10 @@ export class FrameworksClient implements IFrameworksClient {
 }
 
 export interface INotificationsClient {
-    notifications_GetNotifications(type: NotificationType | null | undefined, isRead: boolean | null | undefined, limit: number | undefined, offset: number | undefined): Observable<ResultOfListOfNotificationDto>;
-    notifications_MarkAsRead(command: MarkNotificationsAsReadCommand): Observable<Result>;
-    notifications_GetPreferences(): Observable<ResultOfListOfNotificationPreferenceDto>;
-    notifications_UpdatePreferences(command: UpdateNotificationPreferencesCommand): Observable<Result>;
+    notifications_GetNotifications(type: NotificationType | null | undefined, isRead: boolean | null | undefined, limit: number | undefined, offset: number | undefined, api_version: string | null | undefined): Observable<ResultOfListOfNotificationDto>;
+    notifications_MarkAsRead(api_version: string | null | undefined, command: MarkNotificationsAsReadCommand): Observable<Result>;
+    notifications_GetPreferences(api_version: string | null | undefined): Observable<ResultOfListOfNotificationPreferenceDto>;
+    notifications_UpdatePreferences(api_version: string | null | undefined, command: UpdateNotificationPreferencesCommand): Observable<Result>;
 }
 
 @Injectable({
@@ -1782,7 +1801,7 @@ export class NotificationsClient implements INotificationsClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    notifications_GetNotifications(type: NotificationType | null | undefined, isRead: boolean | null | undefined, limit: number | undefined, offset: number | undefined): Observable<ResultOfListOfNotificationDto> {
+    notifications_GetNotifications(type: NotificationType | null | undefined, isRead: boolean | null | undefined, limit: number | undefined, offset: number | undefined, api_version: string | null | undefined): Observable<ResultOfListOfNotificationDto> {
         let url_ = this.baseUrl + "/api/Notifications?";
         if (type !== undefined && type !== null)
             url_ += "type=" + encodeURIComponent("" + type) + "&";
@@ -1796,6 +1815,8 @@ export class NotificationsClient implements INotificationsClient {
             throw new Error("The parameter 'offset' cannot be null.");
         else if (offset !== undefined)
             url_ += "offset=" + encodeURIComponent("" + offset) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1849,8 +1870,10 @@ export class NotificationsClient implements INotificationsClient {
         return _observableOf(null as any);
     }
 
-    notifications_MarkAsRead(command: MarkNotificationsAsReadCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Notifications/mark-as-read";
+    notifications_MarkAsRead(api_version: string | null | undefined, command: MarkNotificationsAsReadCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/Notifications/mark-as-read?";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -1915,8 +1938,10 @@ export class NotificationsClient implements INotificationsClient {
         return _observableOf(null as any);
     }
 
-    notifications_GetPreferences(): Observable<ResultOfListOfNotificationPreferenceDto> {
-        let url_ = this.baseUrl + "/api/Notifications/preferences";
+    notifications_GetPreferences(api_version: string | null | undefined): Observable<ResultOfListOfNotificationPreferenceDto> {
+        let url_ = this.baseUrl + "/api/Notifications/preferences?";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1970,8 +1995,10 @@ export class NotificationsClient implements INotificationsClient {
         return _observableOf(null as any);
     }
 
-    notifications_UpdatePreferences(command: UpdateNotificationPreferencesCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Notifications/preferences";
+    notifications_UpdatePreferences(api_version: string | null | undefined, command: UpdateNotificationPreferencesCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/Notifications/preferences?";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -2038,11 +2065,11 @@ export class NotificationsClient implements INotificationsClient {
 }
 
 export interface IProfileClient {
-    profile_GetMyProfile(version: string): Observable<ResultOfUserProfileDto>;
-    profile_UpdateMyProfile(version: string, command: UpdateMyProfileCommand): Observable<ResultOfUserProfileDto>;
-    profile_UpdateAvatar(version: string, command: UpdateAvatarCommand): Observable<ResultOfUpdateAvatarResponse>;
-    profile_GetNotificationPreferences(version: string): Observable<ResultOfNotificationPreferencesDto>;
-    profile_UpdateNotificationPreferences(version: string, command: UpdateNotificationPreferencesCommand2): Observable<ResultOfNotificationPreferencesDto>;
+    profile_GetMyProfile(): Observable<ResultOfUserProfileDto>;
+    profile_UpdateMyProfile(command: UpdateMyProfileCommand): Observable<ResultOfUserProfileDto>;
+    profile_UpdateAvatar(command: UpdateAvatarCommand): Observable<ResultOfUpdateAvatarResponse>;
+    profile_GetNotificationPreferences(): Observable<ResultOfNotificationPreferencesDto>;
+    profile_UpdateNotificationPreferences(command: UpdateNotificationPreferencesCommand2): Observable<ResultOfNotificationPreferencesDto>;
 }
 
 @Injectable({
@@ -2058,11 +2085,8 @@ export class ProfileClient implements IProfileClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    profile_GetMyProfile(version: string): Observable<ResultOfUserProfileDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Profile";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    profile_GetMyProfile(): Observable<ResultOfUserProfileDto> {
+        let url_ = this.baseUrl + "/api/v1/Profile";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -2116,11 +2140,8 @@ export class ProfileClient implements IProfileClient {
         return _observableOf(null as any);
     }
 
-    profile_UpdateMyProfile(version: string, command: UpdateMyProfileCommand): Observable<ResultOfUserProfileDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Profile";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    profile_UpdateMyProfile(command: UpdateMyProfileCommand): Observable<ResultOfUserProfileDto> {
+        let url_ = this.baseUrl + "/api/v1/Profile";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -2185,11 +2206,8 @@ export class ProfileClient implements IProfileClient {
         return _observableOf(null as any);
     }
 
-    profile_UpdateAvatar(version: string, command: UpdateAvatarCommand): Observable<ResultOfUpdateAvatarResponse> {
-        let url_ = this.baseUrl + "/api/v{version}/Profile/avatar";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    profile_UpdateAvatar(command: UpdateAvatarCommand): Observable<ResultOfUpdateAvatarResponse> {
+        let url_ = this.baseUrl + "/api/v1/Profile/avatar";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -2254,11 +2272,8 @@ export class ProfileClient implements IProfileClient {
         return _observableOf(null as any);
     }
 
-    profile_GetNotificationPreferences(version: string): Observable<ResultOfNotificationPreferencesDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Profile/notification-preferences";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    profile_GetNotificationPreferences(): Observable<ResultOfNotificationPreferencesDto> {
+        let url_ = this.baseUrl + "/api/v1/Profile/notification-preferences";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -2312,11 +2327,8 @@ export class ProfileClient implements IProfileClient {
         return _observableOf(null as any);
     }
 
-    profile_UpdateNotificationPreferences(version: string, command: UpdateNotificationPreferencesCommand2): Observable<ResultOfNotificationPreferencesDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Profile/notification-preferences";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    profile_UpdateNotificationPreferences(command: UpdateNotificationPreferencesCommand2): Observable<ResultOfNotificationPreferencesDto> {
+        let url_ = this.baseUrl + "/api/v1/Profile/notification-preferences";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -2409,7 +2421,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_GetProjects(status: ProjectStatus | null | undefined, searchTerm: string | null | undefined, myProjectsOnly: boolean | undefined, includeArchived: boolean | undefined): Observable<ResultOfListOfProjectDto> {
-        let url_ = this.baseUrl + "/api/Projects?";
+        let url_ = this.baseUrl + "/api/v1/Projects?";
         if (status !== undefined && status !== null)
             url_ += "status=" + encodeURIComponent("" + status) + "&";
         if (searchTerm !== undefined && searchTerm !== null)
@@ -2476,7 +2488,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_CreateProject(command: CreateProjectCommand): Observable<ResultOfCreateProjectResponse> {
-        let url_ = this.baseUrl + "/api/Projects";
+        let url_ = this.baseUrl + "/api/v1/Projects";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -2542,7 +2554,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_GetProjectDetails(id: string): Observable<ResultOfProjectDetailsDto> {
-        let url_ = this.baseUrl + "/api/Projects/{id}";
+        let url_ = this.baseUrl + "/api/v1/Projects/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2607,7 +2619,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_UpdateProject(id: string, command: UpdateProjectCommand): Observable<ResultOfUpdateProjectResponse> {
-        let url_ = this.baseUrl + "/api/Projects/{id}";
+        let url_ = this.baseUrl + "/api/v1/Projects/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2683,7 +2695,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_DeleteProject(id: string, command: DeleteProjectCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Projects/{id}";
+        let url_ = this.baseUrl + "/api/v1/Projects/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2759,7 +2771,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_ArchiveProject(id: string, command: ArchiveProjectCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Projects/{id}/archive";
+        let url_ = this.baseUrl + "/api/v1/Projects/{id}/archive";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2835,7 +2847,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_AddProjectMember(id: string, command: AddProjectMemberCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Projects/{id}/members";
+        let url_ = this.baseUrl + "/api/v1/Projects/{id}/members";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2911,7 +2923,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_RemoveProjectMember(id: string, userId: string): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Projects/{id}/members/{userId}";
+        let url_ = this.baseUrl + "/api/v1/Projects/{id}/members/{userId}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -2986,7 +2998,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_UpdateProjectMemberRole(id: string, userId: string, command: UpdateProjectMemberRoleCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/Projects/{id}/members/{userId}/role";
+        let url_ = this.baseUrl + "/api/v1/Projects/{id}/members/{userId}/role";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -3065,7 +3077,7 @@ export class ProjectsClient implements IProjectsClient {
     }
 
     projects_GetProjectActivity(id: string, activityType: ActivityType | null | undefined, userId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, limit: number | undefined): Observable<ResultOfListOfActivityLogDto> {
-        let url_ = this.baseUrl + "/api/Projects/{id}/activity?";
+        let url_ = this.baseUrl + "/api/v1/Projects/{id}/activity?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -3143,13 +3155,13 @@ export class ProjectsClient implements IProjectsClient {
 }
 
 export interface IReportsClient {
-    reports_GetComplianceDashboard(projectId: string): Observable<ResultOfComplianceDashboardDto>;
-    reports_GetFrameworkReport(projectId: string, frameworkId: string): Observable<ResultOfFrameworkReportDto>;
-    reports_GetExecutiveSummary(projectId: string): Observable<ResultOfExecutiveSummaryDto>;
-    reports_GetAuditTrail(projectId: string, activityType: ActivityType | null | undefined, userId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, limit: number | undefined): Observable<ResultOfListOfActivityLogDto>;
-    reports_ExportDashboardPdf(projectId: string): Observable<FileResponse>;
-    reports_ExportFrameworkReportExcel(projectId: string, frameworkId: string): Observable<FileResponse>;
-    reports_ExportExecutiveSummaryPdf(projectId: string): Observable<FileResponse>;
+    reports_GetComplianceDashboard(projectId: string, api_version: string | null | undefined): Observable<ResultOfComplianceDashboardDto>;
+    reports_GetFrameworkReport(projectId: string, frameworkId: string, api_version: string | null | undefined): Observable<ResultOfFrameworkReportDto>;
+    reports_GetExecutiveSummary(projectId: string, api_version: string | null | undefined): Observable<ResultOfExecutiveSummaryDto>;
+    reports_GetAuditTrail(projectId: string, activityType: ActivityType | null | undefined, userId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, limit: number | undefined, api_version: string | null | undefined): Observable<ResultOfListOfActivityLogDto>;
+    reports_ExportDashboardPdf(projectId: string, api_version: string | null | undefined): Observable<FileResponse>;
+    reports_ExportFrameworkReportExcel(projectId: string, frameworkId: string, api_version: string | null | undefined): Observable<FileResponse>;
+    reports_ExportExecutiveSummaryPdf(projectId: string, api_version: string | null | undefined): Observable<FileResponse>;
 }
 
 @Injectable({
@@ -3165,11 +3177,13 @@ export class ReportsClient implements IReportsClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    reports_GetComplianceDashboard(projectId: string): Observable<ResultOfComplianceDashboardDto> {
-        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/dashboard";
+    reports_GetComplianceDashboard(projectId: string, api_version: string | null | undefined): Observable<ResultOfComplianceDashboardDto> {
+        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/dashboard?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3237,14 +3251,16 @@ export class ReportsClient implements IReportsClient {
         return _observableOf(null as any);
     }
 
-    reports_GetFrameworkReport(projectId: string, frameworkId: string): Observable<ResultOfFrameworkReportDto> {
-        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/frameworks/{frameworkId}";
+    reports_GetFrameworkReport(projectId: string, frameworkId: string, api_version: string | null | undefined): Observable<ResultOfFrameworkReportDto> {
+        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/frameworks/{frameworkId}?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
         if (frameworkId === undefined || frameworkId === null)
             throw new Error("The parameter 'frameworkId' must be defined.");
         url_ = url_.replace("{frameworkId}", encodeURIComponent("" + frameworkId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3312,11 +3328,13 @@ export class ReportsClient implements IReportsClient {
         return _observableOf(null as any);
     }
 
-    reports_GetExecutiveSummary(projectId: string): Observable<ResultOfExecutiveSummaryDto> {
-        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/executive-summary";
+    reports_GetExecutiveSummary(projectId: string, api_version: string | null | undefined): Observable<ResultOfExecutiveSummaryDto> {
+        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/executive-summary?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3384,7 +3402,7 @@ export class ReportsClient implements IReportsClient {
         return _observableOf(null as any);
     }
 
-    reports_GetAuditTrail(projectId: string, activityType: ActivityType | null | undefined, userId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, limit: number | undefined): Observable<ResultOfListOfActivityLogDto> {
+    reports_GetAuditTrail(projectId: string, activityType: ActivityType | null | undefined, userId: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, limit: number | undefined, api_version: string | null | undefined): Observable<ResultOfListOfActivityLogDto> {
         let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/audit-trail?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
@@ -3401,6 +3419,8 @@ export class ReportsClient implements IReportsClient {
             throw new Error("The parameter 'limit' cannot be null.");
         else if (limit !== undefined)
             url_ += "limit=" + encodeURIComponent("" + limit) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3461,11 +3481,13 @@ export class ReportsClient implements IReportsClient {
         return _observableOf(null as any);
     }
 
-    reports_ExportDashboardPdf(projectId: string): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/dashboard/export/pdf";
+    reports_ExportDashboardPdf(projectId: string, api_version: string | null | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/dashboard/export/pdf?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3534,14 +3556,16 @@ export class ReportsClient implements IReportsClient {
         return _observableOf(null as any);
     }
 
-    reports_ExportFrameworkReportExcel(projectId: string, frameworkId: string): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/frameworks/{frameworkId}/export/excel";
+    reports_ExportFrameworkReportExcel(projectId: string, frameworkId: string, api_version: string | null | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/frameworks/{frameworkId}/export/excel?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
         if (frameworkId === undefined || frameworkId === null)
             throw new Error("The parameter 'frameworkId' must be defined.");
         url_ = url_.replace("{frameworkId}", encodeURIComponent("" + frameworkId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3610,11 +3634,13 @@ export class ReportsClient implements IReportsClient {
         return _observableOf(null as any);
     }
 
-    reports_ExportExecutiveSummaryPdf(projectId: string): Observable<FileResponse> {
-        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/executive-summary/export/pdf";
+    reports_ExportExecutiveSummaryPdf(projectId: string, api_version: string | null | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/Reports/projects/{projectId}/executive-summary/export/pdf?";
         if (projectId === undefined || projectId === null)
             throw new Error("The parameter 'projectId' must be defined.");
         url_ = url_.replace("{projectId}", encodeURIComponent("" + projectId));
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3685,7 +3711,7 @@ export class ReportsClient implements IReportsClient {
 }
 
 export interface ISearchClient {
-    search_GlobalSearch(searchTerm: string | undefined, resultTypes: string | null | undefined, projectId: string | null | undefined, maxResultsPerType: number | undefined): Observable<ResultOfGlobalSearchResultDto>;
+    search_GlobalSearch(searchTerm: string | undefined, resultTypes: string | null | undefined, projectId: string | null | undefined, maxResultsPerType: number | undefined, api_version: string | null | undefined): Observable<ResultOfGlobalSearchResultDto>;
 }
 
 @Injectable({
@@ -3701,7 +3727,7 @@ export class SearchClient implements ISearchClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    search_GlobalSearch(searchTerm: string | undefined, resultTypes: string | null | undefined, projectId: string | null | undefined, maxResultsPerType: number | undefined): Observable<ResultOfGlobalSearchResultDto> {
+    search_GlobalSearch(searchTerm: string | undefined, resultTypes: string | null | undefined, projectId: string | null | undefined, maxResultsPerType: number | undefined, api_version: string | null | undefined): Observable<ResultOfGlobalSearchResultDto> {
         let url_ = this.baseUrl + "/api/Search?";
         if (searchTerm === null)
             throw new Error("The parameter 'searchTerm' cannot be null.");
@@ -3715,6 +3741,8 @@ export class SearchClient implements ISearchClient {
             throw new Error("The parameter 'maxResultsPerType' cannot be null.");
         else if (maxResultsPerType !== undefined)
             url_ += "maxResultsPerType=" + encodeURIComponent("" + maxResultsPerType) + "&";
+        if (api_version !== undefined && api_version !== null)
+            url_ += "api-version=" + encodeURIComponent("" + api_version) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3777,15 +3805,15 @@ export class SearchClient implements ISearchClient {
 }
 
 export interface IUsersClient {
-    users_GetWorkspaceMembers(workspaceId: string | null | undefined, searchQuery: string | null | undefined, role: string | null | undefined, isActive: boolean | null | undefined, pageNumber: number | undefined, pageSize: number | undefined, sortBy: string | null | undefined, sortDirection: string | null | undefined, version: string): Observable<ResultOfWorkspaceMembersResponse>;
-    users_RemoveMember(version: string, command: RemoveMemberCommand): Observable<Result>;
-    users_InviteUser(version: string, command: InviteUserCommand): Observable<ResultOfInviteUserResponse>;
-    users_GetWorkspaceInvitations(workspaceId: string | null | undefined, status: string | null | undefined, version: string): Observable<ResultOfListOfInvitationDto>;
-    users_GetMyInvitations(version: string): Observable<ResultOfListOfMyInvitationDto>;
-    users_AcceptInvitation(version: string, command: AcceptInvitationCommand): Observable<ResultOfAcceptInvitationResponse>;
-    users_DeclineInvitation(version: string, command: DeclineInvitationCommand): Observable<Result>;
-    users_RevokeInvitation(version: string, command: RevokeInvitationCommand): Observable<Result>;
-    users_UpdateMemberRole(version: string, command: UpdateMemberRoleCommand): Observable<Result>;
+    users_GetWorkspaceMembers(workspaceId: string | null | undefined, searchQuery: string | null | undefined, role: string | null | undefined, isActive: boolean | null | undefined, pageNumber: number | undefined, pageSize: number | undefined, sortBy: string | null | undefined, sortDirection: string | null | undefined): Observable<ResultOfWorkspaceMembersResponse>;
+    users_RemoveMember(command: RemoveMemberCommand): Observable<Result>;
+    users_InviteUser(command: InviteUserCommand): Observable<ResultOfInviteUserResponse>;
+    users_GetWorkspaceInvitations(workspaceId: string | null | undefined, status: string | null | undefined): Observable<ResultOfListOfInvitationDto>;
+    users_GetMyInvitations(): Observable<ResultOfListOfMyInvitationDto>;
+    users_AcceptInvitation(command: AcceptInvitationCommand): Observable<ResultOfAcceptInvitationResponse>;
+    users_DeclineInvitation(command: DeclineInvitationCommand): Observable<Result>;
+    users_RevokeInvitation(command: RevokeInvitationCommand): Observable<Result>;
+    users_UpdateMemberRole(command: UpdateMemberRoleCommand): Observable<Result>;
 }
 
 @Injectable({
@@ -3801,11 +3829,8 @@ export class UsersClient implements IUsersClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    users_GetWorkspaceMembers(workspaceId: string | null | undefined, searchQuery: string | null | undefined, role: string | null | undefined, isActive: boolean | null | undefined, pageNumber: number | undefined, pageSize: number | undefined, sortBy: string | null | undefined, sortDirection: string | null | undefined, version: string): Observable<ResultOfWorkspaceMembersResponse> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/workspace/members?";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_GetWorkspaceMembers(workspaceId: string | null | undefined, searchQuery: string | null | undefined, role: string | null | undefined, isActive: boolean | null | undefined, pageNumber: number | undefined, pageSize: number | undefined, sortBy: string | null | undefined, sortDirection: string | null | undefined): Observable<ResultOfWorkspaceMembersResponse> {
+        let url_ = this.baseUrl + "/api/v1/Users/workspace/members?";
         if (workspaceId !== undefined && workspaceId !== null)
             url_ += "WorkspaceId=" + encodeURIComponent("" + workspaceId) + "&";
         if (searchQuery !== undefined && searchQuery !== null)
@@ -3886,11 +3911,8 @@ export class UsersClient implements IUsersClient {
         return _observableOf(null as any);
     }
 
-    users_RemoveMember(version: string, command: RemoveMemberCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/workspace/members";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_RemoveMember(command: RemoveMemberCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/v1/Users/workspace/members";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -3962,11 +3984,8 @@ export class UsersClient implements IUsersClient {
         return _observableOf(null as any);
     }
 
-    users_InviteUser(version: string, command: InviteUserCommand): Observable<ResultOfInviteUserResponse> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/invite";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_InviteUser(command: InviteUserCommand): Observable<ResultOfInviteUserResponse> {
+        let url_ = this.baseUrl + "/api/v1/Users/invite";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -4038,11 +4057,8 @@ export class UsersClient implements IUsersClient {
         return _observableOf(null as any);
     }
 
-    users_GetWorkspaceInvitations(workspaceId: string | null | undefined, status: string | null | undefined, version: string): Observable<ResultOfListOfInvitationDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/workspace/invitations?";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_GetWorkspaceInvitations(workspaceId: string | null | undefined, status: string | null | undefined): Observable<ResultOfListOfInvitationDto> {
+        let url_ = this.baseUrl + "/api/v1/Users/workspace/invitations?";
         if (workspaceId !== undefined && workspaceId !== null)
             url_ += "WorkspaceId=" + encodeURIComponent("" + workspaceId) + "&";
         if (status !== undefined && status !== null)
@@ -4114,11 +4130,8 @@ export class UsersClient implements IUsersClient {
         return _observableOf(null as any);
     }
 
-    users_GetMyInvitations(version: string): Observable<ResultOfListOfMyInvitationDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/my-invitations";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_GetMyInvitations(): Observable<ResultOfListOfMyInvitationDto> {
+        let url_ = this.baseUrl + "/api/v1/Users/my-invitations";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4179,11 +4192,8 @@ export class UsersClient implements IUsersClient {
         return _observableOf(null as any);
     }
 
-    users_AcceptInvitation(version: string, command: AcceptInvitationCommand): Observable<ResultOfAcceptInvitationResponse> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/invitations/accept";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_AcceptInvitation(command: AcceptInvitationCommand): Observable<ResultOfAcceptInvitationResponse> {
+        let url_ = this.baseUrl + "/api/v1/Users/invitations/accept";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -4248,11 +4258,8 @@ export class UsersClient implements IUsersClient {
         return _observableOf(null as any);
     }
 
-    users_DeclineInvitation(version: string, command: DeclineInvitationCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/invitations/decline";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_DeclineInvitation(command: DeclineInvitationCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/v1/Users/invitations/decline";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -4317,11 +4324,8 @@ export class UsersClient implements IUsersClient {
         return _observableOf(null as any);
     }
 
-    users_RevokeInvitation(version: string, command: RevokeInvitationCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/invitations/revoke";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_RevokeInvitation(command: RevokeInvitationCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/v1/Users/invitations/revoke";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -4393,11 +4397,8 @@ export class UsersClient implements IUsersClient {
         return _observableOf(null as any);
     }
 
-    users_UpdateMemberRole(version: string, command: UpdateMemberRoleCommand): Observable<Result> {
-        let url_ = this.baseUrl + "/api/v{version}/Users/workspace/members/role";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    users_UpdateMemberRole(command: UpdateMemberRoleCommand): Observable<Result> {
+        let url_ = this.baseUrl + "/api/v1/Users/workspace/members/role";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -4471,11 +4472,11 @@ export class UsersClient implements IUsersClient {
 }
 
 export interface IWorkspaceClient {
-    workspace_GetMyWorkspaces(version: string): Observable<ResultOfListOfWorkspaceDto>;
-    workspace_CreateWorkspace(version: string, command: CreateWorkspaceCommand): Observable<ResultOfCreateWorkspaceResponse>;
-    workspace_SwitchWorkspace(version: string, command: SwitchWorkspaceCommand): Observable<ResultOfSwitchWorkspaceResponse>;
-    workspace_GetWorkspaceSettings(workspaceId: string | null | undefined, version: string): Observable<ResultOfWorkspaceSettingsDto>;
-    workspace_UpdateWorkspaceSettings(version: string, command: UpdateWorkspaceSettingsCommand): Observable<ResultOfWorkspaceSettingsDto>;
+    workspace_GetMyWorkspaces(): Observable<ResultOfListOfWorkspaceDto>;
+    workspace_CreateWorkspace(command: CreateWorkspaceCommand): Observable<ResultOfCreateWorkspaceResponse>;
+    workspace_SwitchWorkspace(command: SwitchWorkspaceCommand): Observable<ResultOfSwitchWorkspaceResponse>;
+    workspace_GetWorkspaceSettings(workspaceId: string | null | undefined): Observable<ResultOfWorkspaceSettingsDto>;
+    workspace_UpdateWorkspaceSettings(command: UpdateWorkspaceSettingsCommand): Observable<ResultOfWorkspaceSettingsDto>;
 }
 
 @Injectable({
@@ -4491,11 +4492,8 @@ export class WorkspaceClient implements IWorkspaceClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    workspace_GetMyWorkspaces(version: string): Observable<ResultOfListOfWorkspaceDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Workspace";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    workspace_GetMyWorkspaces(): Observable<ResultOfListOfWorkspaceDto> {
+        let url_ = this.baseUrl + "/api/v1/Workspace";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4549,11 +4547,8 @@ export class WorkspaceClient implements IWorkspaceClient {
         return _observableOf(null as any);
     }
 
-    workspace_CreateWorkspace(version: string, command: CreateWorkspaceCommand): Observable<ResultOfCreateWorkspaceResponse> {
-        let url_ = this.baseUrl + "/api/v{version}/Workspace";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    workspace_CreateWorkspace(command: CreateWorkspaceCommand): Observable<ResultOfCreateWorkspaceResponse> {
+        let url_ = this.baseUrl + "/api/v1/Workspace";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -4618,11 +4613,8 @@ export class WorkspaceClient implements IWorkspaceClient {
         return _observableOf(null as any);
     }
 
-    workspace_SwitchWorkspace(version: string, command: SwitchWorkspaceCommand): Observable<ResultOfSwitchWorkspaceResponse> {
-        let url_ = this.baseUrl + "/api/v{version}/Workspace/switch";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    workspace_SwitchWorkspace(command: SwitchWorkspaceCommand): Observable<ResultOfSwitchWorkspaceResponse> {
+        let url_ = this.baseUrl + "/api/v1/Workspace/switch";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -4694,11 +4686,8 @@ export class WorkspaceClient implements IWorkspaceClient {
         return _observableOf(null as any);
     }
 
-    workspace_GetWorkspaceSettings(workspaceId: string | null | undefined, version: string): Observable<ResultOfWorkspaceSettingsDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Workspace/settings?";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    workspace_GetWorkspaceSettings(workspaceId: string | null | undefined): Observable<ResultOfWorkspaceSettingsDto> {
+        let url_ = this.baseUrl + "/api/v1/Workspace/settings?";
         if (workspaceId !== undefined && workspaceId !== null)
             url_ += "workspaceId=" + encodeURIComponent("" + workspaceId) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -4768,11 +4757,8 @@ export class WorkspaceClient implements IWorkspaceClient {
         return _observableOf(null as any);
     }
 
-    workspace_UpdateWorkspaceSettings(version: string, command: UpdateWorkspaceSettingsCommand): Observable<ResultOfWorkspaceSettingsDto> {
-        let url_ = this.baseUrl + "/api/v{version}/Workspace/settings";
-        if (version === undefined || version === null)
-            throw new Error("The parameter 'version' must be defined.");
-        url_ = url_.replace("{version}", encodeURIComponent("" + version));
+    workspace_UpdateWorkspaceSettings(command: UpdateWorkspaceSettingsCommand): Observable<ResultOfWorkspaceSettingsDto> {
+        let url_ = this.baseUrl + "/api/v1/Workspace/settings";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -5091,9 +5077,10 @@ export enum ActivityType {
     ComplianceCheckFailed = 52,
     FindingCreated = 60,
     FindingUpdated = 61,
-    FindingStatusChanged = 62,
-    FindingAssigned = 63,
-    FindingCommentAdded = 64,
+    FindingDeleted = 62,
+    FindingStatusChanged = 63,
+    FindingAssigned = 64,
+    FindingCommentAdded = 65,
     TaskCreated = 70,
     TaskUpdated = 71,
     TaskCompleted = 72,

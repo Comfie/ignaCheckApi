@@ -117,96 +117,28 @@ public class DeleteWorkspaceCommandHandler : IRequestHandler<DeleteWorkspaceComm
             }
             catch (Exception)
             {
-                // Continue even if file deletion fails - we'll still delete the database records
+                // Continue even if file deletion fails
                 // This handles cases where files were already deleted or storage is unavailable
             }
         }
 
-        // Delete all related data (cascade deletes will handle most of this, but we'll be explicit)
+        // Delete workspace (soft delete via interceptor)
+        // The SoftDeleteInterceptor will:
+        // 1. Automatically soft delete all entities (set IsDeleted = true)
+        // 2. Raise EntityDeletedEvent for each entity
+        // 3. EntityDeletedEventHandler will create audit logs automatically
+        // 4. Cascade deletes will soft delete all related entities
 
-        // Delete activity logs
+        // Delete all related data - EF Core cascade will handle soft deleting children
+        // Note: We still need to explicitly remove non-auditable entities (like ActivityLogs)
+
+        // Delete activity logs (these are not BaseAuditableEntity, so hard delete)
         var activityLogs = await _context.ActivityLogs
             .Where(a => a.OrganizationId == request.OrganizationId)
             .ToListAsync(cancellationToken);
         _context.ActivityLogs.RemoveRange(activityLogs);
 
-        // Delete notifications
-        var memberUserIds = organization.Members.Select(m => m.UserId).ToList();
-        var notifications = await _context.Notifications
-            .Where(n => memberUserIds.Contains(n.UserId))
-            .ToListAsync(cancellationToken);
-        _context.Notifications.RemoveRange(notifications);
-
-        // Delete invitations
-        var invitations = await _context.Invitations
-            .Where(i => i.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.Invitations.RemoveRange(invitations);
-
-        // Delete finding comments
-        var findingComments = await _context.FindingComments
-            .Include(fc => fc.Finding)
-            .Where(fc => fc.Finding.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.FindingComments.RemoveRange(findingComments);
-
-        // Delete task comments
-        var taskComments = await _context.TaskComments
-            .Include(tc => tc.Task)
-            .Where(tc => tc.Task.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.TaskComments.RemoveRange(taskComments);
-
-        // Delete finding evidence
-        var findingEvidence = await _context.FindingEvidence
-            .Include(fe => fe.Finding)
-            .Where(fe => fe.Finding.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.FindingEvidence.RemoveRange(findingEvidence);
-
-        // Delete findings
-        var findings = await _context.ComplianceFindings
-            .Where(f => f.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.ComplianceFindings.RemoveRange(findings);
-
-        // Delete task attachments
-        var taskAttachments = await _context.TaskAttachments
-            .Include(ta => ta.Task)
-            .Where(ta => ta.Task.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.TaskAttachments.RemoveRange(taskAttachments);
-
-        // Delete tasks
-        var tasks = await _context.RemediationTasks
-            .Where(t => t.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.RemediationTasks.RemoveRange(tasks);
-
-        // Delete documents
-        _context.Documents.RemoveRange(documents);
-
-        // Delete project frameworks
-        var projectFrameworks = await _context.ProjectFrameworks
-            .Include(pf => pf.Project)
-            .Where(pf => pf.Project.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.ProjectFrameworks.RemoveRange(projectFrameworks);
-
-        // Delete project members
-        var projectMembers = await _context.ProjectMembers
-            .Include(pm => pm.Project)
-            .Where(pm => pm.Project.OrganizationId == request.OrganizationId)
-            .ToListAsync(cancellationToken);
-        _context.ProjectMembers.RemoveRange(projectMembers);
-
-        // Delete projects
-        _context.Projects.RemoveRange(projects);
-
-        // Delete organization members
-        _context.OrganizationMembers.RemoveRange(organization.Members);
-
-        // Finally, delete the organization itself
+        // Soft delete the organization - cascade will handle children
         _context.Organizations.Remove(organization);
 
         await _context.SaveChangesAsync(cancellationToken);

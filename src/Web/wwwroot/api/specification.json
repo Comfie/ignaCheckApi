@@ -106,6 +106,15 @@
               "default": 0
             },
             "x-position": 9
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 10
           }
         ],
         "responses": {
@@ -232,6 +241,15 @@
               "nullable": true
             },
             "x-position": 7
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 8
           }
         ],
         "responses": {
@@ -285,6 +303,17 @@
           "Administration"
         ],
         "operationId": "Administration_DeleteWorkspace",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -367,6 +396,15 @@
               "format": "guid"
             },
             "x-position": 2
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
           }
         ],
         "requestBody": {
@@ -434,7 +472,7 @@
         }
       }
     },
-    "/api/Authentication/register": {
+    "/api/v1/Authentication/register": {
       "post": {
         "tags": [
           "Authentication"
@@ -476,7 +514,7 @@
         }
       }
     },
-    "/api/Authentication/login": {
+    "/api/v1/Authentication/login": {
       "post": {
         "tags": [
           "Authentication"
@@ -518,7 +556,7 @@
         }
       }
     },
-    "/api/Authentication/verify-email": {
+    "/api/v1/Authentication/verify-email": {
       "post": {
         "tags": [
           "Authentication"
@@ -560,7 +598,7 @@
         }
       }
     },
-    "/api/Authentication/request-password-reset": {
+    "/api/v1/Authentication/request-password-reset": {
       "post": {
         "tags": [
           "Authentication"
@@ -592,7 +630,7 @@
         }
       }
     },
-    "/api/Authentication/reset-password": {
+    "/api/v1/Authentication/reset-password": {
       "post": {
         "tags": [
           "Authentication"
@@ -676,6 +714,15 @@
               "nullable": true
             },
             "x-position": 3
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
           }
         ],
         "responses": {
@@ -726,6 +773,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "requestBody": {
@@ -826,6 +882,15 @@
               "format": "guid"
             },
             "x-position": 2
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -899,6 +964,15 @@
               "format": "guid"
             },
             "x-position": 2
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -1058,6 +1132,15 @@
               "default": "desc"
             },
             "x-position": 9
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 10
           }
         ],
         "responses": {
@@ -1110,6 +1193,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -1172,6 +1264,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "requestBody": {
@@ -1246,6 +1347,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "requestBody": {
@@ -1320,6 +1430,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "requestBody": {
@@ -1419,6 +1538,15 @@
               "default": true
             },
             "x-position": 3
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
           }
         ],
         "responses": {
@@ -1470,6 +1598,15 @@
               "default": true
             },
             "x-position": 2
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -1522,6 +1659,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "requestBody": {
@@ -1606,6 +1752,15 @@
               "format": "guid"
             },
             "x-position": 2
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -1714,6 +1869,15 @@
               "default": 0
             },
             "x-position": 4
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
           }
         ],
         "responses": {
@@ -1746,6 +1910,17 @@
           "Notifications"
         ],
         "operationId": "Notifications_MarkAsRead",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -1798,6 +1973,17 @@
           "Notifications"
         ],
         "operationId": "Notifications_GetPreferences",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -1826,6 +2012,17 @@
           "Notifications"
         ],
         "operationId": "Notifications_UpdatePreferences",
+        "parameters": [
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -1872,7 +2069,7 @@
         }
       }
     },
-    "/api/Profile": {
+    "/api/v1/Profile": {
       "get": {
         "tags": [
           "Profile"
@@ -1952,7 +2149,7 @@
         }
       }
     },
-    "/api/Profile/avatar": {
+    "/api/v1/Profile/avatar": {
       "put": {
         "tags": [
           "Profile"
@@ -2004,7 +2201,7 @@
         }
       }
     },
-    "/api/Profile/notification-preferences": {
+    "/api/v1/Profile/notification-preferences": {
       "get": {
         "tags": [
           "Profile"
@@ -2084,7 +2281,7 @@
         }
       }
     },
-    "/api/Projects": {
+    "/api/v1/Projects": {
       "get": {
         "tags": [
           "Projects"
@@ -2210,7 +2407,7 @@
         }
       }
     },
-    "/api/Projects/{id}": {
+    "/api/v1/Projects/{id}": {
       "get": {
         "tags": [
           "Projects"
@@ -2406,7 +2603,7 @@
         }
       }
     },
-    "/api/Projects/{id}/archive": {
+    "/api/v1/Projects/{id}/archive": {
       "post": {
         "tags": [
           "Projects"
@@ -2480,7 +2677,7 @@
         }
       }
     },
-    "/api/Projects/{id}/members": {
+    "/api/v1/Projects/{id}/members": {
       "post": {
         "tags": [
           "Projects"
@@ -2554,7 +2751,7 @@
         }
       }
     },
-    "/api/Projects/{id}/members/{userId}": {
+    "/api/v1/Projects/{id}/members/{userId}": {
       "delete": {
         "tags": [
           "Projects"
@@ -2625,7 +2822,7 @@
         }
       }
     },
-    "/api/Projects/{id}/members/{userId}/role": {
+    "/api/v1/Projects/{id}/members/{userId}/role": {
       "put": {
         "tags": [
           "Projects"
@@ -2708,7 +2905,7 @@
         }
       }
     },
-    "/api/Projects/{id}/activity": {
+    "/api/v1/Projects/{id}/activity": {
       "get": {
         "tags": [
           "Projects"
@@ -2832,6 +3029,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -2904,6 +3110,15 @@
               "format": "guid"
             },
             "x-position": 2
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -2966,6 +3181,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -3084,6 +3308,15 @@
               "default": 100
             },
             "x-position": 6
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 7
           }
         ],
         "responses": {
@@ -3136,6 +3369,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -3202,6 +3444,15 @@
               "format": "guid"
             },
             "x-position": 2
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
           }
         ],
         "responses": {
@@ -3258,6 +3509,15 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
           }
         ],
         "responses": {
@@ -3341,6 +3601,15 @@
               "default": 10
             },
             "x-position": 4
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 5
           }
         ],
         "responses": {
@@ -3377,7 +3646,7 @@
         }
       }
     },
-    "/api/Users/workspace/members": {
+    "/api/v1/Users/workspace/members": {
       "get": {
         "tags": [
           "Users"
@@ -3552,7 +3821,7 @@
         }
       }
     },
-    "/api/Users/invite": {
+    "/api/v1/Users/invite": {
       "post": {
         "tags": [
           "Users"
@@ -3614,7 +3883,7 @@
         }
       }
     },
-    "/api/Users/workspace/invitations": {
+    "/api/v1/Users/workspace/invitations": {
       "get": {
         "tags": [
           "Users"
@@ -3685,7 +3954,7 @@
         }
       }
     },
-    "/api/Users/my-invitations": {
+    "/api/v1/Users/my-invitations": {
       "get": {
         "tags": [
           "Users"
@@ -3725,7 +3994,7 @@
         }
       }
     },
-    "/api/Users/invitations/accept": {
+    "/api/v1/Users/invitations/accept": {
       "post": {
         "tags": [
           "Users"
@@ -3777,7 +4046,7 @@
         }
       }
     },
-    "/api/Users/invitations/decline": {
+    "/api/v1/Users/invitations/decline": {
       "post": {
         "tags": [
           "Users"
@@ -3829,7 +4098,7 @@
         }
       }
     },
-    "/api/Users/invitations/revoke": {
+    "/api/v1/Users/invitations/revoke": {
       "post": {
         "tags": [
           "Users"
@@ -3891,7 +4160,7 @@
         }
       }
     },
-    "/api/Users/workspace/members/role": {
+    "/api/v1/Users/workspace/members/role": {
       "put": {
         "tags": [
           "Users"
@@ -3953,7 +4222,7 @@
         }
       }
     },
-    "/api/Workspace": {
+    "/api/v1/Workspace": {
       "get": {
         "tags": [
           "Workspace"
@@ -4033,7 +4302,7 @@
         }
       }
     },
-    "/api/Workspace/switch": {
+    "/api/v1/Workspace/switch": {
       "post": {
         "tags": [
           "Workspace"
@@ -4095,7 +4364,7 @@
         }
       }
     },
-    "/api/Workspace/settings": {
+    "/api/v1/Workspace/settings": {
       "get": {
         "tags": [
           "Workspace"
@@ -4346,6 +4615,7 @@
           "ComplianceCheckFailed",
           "FindingCreated",
           "FindingUpdated",
+          "FindingDeleted",
           "FindingStatusChanged",
           "FindingAssigned",
           "FindingCommentAdded",
@@ -4397,6 +4667,7 @@
           62,
           63,
           64,
+          65,
           70,
           71,
           72,
