@@ -1,0 +1,154 @@
+<!-- Viewer Dashboard - Read-Only Access -->
+<div class="min-h-screen bg-page-bg-light dark:bg-page-bg-dark p-6">
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Page Header with Info Notice -->
+    <div class="flex flex-col gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-heading-color mb-2">My Dashboard</h1>
+        <p class="text-text-secondary">View assigned projects and track progress</p>
+      </div>
+
+      <!-- Read-only Notice -->
+      <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 flex items-start gap-3">
+        <fa-icon [icon]="faInfoCircle" class="text-blue-600 dark:text-blue-400 text-xl mt-0.5 flex-shrink-0"></fa-icon>
+        <div>
+          <h3 class="font-semibold text-blue-900 dark:text-blue-100 mb-1">View-Only Access</h3>
+          <p class="text-sm text-blue-800 dark:text-blue-200">You have read-only access. You can view projects and documents but cannot create or modify content.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div *ngFor="let stat of stats"
+           class="bg-surface-light dark:bg-surface-dark rounded-xl p-6 border border-border-light dark:border-border-dark hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <p class="text-text-secondary text-sm font-medium mb-2">{{ stat.title }}</p>
+            <p class="text-3xl font-bold text-heading-color">{{ stat.value }}</p>
+          </div>
+          <div [ngClass]="[stat.bgColor, stat.color]" class="w-12 h-12 rounded-lg flex items-center justify-center">
+            <fa-icon [icon]="stat.icon" class="text-xl"></fa-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Assigned Projects Section - Takes 2 columns -->
+      <div class="lg:col-span-2 bg-surface-light dark:bg-surface-dark rounded-xl p-6 border border-border-light dark:border-border-dark">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-heading-color">Assigned Projects</h2>
+          <a routerLink="/projects" class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-sm font-medium transition-colors">
+            View All →
+          </a>
+        </div>
+
+        <div class="space-y-4">
+          <div *ngFor="let project of assignedProjects"
+               class="bg-page-bg-light dark:bg-page-bg-dark rounded-lg p-5 border border-border-light dark:border-border-dark hover:shadow-md transition-all duration-200 hover:border-primary-300 dark:hover:border-primary-700 cursor-pointer"
+               [routerLink]="['/projects', project.id]">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex-1">
+                <h3 class="text-lg font-semibold text-heading-color mb-1">{{ project.name }}</h3>
+                <p class="text-sm text-text-secondary mb-2">{{ project.description }}</p>
+                <p class="text-xs text-text-secondary">Last updated: {{ getTimeAgo(project.lastUpdated) }}</p>
+              </div>
+              <span [ngClass]="getStatusBadgeClass(project.status)"
+                    class="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-4">
+                {{ project.status }}
+              </span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-text-secondary font-medium">Progress</span>
+                <span class="text-heading-color font-semibold">{{ project.progress }}%</span>
+              </div>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                <div [ngClass]="getProgressColor(project.progress)"
+                     class="h-full rounded-full transition-all duration-500"
+                     [style.width.%]="project.progress">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="assignedProjects.length === 0" class="text-center py-12">
+            <fa-icon [icon]="faFolderOpen" class="text-5xl text-text-secondary mb-4"></fa-icon>
+            <h3 class="text-lg font-semibold text-heading-color mb-2">No Projects Assigned</h3>
+            <p class="text-text-secondary">You don't have any assigned projects yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity Section -->
+      <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-6 border border-border-light dark:border-border-dark">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-heading-color">Recent Activity</h2>
+        </div>
+
+        <div class="space-y-4">
+          <div *ngFor="let activity of recentActivities"
+               class="bg-page-bg-light dark:bg-page-bg-dark rounded-lg p-4 border border-border-light dark:border-border-dark">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center flex-shrink-0">
+                <fa-icon [icon]="faEye" class="text-primary-600 dark:text-primary-400"></fa-icon>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-semibold text-heading-color mb-1">{{ activity.action }}</h4>
+                <p class="text-xs text-text-secondary mb-1">{{ activity.project }}</p>
+                <div class="flex items-center justify-between gap-2 text-xs text-text-secondary">
+                  <span>by {{ activity.user }}</span>
+                  <span>{{ getTimeAgo(activity.timestamp) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Access Section -->
+    <div class="bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl p-8 text-white">
+      <h2 class="text-2xl font-bold mb-6">Quick Access</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <a
+          routerLink="/projects"
+          class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg p-4 text-left transition-all hover:scale-[1.02] active:scale-[0.98] border border-white/20 block">
+          <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-3">
+            <fa-icon [icon]="faFolderOpen" class="text-xl"></fa-icon>
+          </div>
+          <h3 class="font-semibold mb-1">All Projects</h3>
+          <p class="text-sm text-white/80">Browse assigned projects</p>
+        </a>
+
+        <a
+          routerLink="/reports"
+          class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg p-4 text-left transition-all hover:scale-[1.02] active:scale-[0.98] border border-white/20 block">
+          <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-3">
+            <fa-icon [icon]="faFileAlt" class="text-xl"></fa-icon>
+          </div>
+          <h3 class="font-semibold mb-1">View Reports</h3>
+          <p class="text-sm text-white/80">Access project reports</p>
+        </a>
+
+        <a
+          routerLink="/documents"
+          class="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg p-4 text-left transition-all hover:scale-[1.02] active:scale-[0.98] border border-white/20 block">
+          <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-3">
+            <fa-icon [icon]="faChartBar" class="text-xl"></fa-icon>
+          </div>
+          <h3 class="font-semibold mb-1">Documents</h3>
+          <p class="text-sm text-white/80">Browse documentation</p>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>

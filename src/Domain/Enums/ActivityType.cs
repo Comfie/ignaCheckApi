@@ -47,9 +47,10 @@ public enum ActivityType
     // Finding activities
     FindingCreated = 60,
     FindingUpdated = 61,
-    FindingStatusChanged = 62,
-    FindingAssigned = 63,
-    FindingCommentAdded = 64,
+    FindingDeleted = 62,
+    FindingStatusChanged = 63,
+    FindingAssigned = 64,
+    FindingCommentAdded = 65,
 
     // Task activities
     TaskCreated = 70,

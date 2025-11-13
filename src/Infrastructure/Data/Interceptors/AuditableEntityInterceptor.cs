@@ -1,5 +1,6 @@
 ﻿using IgnaCheck.Application.Common.Interfaces;
 using IgnaCheck.Domain.Common;
+using IgnaCheck.Domain.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -42,11 +43,33 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
             if (entry.State is EntityState.Added or EntityState.Modified || entry.HasChangedOwnedEntities())
             {
                 var utcNow = _dateTime.GetUtcNow().UtcDateTime;
+
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedBy = _user.Id;
                     entry.Entity.Created = utcNow;
+
+                    // Raise domain event for entity creation
+                    entry.Entity.AddDomainEvent(new EntityCreatedEvent(entry.Entity));
                 }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    // Get modified properties for audit logging
+                    var modifiedProperties = entry.Properties
+                        .Where(p => p.IsModified &&
+                                    p.Metadata.Name != nameof(BaseAuditableEntity.LastModified) &&
+                                    p.Metadata.Name != nameof(BaseAuditableEntity.LastModifiedBy))
+                        .Select(p => p.Metadata.Name)
+                        .ToArray();
+
+                    // Only raise event if there are significant changes (not just audit fields)
+                    if (modifiedProperties.Any())
+                    {
+                        entry.Entity.AddDomainEvent(new EntityUpdatedEvent(entry.Entity, modifiedProperties));
+                    }
+                }
+
                 entry.Entity.LastModifiedBy = _user.Id;
                 entry.Entity.LastModified = utcNow;
             }

@@ -19,8 +19,6 @@ namespace IgnaCheck.Web.Controllers;
 /// <summary>
 /// Controller for project management operations.
 /// </summary>
-[ApiController]
-[Route("api/[controller]")]
 [Authorize]
 public class ProjectsController : ApiControllerBase
 {

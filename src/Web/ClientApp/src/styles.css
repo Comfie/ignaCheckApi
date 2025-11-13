@@ -1,0 +1,194 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===========================
+   CSS Variables from Template
+   =========================== */
+:root {
+  /* Primary colors */
+  --theme-primary: #006666;
+  --theme-secondary: #FE6A49;
+
+  /* Text colors */
+  --body-font-color: #86909C;
+  --heading-color: #051A1A;
+
+  /* Background colors */
+  --light-background: rgba(242, 243, 247, 0.7);
+  --light-bg: #EEF1F6;
+  --light2: #F5F6F9;
+  --white: #fff;
+  --card-bg: #ffffff;
+  --recent-chart-bg: #FCFCFD;
+  --recent-box-bg: #F2F4F7;
+
+  /* Border colors */
+  --chart-border: #E6E9EB;
+  --sidebar-border: rgba(0, 0, 0, 0.1);
+  --recent-border: rgba(97, 101, 122, 0.25);
+
+  /* Other colors */
+  --chart-text-color: rgba(82, 82, 108, 0.8);
+  --text-gray: rgba(82, 82, 108, 0.8);
+}
+
+/* Dark mode variables */
+:root.dark,
+.dark {
+  color-scheme: dark;
+
+  /* Background colors in dark mode */
+  --light-background: #1A1C23;
+  --light-bg: #1d1e26;
+  --light2: #1d1e26;
+  --white: #262932;
+  --card-bg: #262932;
+  --recent-chart-bg: #262932;
+  --recent-box-bg: #1d1e26;
+
+  /* Border colors in dark mode */
+  --chart-border: #1A1C23;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --recent-border: #374558;
+
+  /* Text colors in dark mode */
+  --body-font-color: rgba(255, 255, 255, 0.7);
+  --heading-color: #ffffff;
+  --chart-text-color: #86909C;
+  --text-gray: rgba(153, 153, 169, 0.8);
+}
+
+/* Theme Transition - Only apply during theme toggle */
+html.theming,
+html.theming *,
+html.theming *::before,
+html.theming *::after {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease !important;
+  transition-delay: 0s !important;
+}
+
+/* ===========================
+   Base Typography Styles
+   =========================== */
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: var(--heading-color);
+  background-color: #EEF1F6;
+  overflow-x: hidden;
+}
+
+.dark body {
+  color: var(--heading-color);
+  background-color: #1A1C23;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  color: var(--heading-color);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 20px;
+}
+
+h5 {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+h6 {
+  font-size: 15px;
+  line-height: 1;
+}
+
+p {
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: 0.7px;
+  color: var(--body-font-color);
+}
+
+a {
+  color: var(--theme-primary);
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+a:hover {
+  color: var(--theme-primary);
+}
+
+/* Custom Scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(203, 213, 225, 0.2);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(203, 213, 225, 0.3);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  10%, 30% {
+    transform: rotate(14deg);
+  }
+  20% {
+    transform: rotate(-8deg);
+  }
+  40% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+.animate-wave {
+  display: inline-block;
+  animation: wave 2.5s ease-in-out infinite;
+  transform-origin: 70% 70%;
+}
+

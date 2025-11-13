@@ -73,12 +73,30 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        // Apply global query filters for multi-tenancy
-        // This ensures queries automatically filter by the current tenant's organization
+        // Apply global query filters for multi-tenancy and soft delete
+        // This ensures queries automatically filter by:
+        // 1. Current tenant's organization (multi-tenancy)
+        // 2. Non-deleted entities (soft delete)
         foreach (var entityType in builder.Model.GetEntityTypes())
         {
-            if (typeof(ITenantEntity).IsAssignableFrom(entityType.ClrType))
+            var isSoftDeletable = typeof(BaseAuditableEntity).IsAssignableFrom(entityType.ClrType);
+            var isTenantEntity = typeof(ITenantEntity).IsAssignableFrom(entityType.ClrType);
+
+            if (isSoftDeletable && isTenantEntity)
             {
+                // Entity has both soft delete and multi-tenancy
+                var method = SetGlobalQueryForTenantAndSoftDeleteMethod.MakeGenericMethod(entityType.ClrType);
+                method.Invoke(this, new object[] { builder });
+            }
+            else if (isSoftDeletable)
+            {
+                // Entity has only soft delete
+                var method = SetGlobalQueryForSoftDeleteMethod.MakeGenericMethod(entityType.ClrType);
+                method.Invoke(this, new object[] { builder });
+            }
+            else if (isTenantEntity)
+            {
+                // Entity has only multi-tenancy
                 var method = SetGlobalQueryMethod.MakeGenericMethod(entityType.ClrType);
                 method.Invoke(this, new object[] { builder });
             }
@@ -121,8 +139,40 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplica
         typeof(ApplicationDbContext).GetMethod(nameof(SetGlobalQuery),
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
 
+    private static readonly System.Reflection.MethodInfo SetGlobalQueryForSoftDeleteMethod =
+        typeof(ApplicationDbContext).GetMethod(nameof(SetGlobalQueryForSoftDelete),
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
+
+    private static readonly System.Reflection.MethodInfo SetGlobalQueryForTenantAndSoftDeleteMethod =
+        typeof(ApplicationDbContext).GetMethod(nameof(SetGlobalQueryForTenantAndSoftDelete),
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
+
+    /// <summary>
+    /// Sets global query filter for multi-tenancy only.
+    /// </summary>
     private void SetGlobalQuery<T>(ModelBuilder builder) where T : class, ITenantEntity
     {
         builder.Entity<T>().HasQueryFilter(e => TenantService == null || TenantService.GetCurrentTenantId() == null ||  e.OrganizationId == TenantService.GetCurrentTenantId());
+    }
+
+    /// <summary>
+    /// Sets global query filter for soft delete only.
+    /// Filters out entities where IsDeleted = true.
+    /// </summary>
+    private void SetGlobalQueryForSoftDelete<T>(ModelBuilder builder) where T : BaseAuditableEntity
+    {
+        builder.Entity<T>().HasQueryFilter(e => !e.IsDeleted);
+    }
+
+    /// <summary>
+    /// Sets global query filter for both multi-tenancy and soft delete.
+    /// Combines tenant filtering and soft delete filtering.
+    /// </summary>
+    private void SetGlobalQueryForTenantAndSoftDelete<T>(ModelBuilder builder)
+        where T : BaseAuditableEntity, ITenantEntity
+    {
+        builder.Entity<T>().HasQueryFilter(e =>
+            !e.IsDeleted &&
+            (TenantService == null || TenantService.GetCurrentTenantId() == null || e.OrganizationId == TenantService.GetCurrentTenantId()));
     }
 }

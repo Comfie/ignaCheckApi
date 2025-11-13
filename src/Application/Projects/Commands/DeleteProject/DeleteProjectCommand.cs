@@ -85,15 +85,6 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
             return Result.Failure(new[] { "Confirmation name does not match project name." });
         }
 
-        // Get user details for activity log
-        var user = await _identityService.GetUserByIdAsync(_currentUser.Id);
-        if (user == null)
-        {
-            return Result.Failure(new[] { "User not found." });
-        }
-
-        var userName = $"{user.FirstName} {user.LastName}".Trim();
-
         // Delete all documents from storage
         foreach (var document in project.Documents)
         {
@@ -107,36 +98,11 @@ public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand,
             }
         }
 
-        // Log activity before deletion
-        var activityLog = new ActivityLog
-        {
-            Id = Guid.NewGuid(),
-            OrganizationId = organizationId.Value,
-            ProjectId = null, // Project will be deleted
-            UserId = _currentUser.Id,
-            UserName = userName,
-            UserEmail = user.Email!,
-            ActivityType = ActivityType.ProjectDeleted,
-            EntityType = "Project",
-            EntityId = project.Id,
-            EntityName = project.Name,
-            Description = $"Deleted project '{project.Name}'",
-            Metadata = System.Text.Json.JsonSerializer.Serialize(new
-            {
-                DocumentCount = project.Documents.Count,
-                MemberCount = project.ProjectMembers.Count
-            }),
-            OccurredAt = DateTime.UtcNow
-        };
-
-        _context.ActivityLogs.Add(activityLog);
-
-        // EF Core will cascade delete related entities based on relationships:
-        // - ProjectMembers
-        // - Documents
-        // - ProjectFrameworks
-        // - ComplianceFindings
-        // - RemediationTasks
+        // Delete project (soft delete via interceptor)
+        // The SoftDeleteInterceptor will:
+        // 1. Set IsDeleted = true instead of removing from database
+        // 2. Raise EntityDeletedEvent
+        // 3. EntityDeletedEventHandler will create the audit log automatically
         _context.Projects.Remove(project);
 
         await _context.SaveChangesAsync(cancellationToken);

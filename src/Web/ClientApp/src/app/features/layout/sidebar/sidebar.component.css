@@ -1,0 +1,63 @@
+/* Sidebar Component Styles */
+
+:host {
+  display: block;
+}
+
+/* Enhanced scrollbar for sidebar navigation */
+nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+nav::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.3);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(75, 85, 99, 0.5);
+}
+
+/* Dark mode scrollbar */
+:host-context(.dark) nav::-webkit-scrollbar-thumb {
+  background: rgba(55, 65, 81, 0.4);
+}
+
+:host-context(.dark) nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(55, 65, 81, 0.6);
+}
+
+/* Smooth expand animation for submenus */
+@keyframes expandMenu {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+
+.submenu-enter {
+  animation: expandMenu 0.3s ease-out forwards;
+}
+
+/* Glow effect for active indicator */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(59, 130, 246, 0.7);
+  }
+}
+
+.active-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}

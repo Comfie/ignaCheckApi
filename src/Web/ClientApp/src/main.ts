@@ -1,14 +1,12 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
+import { ThemeService } from './app/core/services/theme.service';
 
-/**
- * Bootstrap the standalone Angular application
- *
- * This replaces the traditional platformBrowserDynamic().bootstrapModule()
- * approach with the modern bootstrapApplication() for standalone components.
- *
- * All configuration (routing, HTTP, animations, etc.) is provided in app.config.ts
- */
 bootstrapApplication(AppComponent, appConfig)
-  .catch(err => console.error(err));
+  .then((appRef) => {
+    // Initialize theme service after app bootstrap
+    const themeService = appRef.injector.get(ThemeService);
+    themeService.init();
+  })
+  .catch((err) => console.error(err));

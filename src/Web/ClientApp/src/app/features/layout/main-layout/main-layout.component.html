@@ -1,0 +1,26 @@
+<!-- Modern Layout with Theme Support -->
+<div class="min-h-screen bg-[#EEF1F6] dark:bg-[#1A1C23] transition-colors duration-200">
+
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Header (Full Width) -->
+  <app-header></app-header>
+
+  <!-- Main Content Area -->
+  <div
+    [class.ml-64]="!isSidebarCollapsed"
+    [class.ml-20]="isSidebarCollapsed"
+    class="pt-16 transition-all duration-300"
+  >
+
+    <!-- Page Content -->
+    <main class="min-h-[calc(100vh-8rem)] p-6">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <app-footer></app-footer>
+  </div>
+
+</div>
