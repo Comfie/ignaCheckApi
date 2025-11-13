@@ -53,5 +53,7 @@
     <PackageVersion Include="SpecFlow.NUnit" Version="3.9.74" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.0.0" />
+    <PackageVersion Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
   </ItemGroup>
 </Project>

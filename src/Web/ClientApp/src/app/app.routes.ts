@@ -39,7 +39,7 @@ export const routes: Routes = [
       {
         path: 'dashboard/super-admin',
         canActivate: [roleGuard],
-        data: { roles: ['SuperAdmin'] },
+        data: { roles: ['Owner','SuperAdmin'] },
         loadComponent: () => import('./features/dashboards/super-admin/super-admin-dashboard.component').then(m => m.SuperAdminDashboardComponent)
       },
       {
@@ -51,13 +51,13 @@ export const routes: Routes = [
       {
         path: 'dashboard/contributor',
         canActivate: [roleGuard],
-        data: { roles: ['Contributor'] },
+        data: { roles: ['Owner','Contributor'] },
         loadComponent: () => import('./features/dashboards/contributor/contributor-dashboard.component').then(m => m.ContributorDashboardComponent)
       },
       {
         path: 'dashboard/viewer',
         canActivate: [roleGuard],
-        data: { roles: ['Viewer'] },
+        data: { roles: ['Owner','Viewer'] },
         loadComponent: () => import('./features/dashboards/viewer/viewer-dashboard.component').then(m => m.ViewerDashboardComponent)
       },
 
