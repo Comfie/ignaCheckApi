@@ -5,6 +5,7 @@ using IgnaCheck.Domain.Events;
 using IgnaCheck.Infrastructure.Data.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -16,6 +17,7 @@ namespace Infrastructure.UnitTests.Interceptors;
 public class SoftDeleteInterceptorTests
 {
     private Mock<IUser> _mockUser = null!;
+    private Mock<ILogger<SoftDeleteInterceptor>> _mockLogger = null!;
     private TimeProvider _timeProvider = null!;
     private SoftDeleteInterceptor _interceptor = null!;
 
@@ -24,8 +26,9 @@ public class SoftDeleteInterceptorTests
     {
         _mockUser = new Mock<IUser>();
         _mockUser.Setup(x => x.Id).Returns("test-user-123");
+        _mockLogger = new Mock<ILogger<SoftDeleteInterceptor>>();
         _timeProvider = TimeProvider.System;
-        _interceptor = new SoftDeleteInterceptor(_mockUser.Object, _timeProvider);
+        _interceptor = new SoftDeleteInterceptor(_mockUser.Object, _timeProvider, _mockLogger.Object);
     }
 
     [Test]

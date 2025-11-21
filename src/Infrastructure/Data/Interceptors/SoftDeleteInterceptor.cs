@@ -3,6 +3,7 @@ using IgnaCheck.Domain.Common;
 using IgnaCheck.Domain.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace IgnaCheck.Infrastructure.Data.Interceptors;
 
@@ -15,11 +16,16 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
 {
     private readonly IUser _user;
     private readonly TimeProvider _dateTime;
+    private readonly ILogger<SoftDeleteInterceptor> _logger;
 
-    public SoftDeleteInterceptor(IUser user, TimeProvider dateTime)
+    public SoftDeleteInterceptor(
+        IUser user,
+        TimeProvider dateTime,
+        ILogger<SoftDeleteInterceptor> logger)
     {
         _user = user;
         _dateTime = dateTime;
+        _logger = logger;
     }
 
     public override InterceptionResult<int> SavingChanges(
@@ -44,11 +50,20 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
         if (context == null) return;
 
         var utcNow = _dateTime.GetUtcNow().UtcDateTime;
+        var deletedEntitiesCount = 0;
 
         foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
         {
             if (entry.State == EntityState.Deleted)
             {
+                var entityType = entry.Entity.GetType().Name;
+                var entityId = entry.Entity.Id;
+
+                _logger.LogDebug(
+                    "Converting hard delete to soft delete for {EntityType} with ID {EntityId}",
+                    entityType,
+                    entityId);
+
                 // Convert hard delete to soft delete
                 entry.State = EntityState.Modified;
                 entry.Entity.IsDeleted = true;
@@ -57,7 +72,23 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
 
                 // Add domain event for deletion (will be handled by DispatchDomainEventsInterceptor)
                 entry.Entity.AddDomainEvent(new EntityDeletedEvent(entry.Entity));
+
+                deletedEntitiesCount++;
+
+                _logger.LogInformation(
+                    "Soft deleted {EntityType} with ID {EntityId} by user {UserId} at {DeletedAt}",
+                    entityType,
+                    entityId,
+                    _user.Id,
+                    utcNow);
             }
+        }
+
+        if (deletedEntitiesCount > 0)
+        {
+            _logger.LogInformation(
+                "Soft delete interceptor processed {Count} entities",
+                deletedEntitiesCount);
         }
     }
 }
